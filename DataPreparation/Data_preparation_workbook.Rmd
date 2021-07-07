@@ -1,0 +1,29 @@
+---
+title: "Moderators of symptom trajectories of depression and anxiety during the COVID-19 pandemic: data set preparation"
+author: "K L Purves"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: show
+
+html_notebook:
+  theme: cerulean
+toc: yes
+---
+
+#Set B (RAMP)
+
+Depression (PHQ-9) (QID124934591_1 - _9)
+General anxiety (GAD-7) (QID124934580_1 - _7)
+MASQ-Anhedonia (QID124942668_1 - _10)
+
+#Set A (GAD, PHQ only, RAMP)
