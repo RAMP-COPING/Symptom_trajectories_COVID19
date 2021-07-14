@@ -1,0 +1,125 @@
+---
+title: "Clean baseline PHQ data from RAMP for first part of CFA analysis"
+author: "K L Purves"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: show
+
+html_notebook:
+  theme: cerulean
+toc: yes
+---
+
+```{r}
+# clear global environment
+remove(list = ls())
+```
+
+```{r}
+# libraries
+library(data.table)
+library(lfactors)
+library(tidyverse)
+```
+
+```{r}
+# read in the files (save to environment)
+
+source("../../../Credentials/paths_anhedonia_analysis.R")
+```
+
+
+```{r}
+# read in baseline data
+
+data_raw = readRDS(paste0(ilovedata,"/data_raw/2021-02-18/ramp/phq9_ramp.rds"))
+```
+
+```{r}
+
+# fix space in login ID variable
+
+names(data_raw) = str_replace_all(names(data_raw), c(" " = ".")) 
+```
+
+
+```{r}
+#Scoring variables
+phq.n.items = 9 # Enter here the total number of items of the questionnaire
+phq.necessary.number.of.items = 8 # Enter here the number of required items to include a participant
+
+#Limits for data cleaning
+total_score.phq_upper_limit = 27
+total_score.phq_lower_limit = 0
+
+raw_score.phq_upper_limit = 27
+raw_score.phq_lower_limit = 0
+
+phq.total.score_upper_limit = 27
+phq.total.score_lower_limit = 0
+
+phq.min.value = 0
+phq.max.value = 3
+```
+
+
+```{r}
+
+names(data_raw)
+
+```
+
+
+```{r}
+#Recode column names to harmonised variable names
+
+#phq.x.0 - pre pandemic
+#phq.x.1 - Baseline current
+#phq.pandemic.change - item asking if this is different from before pandemic
+
+data_phq_renamed <- data_raw %>% #new dataset with ID
+  drop_na("Login.ID") %>% # Drop NAs
+  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for RAMP data
+  add_column(sample = "RAMP_baseline", .after = "Login.ID") %>% #create new column 
+  select(
+         ID = "Login.ID", # ID
+         sample,
+         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
+         phq9.pandemic_felling_like_a_failure = phq.feeling_bad_failure_family,
+         phq9.pandemic_trouble_concentrating = phq.trouble_concentrating_newspaper_reading,
+         phq9.pandemic_figeting_or_moving_slowly = phq.moving_fidgety_opposite_slowly,
+         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
+         
+
+# Inspect colnames
+colnames(data_phq_renamed)
+
+
+```
+
+
+```{r}
+#seen but not answered (-99) as NA
+data_phq_renamed <- data.frame(apply(data_phq_renamed,2,function(x) ifelse(x==-99,NA,x)))
+
+```
+
+
+```{r}
+
+saveRDS(object = data_phq_renamed, file = paste0("../../../data_clean/RAMP_phq/phq.clean_baseline.RAMP",  ".rds"))
+
+```

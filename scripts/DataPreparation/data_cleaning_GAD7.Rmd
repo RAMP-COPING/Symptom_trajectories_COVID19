@@ -1,0 +1,123 @@
+---
+title: "Clean baseline GAD data from RAMP for first part of CFA analysis"
+author: "K L Purves"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: show
+
+html_notebook:
+  theme: cerulean
+toc: yes
+---
+
+```{r}
+# clear global environment
+remove(list = ls())
+```
+
+```{r}
+# libraries
+library(data.table)
+library(lfactors)
+library(tidyverse)
+```
+
+```{r}
+# read in the files (save to environment)
+
+source("../../../Credentials/paths_anhedonia_analysis.R")
+```
+
+
+```{r}
+# read in baseline data
+
+data_raw = readRDS(paste0(ilovedata,"/data_raw/2021-02-18/ramp/gad7_ramp.rds"))
+```
+
+```{r}
+
+# fix space in login ID variable
+
+names(data_raw) = str_replace_all(names(data_raw), c(" " = ".")) 
+```
+
+
+```{r}
+#Scoring variables
+GAD.n.items = 7 # Enter here the total number of items of the questionnaire
+GAD.necessary.number.of.items = 6 # Enter here the number of required items to include a participant
+
+#Limits for data cleaning
+total_score.gad_upper_limit = 21
+total_score.gad_lower_limit = 0
+
+raw_score.gad_upper_limit = 21
+raw_score.gad_lower_limit = 0
+
+GAD.total.score_upper_limit = 21
+GAD.total.score_lower_limit = 0
+
+GAD.min.value = 0
+GAD.max.value = 3
+```
+
+
+```{r}
+
+names(data_raw)
+
+```
+
+
+```{r}
+#Recode column names to harmonised variable names
+
+#gad.x.0 - pre pandemic
+#gad.x.1 - Baseline current
+#GAD.pandemic.change - item asking if this is different from before pandemic
+
+data_gad_renamed <- data_raw %>% #new dataset with ID
+  drop_na("Login.ID") %>% # Drop NAs
+  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for RAMP data
+  add_column(sample = "RAMP_baseline", .after = "Login.ID") %>% #create new column 
+  select(
+         ID = "Login.ID", # ID
+         sample,
+         gad7.pandemic_nervous_anxious_on_edge = gad7.feeling_nervous_anxious_or_on_edge,
+         gad7.pandemic_cant_control_worry = gad7.control_worrying_stop,
+         gad7.pandemic_worry_too_much = gad7.worrying_too_much_about_different_things,
+         gad7.pandemic_trouble_relaxing = gad7.trouble_relaxing,
+         gad7.pandemic_restless = gad7.sit_hard_restless,
+         gad7.pandemic_easily_annoyed = gad7.becoming_easily_annoyed_or_irritable,
+         gad7.pandemic_afraid_something_terrible_will_happen = gad7.awful_feeling_afraid_happen)
+         
+
+# Inspect colnames
+colnames(data_gad_renamed)
+
+
+```
+
+
+```{r}
+#seen but not answered (-99) as NA
+data_gad_renamed <- data.frame(apply(data_gad_renamed,2,function(x) ifelse(x==-99,NA,x)))
+
+```
+
+
+```{r}
+
+saveRDS(object = data_gad_renamed, file = paste0("../../../data_clean/RAMP_gad/gad.clean_baseline.RAMP",  ".rds"))
+
+```
