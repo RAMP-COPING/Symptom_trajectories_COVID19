@@ -1,0 +1,1510 @@
+---
+title: "data_cleaning_MASQ for RAMP and COPING"
+author: "Jessica Mundy"
+date: "08/06/2021"
+output: html_document
+---
+
+#Set up 
+
+```{r Delete everything in your global environment}
+remove(list = ls())
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment=NA,
+                      prompt=FALSE,
+                      cache=FALSE)
+```
+
+Note: load tidyverse last!
+```{r Load packages}
+if(!require(summarytools)){
+  install.packages("summarytools")
+  library(summarytools)
+}
+if(!require(ggplot2)){
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+
+if(!require(psych)){
+  install.packages("psych")
+  library(psych)
+}
+
+if(!require(tidyverse)){
+  install.packages("tidyverse")
+  library(tidyverse)
+}
+```
+
+```{r Set GLAD palette for plotting}
+glad_palette = c("#efc00b", "#b7dee8")
+```
+
+```{r Retrieve the recent date}
+date = Sys.Date()
+date
+```
+
+```{r Source the add_numeric function}
+source(file = "../functions/add_numeric.R") # used to convert character variables into numeric variables.
+```
+
+```{r Source the credentials file}
+source("../../../Credentials/paths_anhedonia_analysis.R")
+```
+
+# Read in data
+
+## COPING follow up A
+
+```{r Read in COPING follow up A data}
+# Read in the data
+COPING_followupA <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupa/masq_coping_followupa.rds"))
+
+  # Check column names
+COPING_followupA %>%
+  colnames()
+
+# Check dimensions
+COPING_followupA %>%
+  dim()
+
+# Look at top rows of the data frame
+COPING_followupA %>% 
+  head()
+```
+
+```{r Select & rename relevant columns (will be a function at some point)}
+
+
+COPING_followupA.id <- COPING_followupA %>% #new dataset with ID
+  drop_na(externalDataReference) %>% # Drop NAs
+  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for COPING data
+  add_column(sample = "COPING_followupA", .after = "externalDataReference") %>% #create new column 
+  select(
+         ID = externalDataReference, # ID
+         sample,
+         startDate,
+         endDate,
+         masq.pandemic_felt_successful = masq.felt_successful,
+         masq.pandemic_felt_really_happy = masq.felt_really_happy,
+         masq.pandemic_felt_optimistic = masq.felt_optimistic,
+         masq.pandemic_lot_felt_fun = masq.lot_felt_fun,
+         masq.pandemic_felt_like_i_accomplished_a_lot = masq.felt_like_i_accomplished_a_lot,
+         masq.pandemic_forward_lot_felt = masq.forward_lot_felt,
+         masq.pandemic_felt_really_talkative = masq.felt_really_talkative,
+         masq.pandemic_felt_really_up_or_lively = masq.felt_really_up_or_lively,
+         masq.pandemic_lot_felt_energy = masq.lot_felt_energy,
+         masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself,
+         masq.feelings_felt_before_pandemic = masq.pandemic_feelings_felt,
+         masq.pre_pandemic_felt_successful = masq.felt_successful.1,
+         masq.pre_pandemic_felt_really_happy = masq.felt_really_happy.1,
+         masq.pre_pandemic_felt_optimistic = masq.felt_optimistic.1,
+         masq.pre_pandemic_lot_felt_fun = masq.lot_felt_fun.1,
+         masq.pre_pandemic_felt_like_i_accomplished_a_lot = masq.felt_like_i_accomplished_a_lot.1,
+         masq.pre_pandemic_forward_lot_felt = masq.forward_lot_felt.1,
+         masq.pre_pandemic_felt_really_talkative = masq.felt_really_talkative.1,
+         masq.pre_pandemic_felt_really_up_or_lively = masq.felt_really_up_or_lively.1,
+         masq.pre_pandemic_lot_felt_energy = masq.lot_felt_energy.1,
+         masq.pre_pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself.1) 
+
+# Inspect colnames
+colnames(COPING_followupA.id)
+
+```
+  
+
+## COPING follow up B
+
+```{r Read in COPING follow up A data}
+# Read in the data
+COPING_followupB <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupb/masq_coping_followupb.rds"))
+
+# Check column names
+COPING_followupB %>%
+  colnames()
+
+# Check dimensions
+COPING_followupB %>%
+  dim()
+
+# Look at top rows of the data frame
+COPING_followupB %>% 
+  head()
+```
+
+Select & rename relevant columns (will be a function at some point)
+```{r}
+
+
+COPING_followupB.id <- COPING_followupB %>% #new dataset with ID
+  drop_na(externalDataReference) %>% # Drop NAs
+
+  add_column(sample = "COPING_followupB", .after = "externalDataReference") %>% #create new column 
+  select(
+         ID = externalDataReference, # ID
+         sample,
+         startDate,
+         endDate,
+         masq.pandemic_felt_successful = masq.felt_successful,
+         masq.pandemic_felt_really_happy = masq.felt_really_happy,
+         masq.pandemic_felt_optimistic = masq.felt_optimistic,
+         masq.pandemic_lot_felt_fun = masq.fun_lot_felt,
+         masq.pandemic_felt_like_i_accomplished_a_lot = masq.felt_like_i_accomplished_a_lot,
+         masq.pandemic_forward_lot_felt = masq.forward_lot_felt,
+         masq.pandemic_felt_really_talkative = masq.felt_really_talkative,
+         masq.pandemic_felt_really_up_or_lively = masq.felt_really_up_or_lively,
+         masq.pandemic_lot_felt_energy = masq.energy_lot_felt,
+         masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself) 
+
+
+# Inspect colnames
+colnames(COPING_followupB.id)
+
+```
+
+## COPING followup A ongoing
+```{r}
+# Read in the data
+COPING_followupA_ong <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupa_ongoing/masq_coping_followupa_ongoing.rds"))
+
+# Check column names
+COPING_followupA_ong %>%
+  colnames()
+
+# Check dimensions
+COPING_followupA_ong %>%
+  dim()
+
+# Look at top rows of the data frame
+COPING_followupA_ong %>% 
+  head()
+```
+
+Select & rename relevant columns (will be a function at some point)
+```{r}
+
+COPING_followupA_ong.id <- COPING_followupA_ong %>% #new dataset with ID
+  drop_na(externalDataReference) %>% # Drop NAs
+
+  add_column(sample = "COPING_followupA_ong", .after = "externalDataReference") %>% #create new column 
+  select(
+         ID = externalDataReference, # ID
+         sample,
+         startDate,
+         endDate,
+         masq.pandemic_felt_successful = masq.felt_successful,
+         masq.pandemic_felt_really_happy = masq.felt_really_happy,
+         masq.pandemic_felt_optimistic = masq.felt_optimistic,
+         masq.pandemic_lot_felt_fun = masq.lot_felt_fun,
+         masq.pandemic_felt_like_i_accomplished_a_lot = masq.felt_like_i_accomplished_a_lot,
+         masq.pandemic_forward_lot_felt = masq.forward_lot_felt,
+         masq.pandemic_felt_really_talkative = masq.felt_really_talkative,
+         masq.pandemic_felt_really_up_or_lively = masq.felt_really_up_or_lively,
+         masq.pandemic_lot_felt_energy = masq.lot_felt_energy,
+         masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself) 
+
+
+# Inspect colnames
+colnames(COPING_followupA_ong.id)
+
+```
+# Join COPING follow up A and follow up A ongoing
+For the purpose of data cleaning, I am going to drop the prepandemic questions.
+
+```{r Drop prepandemic questions, eval=FALSE}
+COPING_followupA.id_no_prepan <- COPING_followupA.id %>% 
+  select(!contains("masq.pre_pandemic_")) %>% 
+  select(!contains("masq.feelings_felt_before_pandemic"))
+  
+colnames(COPING_followupA.id_no_prepan)
+
+```
+
+```{r Join COPING follow up A and COPING follow up A ongoing, eval=FALSE}
+# check column names match
+colnames(COPING_followupA.id_no_prepan)
+colnames(COPING_followupA_ong.id)
+
+# rbind
+COPING_followupA.id_joined <- rbind(COPING_followupA.id_no_prepan,
+                                    COPING_followupA_ong.id)
+
+dim(COPING_followupA.id_joined)
+```
+
+# COPING follow up survey dates
+
+##Create waves within the FOLLOW UP DATA ##
+Note: dates from google sheet from Kirstin
+Checked with Gerome - set start date as the date the survey was released, and keep window open until the DAY BEFORE the next survey was released
+```{r}
+
+# MAY 2 (wave 1) - FOLLOW UP A
+start1 <- as.POSIXct("2020-05-19")
+end1 <-  as.POSIXct("2020-06-01")  
+
+# JUNE 1 (wave 2) - FOLLOW UP B
+start2 <- as.POSIXct("2020-06-02")
+end2<-  as.POSIXct("2020-06-15")  
+
+# JUNE 2 (wave 3) - FOLLOW UP A
+start3 <- as.POSIXct("2020-06-16")
+end3 <-  as.POSIXct("2020-06-29") 
+
+# JULY 1 (wave 4) - FOLLOW UP B
+start4 <- as.POSIXct("2020-06-30")
+end4<-  as.POSIXct("2020-07-13") 
+
+# JULY 2 (wave 5) - FOLLOW UP A
+start5 <- as.POSIXct("2020-07-14")
+end5 <-  as.POSIXct("2020-07-27") ## Ongoing starts from here?
+
+# JULY - AUG (wave 6) - FOLLOW UP B
+start6 <- as.POSIXct("2020-07-28") 
+end6 <-  as.POSIXct("2020-08-24") 
+
+# AUG - SEPT (wave 7) - FOLLOW UP A
+start7 <- as.POSIXct("2020-08-25")
+end7 <-  as.POSIXct("2020-09-21") 
+
+# SEPT - OCT (wave 8) - FOLLOW UP B
+start8 <- as.POSIXct("2020-09-22")
+end8 <-  as.POSIXct("2020-10-19") 
+
+# OCT - NOV (wave 9) - FOLLOW UP A
+start9 <- as.POSIXct("2020-10-20")
+end9 <-  as.POSIXct("2020-11-16") 
+
+# NOV - DEC (wave 10) - FOLLOW UP B
+start10 <- as.POSIXct("2020-11-17")
+end10 <-  as.POSIXct("2020-12-14") 
+
+# DEC - JAN (wave 11) - FOLLOW UP A
+start11 <- as.POSIXct("2020-12-15")
+end11 <-  as.POSIXct("2021-01-11") 
+
+# JAN - FEB (wave 12) - FOLLOW UP B
+start12 <- as.POSIXct("2021-01-12")
+end12 <-  as.POSIXct("2021-02-08") 
+
+# FEB - MARCH (wave 13) - FOLLOW UP A
+start13 <- as.POSIXct("2021-02-09")
+end13 <-  as.POSIXct("2021-03-08") 
+
+# MARCH - APR (wave 14) - FOLLOW UP B
+start14 <- as.POSIXct("2021-03-09")
+end14 <-  as.POSIXct("2021-04-05") 
+
+# APR - MAY (wave 15) - FOLLOW UP A
+start15 <- as.POSIXct("2021-04-06")
+end15 <-  as.POSIXct("2021-05-03")
+
+# MAY - JUNE (wave 16) - FOLLOW UP B
+start16 <- as.POSIXct("2021-05-04")
+end16 <-  as.POSIXct("2021-05-31")
+
+# JUNE - JULY (wave 17) - FOLLOW UP A
+start17 <- as.POSIXct("2021-06-01")
+end17 <-  as.POSIXct("2021-06-28")
+
+# JUNE - JULY (wave 18) - FOLLOW UP B
+start18 <- as.POSIXct("2021-06-29")
+end18 <-  as.POSIXct("2021-07-26")
+
+# JUNE - JULY (wave 19) - FOLLOW UP A
+start19 <- as.POSIXct("2021-07-27")
+end19 <-  as.POSIXct("2021-08-17")
+
+#JM**do we have data beyond this?
+
+
+COPING_followupA.id <- COPING_followupA.id %>%
+  mutate(waveA = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_1A",
+                           startDate >= start2 & startDate <= end2 ~ ".Wave_1A_in_2B",
+                            startDate >= start3 & startDate <= end3 ~ ".Wave_1A_repeat",
+                           startDate >= start4 & startDate <= end4 ~ ".Wave_3A_in_4B",
+                            startDate >= start5 & startDate <= end5 ~ ".Wave_5A",
+                           startDate >= start6 & startDate <= end6 ~ ".Wave_5A_in_6B",
+                            startDate >= start7 & startDate <= end7 ~ ".Wave_7A",
+                           startDate >= start8 & startDate <= end8 ~ ".Wave_7A_in_8B",
+                            startDate >= start9 & startDate <= end9 ~ ".Wave_9A",
+                           startDate >= start10 & startDate <= end10 ~ ".Wave_9A_in_10B",
+                            startDate >= start11 & startDate <= end11 ~ ".Wave_11A",
+                           startDate >= start12 & startDate <= end12 ~ ".Wave_11A_in_12B",
+                            startDate >= start13 & startDate <= end13 ~ ".Wave_13A",
+                              startDate >= start14 & startDate <= end14 ~ ".Wave_13A_in_14B",
+                            startDate >= start15 & startDate <= end15 ~ ".Wave_15A",
+                            startDate >= start16 & startDate <= end16 ~ ".Wave_15A_in_16B",
+                           startDate >= start17 & startDate <= end17 ~ ".Wave_17A",
+                           startDate >= start18 & startDate <= end18 ~ ".Wave_17A_in_18B",
+                            startDate >= start19 & startDate <= end19 ~ ".Wave_19A"))
+
+COPING_followupA_ong.id <- COPING_followupA_ong.id %>%
+  mutate(waveA = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_1A",
+                           startDate >= start2 & startDate <= end2 ~ ".Wave_1A_in_2B",
+                            startDate >= start3 & startDate <= end3 ~ ".Wave_3A",
+                           startDate >= start4 & startDate <= end4 ~ ".Wave_3A_in_4B",
+                            startDate >= start5 & startDate < start6 ~ ".Wave_5A",
+                           startDate >= start6 & startDate <= end6 ~ ".Wave_5A_in_6B",
+                            startDate >= start7 & startDate <= end7 ~ ".Wave_7A",
+                           startDate >= start8 & startDate <= end8 ~ ".Wave_7A_in_8B",
+                            startDate >= start9 & startDate <= end9 ~ ".Wave_9A",
+                           startDate >= start10 & startDate <= end10 ~ ".Wave_9A_in_10B",
+                            startDate >= start11 & startDate <= end11 ~ ".Wave_11A",
+                           startDate >= start12 & startDate <= end12 ~ ".Wave_11A_in_12B",
+                            startDate >= start13 & startDate <= end13 ~ ".Wave_13A",
+                              startDate >= start14 & startDate <= end14 ~ ".Wave_13A_in_14B",
+                            startDate >= start15 & startDate <= end15 ~ ".Wave_15A",
+                            startDate >= start16 & startDate <= end16 ~ ".Wave_15A_in_16B",
+                           startDate >= start17 & startDate <= end17 ~ ".Wave_17A",
+                           startDate >= start18 & startDate <= end18 ~ ".Wave_17A_in_18B",
+                            startDate >= start19 & startDate <= end19 ~ ".Wave_19A"))
+
+COPING_followupB.id <- COPING_followupB.id %>%
+  mutate(waveB = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_1A_in_B", # should be impossible to exist
+                           startDate >= start2 & startDate <= end2 ~ ".Wave_2B",
+                            startDate >= start3 & startDate <= end3 ~ ".Wave_2B_in_3A",
+                           startDate >= start4 & startDate < start5 ~ ".Wave_4B",
+                            startDate >= start5 & startDate <= end5 ~ ".Wave_4B_in_5A",
+                           startDate >= start6 & startDate <= end6 ~ ".Wave_6B",
+                            startDate >= start7 & startDate <= end7 ~ ".Wave_6B_in_7A",
+                           startDate >= start8 & startDate <= end8 ~ ".Wave_8B",
+                            startDate >= start9 & startDate <= end9 ~ ".Wave_8B_in_9A",
+                           startDate >= start10 & startDate <= end10 ~ ".Wave_10B",
+                            startDate >= start11 & startDate <= end11 ~ ".Wave_10B_in_11A",
+                           startDate >= start12 & startDate <= end12 ~ ".Wave_12B",
+                            startDate >= start13 & startDate <= end13 ~ ".Wave_12B_in_13A",
+                              startDate >= start14 & startDate <= end14 ~ ".Wave_14B",
+                            startDate >= start15 & startDate <= end15 ~ ".Wave_14B_in_15A",
+                            startDate >= start16 & startDate <= end16 ~ ".Wave_16B",
+                           startDate >= start17 & startDate <= end17 ~ ".Wave_16B_in_17A",
+                           startDate >= start18 & startDate <= end18 ~ ".Wave_18B",
+                            startDate >= start19 & startDate <= end19 ~ ".Wave_18B_in_19A"))
+
+```
+
+## check for number of entries per wave
+
+```{r check for number of entries per wave}
+COPING_followupA.id %>%
+  group_by(waveA) %>%
+  count()
+
+COPING_followupA_ong.id %>%
+  group_by(waveA) %>%
+  count()
+
+COPING_followupB.id %>%
+  group_by(waveB) %>%
+  count()
+```
+
+## Identifying duplicate IDs in a single wave
+```{r Identifying duplicate IDs in a single wave}
+
+##Identify dup IDs in a single wave (follow up A)
+COPING_followupA.id %>%
+   group_by(waveA, ID) %>%
+   summarize(N = n()) %>%
+   filter(N > 1)
+
+
+##Identify dup IDs in a single wave (follow up A ongoing)
+COPING_followupA_ong.id %>%
+   group_by(waveA, ID) %>%
+   summarize(N = n()) %>%
+   filter(N > 1)
+
+
+##Identify dup IDs in a single wave (B) 
+COPING_followupB.id %>%
+   group_by(waveB, ID) %>%
+   summarize(N = n()) %>%
+   filter(N > 1)
+
+
+```
+
+**removing duplicates, reatining the latest possible data where there are repeats**
+
+## Want the LATER data entry from people who answered twice within a single wave 
+We want there to be unique IDs within each of the waves
+```{r}
+##FOLLOW UP A
+##confirm number of rows in current dataset (= 22542)
+nrow(COPING_followupA.id)
+
+#Filter out duplicated IDs AND wave, keeping the LAST entry
+COPING_followupA.id <- COPING_followupA.id %>% 
+    group_by(ID) %>% 
+    filter(!duplicated(waveA,
+                      fromLast = TRUE)
+           )
+
+##confirm number of rows in dataset after filtering (should be 22485)
+nrow(COPING_followupA.id)
+
+##FOLLOW UP A ONGOING
+##confirm number of rows in current dataset (= 22542)
+nrow(COPING_followupA_ong.id)
+
+#Filter out duplicated IDs AND wave, keeping the LAST entry
+COPING_followupA_ong.id <- COPING_followupA_ong.id %>% 
+    group_by(ID) %>% 
+    filter(!duplicated(waveA,
+                      fromLast = TRUE)
+           )
+
+##confirm number of rows in dataset after filtering (should be 22485)
+nrow(COPING_followupA_ong.id)
+
+
+##FOLLOW UP B
+##confirm number of rows in current dataset 
+nrow(COPING_followupB.id)
+
+#Filter out duplicated IDs AND wave, keeping the LAST entry
+COPING_followupB.id <- COPING_followupB.id %>% 
+    group_by(ID) %>% 
+    filter(!duplicated(waveB,
+                      fromLast = TRUE)
+           )
+
+##confirm number of rows in dataset after filtering 
+nrow(COPING_followupB.id)
+```
+
+## Change COPING follow up A and B from long to wide format (we want this for the numeric ones so we can sum them)
+```{r COPING follow up A and B long to wide format}
+
+COPING_followupA.id.long <- COPING_followupA.id %>%
+  group_by(waveA) %>%
+  tidyr::pivot_wider(id_cols = ID, 
+    names_from = waveA, 
+                     values_from = c(masq.pandemic_felt_successful,
+                                     masq.pandemic_felt_really_happy,
+                                     masq.pandemic_felt_optimistic,
+                                     masq.pandemic_lot_felt_fun,
+                                     masq.pandemic_felt_like_i_accomplished_a_lot,
+                                     masq.pandemic_forward_lot_felt,
+                                     masq.pandemic_felt_really_talkative,
+                                     masq.pandemic_felt_really_up_or_lively,
+                                     masq.pandemic_lot_felt_energy,
+                                     masq.pandemic_felt_really_good_about_myself)) 
+
+COPING_followupA_ong.id.long <- COPING_followupA_ong.id %>%
+  group_by(waveA) %>%
+  tidyr::pivot_wider(id_cols = ID, 
+    names_from = waveA, 
+                     values_from = c(masq.pandemic_felt_successful,
+                                     masq.pandemic_felt_really_happy,
+                                     masq.pandemic_felt_optimistic,
+                                     masq.pandemic_lot_felt_fun,
+                                     masq.pandemic_felt_like_i_accomplished_a_lot,
+                                     masq.pandemic_forward_lot_felt,
+                                     masq.pandemic_felt_really_talkative,
+                                     masq.pandemic_felt_really_up_or_lively,
+                                     masq.pandemic_lot_felt_energy,
+                                     masq.pandemic_felt_really_good_about_myself)) 
+
+COPING_followupB.id.long <- COPING_followupB.id %>%
+  group_by(waveB) %>%
+  tidyr::pivot_wider(id_cols = ID, 
+    names_from = waveB, 
+                     values_from = c(masq.pandemic_felt_successful,
+                                     masq.pandemic_felt_really_happy,
+                                     masq.pandemic_felt_optimistic,
+                                     masq.pandemic_lot_felt_fun,
+                                     masq.pandemic_felt_like_i_accomplished_a_lot,
+                                     masq.pandemic_forward_lot_felt,
+                                     masq.pandemic_felt_really_talkative,
+                                     masq.pandemic_felt_really_up_or_lively,
+                                     masq.pandemic_lot_felt_energy,
+                                     masq.pandemic_felt_really_good_about_myself)) 
+  
+
+# Check
+colnames(COPING_followupA.id.long)
+colnames(COPING_followupA_ong.id.long)
+colnames(COPING_followupB.id.long)
+
+
+```
+# Data cleaning
+
+## COPING follow up A
+
+```{r Add "_unc" to the end of all variables}
+COPING_followupA.id.long <- COPING_followupA.id.long %>% 
+  rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
+
+# check
+colnames(COPING_followupA.id.long)
+```
+
+```{r COPING follow up A inspect the variables}
+COPING_followupA.id.long %>% 
+  freq(masq.pandemic_felt_successful_.Wave_1A_unc)
+```
+
+## Make list of variables for cleaning
+```{r Make list of variables for cleaning}
+masq.items.followupA_unc <- COPING_followupA.id.long %>% 
+  select(contains("_unc")) %>% 
+  colnames()
+
+masq.items.followupA_unc
+```
+## Set minimum and maximum values 
+```{r Set minimum and maximum values}
+masq.min.scale <- 1
+masq.max.scale <- 5
+```
+
+## Recode implausuble values
+```{r Recode implausible values}
+# Recode and clean
+COPING_followupA.id.long <- COPING_followupA.id.long %>%
+   mutate(
+     across(all_of(masq.items.followupA_unc),
+            .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
+              . == -77 | . == -88 | . == -99 ~ ., # leave as is 
+              . < masq.min.scale | . > masq.max.scale ~ -66, # recode as implausible value
+              TRUE ~ . # leave as is
+            )
+            )
+     )
+   ) %>%
+   rename_at(
+     vars(contains( "_unc_clean")), # specify variables that now contain "_clean"
+     list(~paste0(gsub("_unc_clean", "", .))) # remove the "_clean" now that they have been cleaned
+   )
+
+# Check
+colnames(COPING_followupA.id.long)
+```
+## Make new list of cleaned variables
+```{r}
+masq.items.followupA_clean <- COPING_followupA.id.long %>% 
+  select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
+  select(!contains("ID")) %>% # deselect the ID variable
+  colnames()
+
+masq.items.followupA_clean
+```
+## Check number of implausible values
+```{r}
+# Check for implausible values
+masq_followupA_imp_n <- COPING_followupA.id.long %>% 
+  select(all_of(masq.items.followupA_clean)) %>% 
+  filter(. == -66) %>% 
+  nrow()
+
+# If statement
+if (masq_followupA_imp_n == 0) {
+  print(paste0("The number of implausible values in the coping follow up A MASQ variables is ", masq_followupA_imp_n, ". Can leave these variables as they are."))
+} else {
+  print(paste0("The number of implausible values in the coping follow up A MASQ variables is ", masq_followupA_imp_n, ". Please investigate."))
+}
+```
+
+# Select only the clean variables
+Note: keep ID in this data set
+```{r}
+COPING_followupA.id.long.clean <- COPING_followupA.id.long %>% 
+  select(!contains("_unc")) 
+
+colnames(COPING_followupA.id.long.clean)
+```
+
+
+## COPING follow up A ongoing
+
+```{r Add "_unc" to the end of all variables}
+COPING_followupA_ong.id.long <- COPING_followupA_ong.id.long %>% 
+  rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
+
+# check
+colnames(COPING_followupA_ong.id.long)
+```
+
+```{r COPING follow up A inspect the variables}
+COPING_followupA_ong.id.long %>% 
+  freq(masq.pandemic_felt_successful_.Wave_3A_unc)
+```
+
+## Make list of variables for cleaning
+```{r Make list of variables for cleaning}
+masq.items.followupA_ong_unc <- COPING_followupA_ong.id.long %>% 
+  select(contains("_unc")) %>% 
+  colnames()
+
+masq.items.followupA_ong_unc
+```
+
+## Recode implausible values
+```{r Recode implausible values}
+# Recode and clean
+COPING_followupA_ong.id.long <- COPING_followupA_ong.id.long %>%
+   mutate(
+     across(all_of(masq.items.followupA_ong_unc),
+            .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
+              . == -77 | . == -88 | . == -99 ~ ., # leave as is 
+              . < masq.min.scale | . > masq.max.scale ~ -66, # recode as implausible value
+              TRUE ~ . # leave as is
+            )
+            )
+     )
+   ) %>%
+   rename_at(
+     vars(contains( "_unc_clean")), # specify variables that now contain "_clean"
+     list(~paste0(gsub("_unc_clean", "", .))) # remove the "_clean" now that they have been cleaned
+   )
+
+# Check
+colnames(COPING_followupA_ong.id.long)
+```
+
+## Make new list of cleaned variables
+```{r}
+masq.items.followupA_ong_clean <- COPING_followupA_ong.id.long %>% 
+  select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
+  select(!contains("ID")) %>% # deselect the ID variable
+  colnames()
+
+masq.items.followupA_ong_clean
+```
+
+## Check number of implausible values
+```{r}
+# Check for implausible values
+masq_followupA_ong_imp_n <- COPING_followupA_ong.id.long %>% 
+  select(all_of(masq.items.followupA_ong_clean)) %>% 
+  filter(. == -66) %>% 
+  nrow()
+
+# If statement
+if (masq_followupA_ong_imp_n == 0) {
+  print(paste0("The number of implausible values in the coping follow up A ongoing MASQ variables is ", masq_followupA_ong_imp_n, ". Can leave these variables as they are."))
+} else {
+  print(paste0("The number of implausible values in the coping follow up A ongoing MASQ variables is ", masq_followupA_ong_imp_n, ". Please investigate."))
+}
+```
+
+# Select only the clean variables
+Note: keep ID in this data set
+```{r}
+COPING_followupA_ong.id.long.clean <- COPING_followupA_ong.id.long %>% 
+  select(!contains("_unc")) 
+
+colnames(COPING_followupA_ong.id.long.clean)
+```
+
+
+# COPING follow up B
+
+```{r Add "_unc" to the end of all variables}
+COPING_followupB.id.long <- COPING_followupB.id.long %>% 
+  rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
+```
+
+## Make list of variables for cleaning
+```{r Make list of variables for cleaning}
+masq.items.followupB_unc <- COPING_followupB.id.long %>% 
+  select(contains("_unc")) %>% 
+  colnames()
+
+masq.items.followupB_unc
+```
+
+## Recode implausible values
+```{r Recode implausible values}
+# Recode and clean
+COPING_followupB.id.long <- COPING_followupB.id.long %>%
+   mutate(
+     across(all_of(masq.items.followupB_unc),
+            .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
+              . == -77 | . == -88 | . == -99 ~ ., # leave as is 
+              . < masq.min.scale | . > masq.max.scale ~ -66, # recode as implausible value
+              TRUE ~ . # leave as is
+            )
+            )
+     )
+   ) %>%
+   rename_at(
+     vars(contains( "_unc_clean")), # specify variables that now contain "_clean"
+     list(~paste0(gsub("_unc_clean", "", .))) # remove the "_clean" now that they have been cleaned
+   )
+
+# Check
+colnames(COPING_followupB.id.long)
+```
+## Make new list of cleaned variables
+```{r}
+masq.items.followupB_clean <- COPING_followupB.id.long %>% 
+  select(!contains("_unc")) %>% 
+  select(!contains("ID")) %>% 
+  colnames()
+
+masq.items.followupB_clean
+```
+## Check number of implausible values
+```{r}
+# Check for implausible values
+masq_followupB_imp_n <- COPING_followupB.id.long %>% 
+  select(all_of(masq.items.followupB_clean)) %>% 
+  filter(. == -66) %>% 
+  nrow()
+
+# If statement
+if (masq_followupB_imp_n == 0) {
+  print(paste0("The number of implausible values in the coping follow up B MASQ variables is ", masq_followupB_imp_n, ". Can leave these variables as they are."))
+} else {
+  print(paste0("The number of implausible values in the coping follow up B MASQ variables is ", masq_followupB_imp_n, ". Please investigate."))
+}
+```
+
+# Select only the clean variables
+```{r}
+COPING_followupB.id.long.clean <- COPING_followupB.id.long %>% 
+  select(!contains("_unc"))
+
+colnames(COPING_followupB.id.long.clean)
+```
+
+# Merge COPING follow up A and B surveys
+Note: full join (i.e. to get all participants in all three data sets)
+```{r Merge COPING follow up A and B surveys}
+masq.merging <- list(COPING_followupA_ong.id.long.clean,
+                       COPING_followupA.id.long.clean,
+                       COPING_followupB.id.long.clean)
+
+
+masq.COPING <- plyr::join_all(masq.merging,
+                    by = "ID",
+                    type = "full")
+
+# check
+dim(COPING_followupA.id.long.clean)
+dim(COPING_followupA_ong.id.long.clean)
+dim(COPING_followupB.id.long.clean)
+dim(masq.COPING)
+
+colnames(masq.COPING)
+```
+
+
+# Write merged data frame to an .rds file
+```{r Write merged data frame to an .rds file}
+saveRDS(object = masq.COPING, file = paste0("../../../data_clean/COPING_masq/masq.clean_merged_A_B_long", date, ".rds"))
+```
+
+
+# RAMP MASQ data
+
+
+## RAMP baseline
+
+```{r Read in RAMP baseline data}
+# Read in the data
+RAMP_baseline <- readRDS(file = paste0(ilovedata, "/data_raw/2021-02-18/ramp/masq_ramp.rds"))
+
+  # Check column names
+RAMP_baseline %>%
+  colnames()
+
+# Check dimensions
+RAMP_baseline %>%
+  dim()
+
+# Look at top rows of the data frame
+RAMP_baseline %>% 
+  head()
+```
+
+```{r Select & rename relevant columns (will be a function at some point)}
+RAMP_baseline.id <- RAMP_baseline %>% #new dataset with ID
+  drop_na("Login ID") %>% # Drop NAs
+  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for RAMP data
+  add_column(sample = "RAMP_baseline", .after = "Login ID") %>% #create new column 
+  select(
+         ID = "Login ID", # ID
+         sample,
+         startDate,
+         endDate,
+         masq.pandemic_felt_successful = masq.felt_successful,
+         masq.pandemic_felt_really_happy = masq.felt_really_happy,
+         masq.pandemic_felt_optimistic = masq.felt_optimistic,
+         masq.pandemic_lot_felt_fun = masq.fun_lot_felt,
+         masq.pandemic_felt_like_i_accomplished_a_lot = masq.felt_like_i_accomplished_a_lot,
+         masq.pandemic_forward_lot_felt = masq.forward_lot_felt,
+         masq.pandemic_felt_really_talkative = masq.felt_really_talkative,
+         masq.pandemic_felt_really_up_or_lively = masq.felt_really_up_or_lively,
+         masq.pandemic_lot_felt_energy = masq.energy_lot_felt,
+         masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself)
+
+# Inspect colnames
+colnames(RAMP_baseline.id)
+
+```
+  
+  
+  
+## RAMP follow up A
+
+```{r Read in RAMP follow up A data}
+# Read in the data
+RAMP_followupA <- readRDS(file = paste0(ilovedata, "/data_raw/2021-04-09/ramp_followupa/masq_ramp_followupa.rds"))
+
+# Check column names
+RAMP_followupA %>%
+  colnames()
+
+# Check dimensions
+RAMP_followupA %>%
+  dim()
+
+# Look at top rows of the data frame
+RAMP_followupA %>% 
+  head()
+```
+
+
+```{r Select & rename relevant columns (will be a function at some point)}
+
+RAMP_followupA.id <- RAMP_followupA %>% #new dataset with ID
+  drop_na(externalDataReference) %>% # Drop NAs
+  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for RAMP data
+  add_column(sample = "RAMP_followupA", .after = "externalDataReference") %>% #create new column 
+  select(
+         ID = externalDataReference, # ID
+         sample,
+         startDate,
+         endDate,
+         masq.pandemic_felt_successful = masq.felt_successful,
+         masq.pandemic_felt_really_happy = masq.felt_really_happy,
+         masq.pandemic_felt_optimistic = masq.felt_optimistic,
+         masq.pandemic_lot_felt_fun = masq.lot_felt_fun,
+         masq.pandemic_felt_like_i_accomplished_a_lot = masq.felt_like_i_accomplished_a_lot,
+         masq.pandemic_forward_lot_felt = masq.forward_lot_felt,
+         masq.pandemic_felt_really_talkative = masq.felt_really_talkative,
+         masq.pandemic_felt_really_up_or_lively = masq.felt_really_up_or_lively,
+         masq.pandemic_lot_felt_energy = masq.lot_felt_energy,
+         masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself)
+
+# Inspect colnames
+colnames(RAMP_followupA.id)
+
+```
+  
+
+## RAMP follow up B
+
+```{r Read in RAMP follow up A data}
+# Read in the data
+RAMP_followupB <- readRDS(file = paste0(ilovedata, "/data_raw/2021-04-09/ramp_followupb/masq_ramp_followupb.rds"))
+
+# Check column names
+RAMP_followupB %>%
+  colnames()
+
+# Check dimensions
+RAMP_followupB %>%
+  dim()
+
+# Look at top rows of the data frame
+RAMP_followupB %>% 
+  head()
+```
+
+Select & rename relevant columns (will be a function at some point)
+```{r}
+
+
+RAMP_followupB.id <- RAMP_followupB %>% #new dataset with ID
+  drop_na(externalDataReference) %>% # Drop NAs
+  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for RAMP data
+  add_column(sample = "RAMP_followupB", .after = "externalDataReference") %>% #create new column 
+  select(
+         ID = externalDataReference, # ID
+         sample,
+         startDate,
+         endDate,
+         masq.pandemic_felt_successful = masq.felt_successful,
+         masq.pandemic_felt_really_happy = masq.felt_really_happy,
+         masq.pandemic_felt_optimistic = masq.felt_optimistic,
+         masq.pandemic_lot_felt_fun = masq.fun_lot_felt,
+         masq.pandemic_felt_like_i_accomplished_a_lot = masq.felt_like_i_accomplished_a_lot,
+         masq.pandemic_forward_lot_felt = masq.forward_lot_felt,
+         masq.pandemic_felt_really_talkative = masq.felt_really_talkative,
+         masq.pandemic_felt_really_up_or_lively = masq.felt_really_up_or_lively,
+         masq.pandemic_lot_felt_energy = masq.energy_lot_felt,
+         masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself) 
+
+
+# Inspect colnames
+colnames(RAMP_followupB.id)
+
+```
+
+# RAMP follow up survey dates
+
+##Create waves within the FOLLOW UP DATA ##
+Note: dates from google sheet from Kirstin
+Checked with Gerome - set start date as the date the survey was released, and keep window open until the DAY BEFORE the next survey was released
+```{r}
+
+# April/May (wave 1) - FOLLOW UP A
+ramp_start1 <- as.POSIXct("2020-04-21")
+ramp_end1 <-  as.POSIXct("2020-05-04")  
+
+# May (wave 2) - FOLLOW UP B
+ramp_start2 <- as.POSIXct("2020-05-05")
+ramp_end2<-  as.POSIXct("2020-05-18")  
+
+# May/June (wave 3) - FOLLOW UP A
+ramp_start3 <- as.POSIXct("2020-05-19")
+ramp_end3 <-  as.POSIXct("2020-06-01") 
+
+# June 1 (wave 4) - FOLLOW UP B
+ramp_start4 <- as.POSIXct("2020-06-02")
+ramp_end4<-  as.POSIXct("2020-06-15") 
+
+# June 2 (wave 5) - FOLLOW UP A
+ramp_start5 <- as.POSIXct("2020-06-16")
+ramp_end5 <-  as.POSIXct("2020-06-29") 
+
+# June/July (wave 6) - FOLLOW UP B
+ramp_start6 <- as.POSIXct("2020-06-30") 
+ramp_end6 <-  as.POSIXct("2020-07-13") 
+
+# July 1 (wave 7) - FOLLOW UP A
+ramp_start7 <- as.POSIXct("2020-07-14")
+ramp_end7 <-  as.POSIXct("2020-07-27") 
+
+# July/August (wave 8) - FOLLOW UP B
+ramp_start8 <- as.POSIXct("2020-07-28")
+ramp_end8 <-  as.POSIXct("2020-08-24") 
+
+# August/September (wave 9) - FOLLOW UP A
+ramp_start9 <- as.POSIXct("2020-08-25")
+ramp_end9 <-  as.POSIXct("2020-09-21") 
+
+# September/October (wave 10) - FOLLOW UP B
+ramp_start10 <- as.POSIXct("2020-09-22")
+ramp_end10 <-  as.POSIXct("2020-10-19") 
+
+# October/November (wave 11) - FOLLOW UP A
+ramp_start11 <- as.POSIXct("2020-10-20")
+ramp_end11 <-  as.POSIXct("2020-11-16") 
+
+# November/December (wave 12) - FOLLOW UP B
+ramp_start12 <- as.POSIXct("2020-11-17")
+ramp_end12 <-  as.POSIXct("2020-12-14") 
+
+# December/January (wave 13) - FOLLOW UP A
+ramp_start13 <- as.POSIXct("2020-12-15")
+ramp_end13 <-  as.POSIXct("2021-01-18") 
+
+# January/February (wave 14) - FOLLOW UP B
+ramp_start14 <- as.POSIXct("2021-01-19")
+ramp_end14 <-  as.POSIXct("2021-02-15") 
+
+# February/March (wave 15) - FOLLOW UP A
+ramp_start15 <- as.POSIXct("2021-02-16")
+ramp_end15 <-  as.POSIXct("2021-03-15")
+
+# March/April (wave 16) - FOLLOW UP B
+ramp_start16 <- as.POSIXct("2021-03-16")
+ramp_end16 <-  as.POSIXct("2021-04-19")
+
+# April/May (wave 17) - FOLLOW UP A
+ramp_start17 <- as.POSIXct("2021-04-20")
+ramp_end17 <-  as.POSIXct("2021-05-10")
+
+# May (wave 18) - FOLLOW UP B
+ramp_start18 <- as.POSIXct("2021-05-11")
+ramp_end18 <-  as.POSIXct("2021-05-31")
+
+# June (wave 19) - FOLLOW UP A
+ramp_start19 <- as.POSIXct("2021-06-01")
+ramp_end19 <-  as.POSIXct("2021-06-28")
+
+
+#JM**do we have data beyond this?
+
+RAMP_followupA.id <- RAMP_followupA.id %>%
+  mutate(waveA = case_when(startDate >= ramp_start1 & startDate < ramp_start2 ~ ".Wave_1A",
+                           startDate >= ramp_start2 & startDate <= ramp_end2 ~ ".Wave_1A_in_2B",
+                            startDate >= ramp_start3 & startDate <= ramp_end3 ~ ".Wave_3A",
+                           startDate >= ramp_start4 & startDate <= ramp_end4 ~ ".Wave_3A_in_4B",
+                            startDate >= ramp_start5 & startDate <= ramp_end5 ~ ".Wave_5A",
+                           startDate >= ramp_start6 & startDate <= ramp_end6 ~ ".Wave_5A_in_6B",
+                            startDate >= ramp_start7 & startDate <= ramp_end7 ~ ".Wave_7A",
+                           startDate >= ramp_start8 & startDate <= ramp_end8 ~ ".Wave_7A_in_8B",
+                            startDate >= ramp_start9 & startDate <= ramp_end9 ~ ".Wave_9A",
+                           startDate >= ramp_start10 & startDate <= ramp_end10 ~ ".Wave_9A_in_10B",
+                            startDate >= ramp_start11 & startDate <= ramp_end11 ~ ".Wave_11A",
+                           startDate >= ramp_start12 & startDate <= ramp_end12 ~ ".Wave_11A_in_12B",
+                            startDate >= ramp_start13 & startDate <= ramp_end13 ~ ".Wave_13A",
+                              startDate >= ramp_start14 & startDate <= ramp_end14 ~ ".Wave_13A_in_14B",
+                            startDate >= ramp_start15 & startDate <= ramp_end15 ~ ".Wave_15A",
+                            startDate >= ramp_start16 & startDate <= ramp_end16 ~ ".Wave_15A_in_16B",
+                           startDate >= ramp_start17 & startDate <= ramp_end17 ~ ".Wave_17A",
+                           startDate >= ramp_start18 & startDate <= ramp_end18 ~ ".Wave_17A_in_18B",
+                            startDate >= ramp_start19 & startDate <= ramp_end19 ~ ".Wave_19A")
+         )
+
+RAMP_followupB.id <- RAMP_followupB.id %>%
+  mutate(waveB = case_when(startDate >= ramp_start1 & startDate < ramp_end1 ~ ".Wave_1A_in_B", # should be impossible to exist
+                           startDate >= ramp_start2 & startDate < ramp_start3 ~ ".Wave_2B",
+                            startDate >= ramp_start3 & startDate <= ramp_end3 ~ ".Wave_2B_in_3A",
+                           startDate >= ramp_start4 & startDate <= ramp_end4 ~ ".Wave_4B",
+                            startDate >= ramp_start5 & startDate <= ramp_end5 ~ ".Wave_4B_in_5A",
+                           startDate >= ramp_start6 & startDate <= ramp_end6 ~ ".Wave_6B",
+                            startDate >= ramp_start7 & startDate <= ramp_end7 ~ ".Wave_6B_in_7A",
+                           startDate >= ramp_start8 & startDate <= ramp_end8 ~ ".Wave_8B",
+                            startDate >= ramp_start9 & startDate <= ramp_end9 ~ ".Wave_8B_in_9A",
+                           startDate >= ramp_start10 & startDate <= ramp_end10 ~ ".Wave_10B",
+                            startDate >= ramp_start11 & startDate <= ramp_end11 ~ ".Wave_10B_in_11A",
+                           startDate >= ramp_start12 & startDate <= ramp_end12 ~ ".Wave_12B",
+                            startDate >= ramp_start13 & startDate <= ramp_end13 ~ ".Wave_12B_in_13A",
+                              startDate >= ramp_start14 & startDate <= ramp_end14 ~ ".Wave_14B",
+                            startDate >= ramp_start15 & startDate <= ramp_end15 ~ ".Wave_14B_in_15A",
+                            startDate >= ramp_start16 & startDate <= ramp_end16 ~ ".Wave_16B",
+                           startDate >= ramp_start17 & startDate <= ramp_end17 ~ ".Wave_16B_in_17A",
+                           startDate >= ramp_start18 & startDate <= ramp_end18 ~ ".Wave_18B",
+                            startDate >= ramp_start19 & startDate <= ramp_end19 ~ ".Wave_18B_in_19A"))
+
+
+
+```
+
+## check for number of entries per wave
+
+```{r check for number of entries per wave}
+
+RAMP_baseline.id %>%
+  group_by(sample) %>%
+  count()
+
+
+RAMP_followupA.id %>%
+  group_by(waveA) %>%
+  count()
+
+
+RAMP_followupB.id %>%
+  group_by(waveB) %>%
+  count()
+```
+
+## Identifying duplicate IDs in a single wave
+```{r Identifying duplicate IDs in a single wave}
+
+##Identify dup IDs in a single wave (aseline)
+RAMP_baseline.id %>%
+   group_by(ID) %>%
+   summarize(N = n()) %>%
+   filter(N > 1)
+
+##Identify dup IDs in a single wave (follow up A)
+RAMP_followupA.id %>%
+   group_by(waveA, ID) %>%
+   summarize(N = n()) %>%
+   filter(N > 1)
+
+##Identify dup IDs in a single wave (B) 
+RAMP_followupB.id %>%
+   group_by(waveB, ID) %>%
+   summarize(N = n()) %>%
+   filter(N > 1)
+
+
+```
+
+**removing duplicates, retaining the latest possible data where there are repeats**
+
+## Want the LATER data entry from people who answered twice within a single wave 
+We want there to be unique IDs within each of the waves
+```{r}
+
+##baseline
+
+##confirm number of rows in current dataset
+nrow(RAMP_baseline.id)
+
+#Filter out duplicated IDs AND wave, keeping the LAST entry
+RAMP_baseline.id <- RAMP_baseline.id %>% 
+    group_by(ID) %>% 
+    filter(!duplicated(sample,
+                      fromLast = TRUE)
+          
+           )  %>%
+             ungroup()
+
+##confirm number of rows in dataset after filtering 
+nrow(RAMP_baseline.id)
+
+
+##FOLLOW UP A
+##confirm number of rows in current dataset
+nrow(RAMP_followupA.id)
+
+#Filter out duplicated IDs AND wave, keeping the LAST entry
+RAMP_followupA.id <- RAMP_followupA.id %>% 
+    group_by(ID) %>% 
+    filter(!duplicated(waveA,
+                      fromLast = TRUE)
+           )
+
+##confirm number of rows in dataset after filtering 
+nrow(RAMP_followupA.id)
+
+##FOLLOW UP B
+##confirm number of rows in current dataset 
+nrow(RAMP_followupB.id)
+
+#Filter out duplicated IDs AND wave, keeping the LAST entry
+RAMP_followupB.id <- RAMP_followupB.id %>% 
+    group_by(ID) %>% 
+    filter(!duplicated(waveB,
+                      fromLast = TRUE)
+           )
+
+##confirm number of rows in dataset after filtering 
+nrow(RAMP_followupB.id)
+```
+
+## Change RAMP follow up A and B from long to wide format (we want this for the numeric ones so we can sum them)
+```{r RAMP follow up A and B long to wide format}
+
+RAMP_followupA.id.long <- RAMP_followupA.id %>%
+  group_by(waveA) %>%
+  tidyr::pivot_wider(id_cols = ID, 
+    names_from = waveA, 
+                     values_from = c(masq.pandemic_felt_successful,
+                                     masq.pandemic_felt_really_happy,
+                                     masq.pandemic_felt_optimistic,
+                                     masq.pandemic_lot_felt_fun,
+                                     masq.pandemic_felt_like_i_accomplished_a_lot,
+                                     masq.pandemic_forward_lot_felt,
+                                     masq.pandemic_felt_really_talkative,
+                                     masq.pandemic_felt_really_up_or_lively,
+                                     masq.pandemic_lot_felt_energy,
+                                     masq.pandemic_felt_really_good_about_myself)) 
+
+
+RAMP_followupB.id.long <- RAMP_followupB.id %>%
+  group_by(waveB) %>%
+  tidyr::pivot_wider(id_cols = ID, 
+    names_from = waveB, 
+                     values_from = c(masq.pandemic_felt_successful,
+                                     masq.pandemic_felt_really_happy,
+                                     masq.pandemic_felt_optimistic,
+                                     masq.pandemic_lot_felt_fun,
+                                     masq.pandemic_felt_like_i_accomplished_a_lot,
+                                     masq.pandemic_forward_lot_felt,
+                                     masq.pandemic_felt_really_talkative,
+                                     masq.pandemic_felt_really_up_or_lively,
+                                     masq.pandemic_lot_felt_energy,
+                                     masq.pandemic_felt_really_good_about_myself)) 
+  
+
+# Check
+colnames(RAMP_followupA.id.long)
+colnames(RAMP_followupB.id.long)
+
+
+```
+# Data cleaning
+## RAMP Baseline
+
+```{r Add "_unc" to the end of all variables}
+RAMP_baseline.id <- RAMP_baseline.id %>% 
+  rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
+
+# check
+colnames(RAMP_baseline.id)
+```
+
+```{r RAMP Baseline inspect the variables}
+RAMP_baseline.id %>% 
+  freq(masq.pandemic_felt_successful_unc)
+```
+
+## Make list of variables for cleaning
+```{r Make list of variables for cleaning}
+masq.items.baseline_unc <- RAMP_baseline.id %>% 
+  select(contains("_unc")) %>% 
+  colnames()
+
+masq.items.baseline_unc
+```
+## Set minimum and maximum values 
+```{r Set minimum and maximum values}
+masq.min.scale <- 1
+masq.max.scale <- 5
+```
+
+## Recode implausuble values
+```{r Recode implausible values}
+# Recode and clean
+RAMP_baseline.id <- RAMP_baseline.id %>%
+   mutate(
+     across(all_of(masq.items.baseline_unc),
+            .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
+              . == -77 | . == -88 | . == -99 ~ ., # leave as is 
+              . < masq.min.scale | . > masq.max.scale ~ -66, # recode as implausible value
+              TRUE ~ . # leave as is
+            )
+            )
+     )
+   ) %>%
+   rename_at(
+     vars(contains( "_unc_clean")), # specify variables that now contain "_clean"
+     list(~paste0(gsub("_unc_clean", "", .))) # remove the "_clean" now that they have been cleaned
+   )
+
+# Check
+colnames(RAMP_baseline.id)
+```
+## Make new list of cleaned variables
+```{r}
+masq.items.baseline_clean <- RAMP_baseline.id %>% 
+  select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
+  select(!contains("ID")) %>% # deselect the ID variable
+  colnames()
+
+masq.items.baseline_clean
+```
+## Check number of implausible values
+```{r}
+# Check for implausible values
+masq_baseline_imp_n <- RAMP_baseline.id %>% 
+  select(all_of(masq.items.baseline_clean)) %>% 
+  filter(. == -66) %>% 
+  nrow()
+
+# If statement
+if (masq_baseline_imp_n == 0) {
+  print(paste0("The number of implausible values in the RAMP Baseline MASQ variables is ", masq_baseline_imp_n, ". Can leave these variables as they are."))
+} else {
+  print(paste0("The number of implausible values in the RAMP Baseline MASQ variables is ", masq_baseline_imp_n, ". Please investigate."))
+}
+```
+
+# Select only the clean variables
+Note: keep ID in this data set
+```{r}
+RAMP_baseline.id.clean <- RAMP_baseline.id %>% 
+  select(!contains("_unc")) 
+
+colnames(RAMP_baseline.id.clean)
+```
+
+
+## RAMP follow up A
+
+```{r Add "_unc" to the end of all variables}
+RAMP_followupA.id.long <- RAMP_followupA.id.long %>% 
+  rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
+
+# check
+colnames(RAMP_followupA.id.long)
+```
+
+```{r RAMP follow up A inspect the variables}
+RAMP_followupA.id.long %>% 
+  freq(masq.pandemic_felt_successful_.Wave_1A_unc)
+```
+
+## Make list of variables for cleaning
+```{r Make list of variables for cleaning}
+masq.items.followupA_unc <- RAMP_followupA.id.long %>% 
+  select(contains("_unc")) %>% 
+  colnames()
+
+masq.items.followupA_unc
+```
+## Set minimum and maximum values 
+```{r Set minimum and maximum values}
+masq.min.scale <- 1
+masq.max.scale <- 5
+```
+
+## Recode implausuble values
+```{r Recode implausible values}
+# Recode and clean
+RAMP_followupA.id.long <- RAMP_followupA.id.long %>%
+   mutate(
+     across(all_of(masq.items.followupA_unc),
+            .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
+              . == -77 | . == -88 | . == -99 ~ ., # leave as is 
+              . < masq.min.scale | . > masq.max.scale ~ -66, # recode as implausible value
+              TRUE ~ . # leave as is
+            )
+            )
+     )
+   ) %>%
+   rename_at(
+     vars(contains( "_unc_clean")), # specify variables that now contain "_clean"
+     list(~paste0(gsub("_unc_clean", "", .))) # remove the "_clean" now that they have been cleaned
+   )
+
+# Check
+colnames(RAMP_followupA.id.long)
+```
+## Make new list of cleaned variables
+```{r}
+masq.items.followupA_clean <- RAMP_followupA.id.long %>% 
+  select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
+  select(!contains("ID")) %>% # deselect the ID variable
+  colnames()
+
+masq.items.followupA_clean
+```
+## Check number of implausible values
+```{r}
+# Check for implausible values
+masq_followupA_imp_n <- RAMP_followupA.id.long %>% 
+  select(all_of(masq.items.followupA_clean)) %>% 
+  filter(. == -66) %>% 
+  nrow()
+
+# If statement
+if (masq_followupA_imp_n == 0) {
+  print(paste0("The number of implausible values in the RAMP follow up A MASQ variables is ", masq_followupA_imp_n, ". Can leave these variables as they are."))
+} else {
+  print(paste0("The number of implausible values in the RAMP follow up A MASQ variables is ", masq_followupA_imp_n, ". Please investigate."))
+}
+```
+
+# Select only the clean variables
+Note: keep ID in this data set
+```{r}
+RAMP_followupA.id.long.clean <- RAMP_followupA.id.long %>% 
+  select(!contains("_unc")) 
+
+colnames(RAMP_followupA.id.long.clean)
+```
+
+## RAMP follow up B
+
+```{r Add "_unc" to the end of all variables}
+RAMP_followupB.id.long <- RAMP_followupB.id.long %>% 
+  rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
+
+# check
+colnames(RAMP_followupB.id.long)
+```
+
+```{r RAMP follow up B inspect the variables}
+RAMP_followupB.id.long %>% 
+  freq(masq.pandemic_felt_successful_.Wave_6B_unc)
+```
+
+## Make list of variables for cleaning
+```{r Make list of variables for cleaning}
+masq.items.followupB_unc <- RAMP_followupB.id.long %>% 
+  select(contains("_unc")) %>% 
+  colnames()
+
+masq.items.followupB_unc
+```
+## Set minimum and maximum values 
+```{r Set minimum and maximum values}
+masq.min.scale <- 1
+masq.max.scale <- 5
+```
+
+## Recode implausuble values
+```{r Recode implausible values}
+# Recode and clean
+RAMP_followupB.id.long <- RAMP_followupB.id.long %>%
+   mutate(
+     across(all_of(masq.items.followupB_unc),
+            .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
+              . == -77 | . == -88 | . == -99 ~ ., # leave as is 
+              . < masq.min.scale | . > masq.max.scale ~ -66, # recode as implausible value
+              TRUE ~ . # leave as is
+            )
+            )
+     )
+   ) %>%
+   rename_at(
+     vars(contains( "_unc_clean")), # specify variables that now contain "_clean"
+     list(~paste0(gsub("_unc_clean", "", .))) # remove the "_clean" now that they have been cleaned
+   )
+
+# Check
+colnames(RAMP_followupB.id.long)
+```
+## Make new list of cleaned variables
+```{r}
+masq.items.followupB_clean <- RAMP_followupB.id.long %>% 
+  select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
+  select(!contains("ID")) %>% # deselect the ID variable
+  colnames()
+
+masq.items.followupB_clean
+```
+## Check number of implausible values
+```{r}
+# Check for implausible values
+masq_followupB_imp_n <- RAMP_followupB.id.long %>% 
+  select(all_of(masq.items.followupB_clean)) %>% 
+  filter(. == -66) %>% 
+  nrow()
+
+# If statement
+if (masq_followupB_imp_n == 0) {
+  print(paste0("The number of implausible values in the RAMP follow up B MASQ variables is ", masq_followupB_imp_n, ". Can leave these variables as they are."))
+} else {
+  print(paste0("The number of implausible values in the RAMP follow up B MASQ variables is ", masq_followupB_imp_n, ". Please investigate."))
+}
+```
+
+# Select only the clean variables
+Note: keep ID in this data set
+```{r}
+RAMP_followupB.id.long.clean <- RAMP_followupB.id.long %>% 
+  select(!contains("_unc")) 
+
+colnames(RAMP_followupB.id.long.clean)
+```
+
+
+# Merge RAMP follow up A and B surveys
+Note: full join (i.e. to get all participants in all three data sets)
+```{r Merge RAMP follow up A and B surveys}
+masq.merging <- list(RAMP_followupA.id.long.clean,
+                       RAMP_followupB.id.long.clean)
+
+
+masq.RAMP <- plyr::join_all(masq.merging,
+                    by = "ID",
+                    type = "full")
+
+# check
+dim(RAMP_followupA.id.long.clean)
+dim(RAMP_followupB.id.long.clean)
+dim(masq.RAMP)
+
+colnames(masq.RAMP)
+```
+
+
+# Write merged data frame to an .rds file
+```{r Write merged data frame to an .rds file}
+
+saveRDS(object = masq.RAMP, file = paste0("../../../data_clean/RAMP_masq/masq.clean_merged_followup_long.RAMP", date, ".rds"))
+saveRDS(object = RAMP_baseline.id.clean, file = paste0("../../../data_clean/RAMP_masq/masq.clean_merged_baseline.RAMP", date, ".rds"))
+```
+
+
