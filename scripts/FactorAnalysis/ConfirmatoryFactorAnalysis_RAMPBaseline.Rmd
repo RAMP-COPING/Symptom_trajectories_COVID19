@@ -1,0 +1,87 @@
+---
+title: "Confirmatory factor analysis of MASQ anhedonia, GAD-7 and PHQ-9 in RAMP baseline data"
+author: "K L Purves"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: show
+
+html_notebook:
+  theme: cerulean
+toc: yes
+---
+
+This workbook will conduct the factor analysis of MASQ, GAD and PHQ-9 data in RAMP baseline to establish whether it corresponds to a three factor model, corresponding to the tripartite theory. 
+
+
+
+#Set up 
+
+```{r Delete everything in your global environment}
+remove(list = ls())
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment=NA,
+                      prompt=FALSE,
+                      cache=FALSE)
+```
+
+Note: load tidyverse last!
+```{r Load packages}
+if(!require(summarytools)){
+  install.packages("summarytools")
+  library(summarytools)
+}
+if(!require(ggplot2)){
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+
+if(!require(psych)){
+  install.packages("psych")
+  library(psych)
+}
+
+if(!require(tidyverse)){
+  install.packages("tidyverse")
+  library(tidyverse)
+}
+```
+
+```{r Set GLAD palette for plotting}
+glad_palette = c("#efc00b", "#b7dee8")
+```
+
+```{r Source the credentials file}
+source("../../../Credentials/paths_anhedonia_analysis.R")
+```
+
+# Read in data
+
+```{r Read in COPING follow up A data}
+# Read in the data
+COPING_followupA <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupa/masq_coping_followupa.rds"))
+
+  # Check column names
+COPING_followupA %>%
+  colnames()
+
+# Check dimensions
+COPING_followupA %>%
+  dim()
+
+# Look at top rows of the data frame
+COPING_followupA %>% 
+  head()
+```
+
