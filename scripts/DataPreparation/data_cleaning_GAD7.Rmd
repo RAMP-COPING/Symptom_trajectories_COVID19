@@ -111,7 +111,13 @@ colnames(data_gad_renamed)
 
 ```{r}
 #seen but not answered (-99) as NA
-data_gad_renamed <- data.frame(apply(data_gad_renamed,2,function(x) ifelse(x==-99,NA,x)))
+data_gad_renamed <- data_gad_renamed %>%
+  mutate_at(vars(starts_with("gad")),
+            funs(case_when(
+             . == -99 ~ NA_real_,
+             . == -77 ~ NA_real_,
+             TRUE ~  .)))
+  
 
 ```
 
