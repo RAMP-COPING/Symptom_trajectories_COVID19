@@ -98,7 +98,7 @@ data_phq_renamed <- data_raw %>% #new dataset with ID
          phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
          phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
          phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
-         phq9.pandemic_felling_like_a_failure = phq.feeling_bad_failure_family,
+         phq9.pandemic_feeling_like_a_failure = phq.feeling_bad_failure_family,
          phq9.pandemic_trouble_concentrating = phq.trouble_concentrating_newspaper_reading,
          phq9.pandemic_figeting_or_moving_slowly = phq.moving_fidgety_opposite_slowly,
          phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
