@@ -22,7 +22,6 @@ toc: yes
 This workbook will conduct the factor analysis of MASQ, GAD and PHQ-9 data in RAMP baseline to establish whether it corresponds to a three factor model, corresponding to the tripartite theory. 
 
 
-
 #Set up 
 
 ```{r Delete everything in your global environment}
@@ -37,7 +36,7 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 Note: load tidyverse last!
-```{r Load packages}
+```{r setup, Load packages}
 if(!require(summarytools)){
   install.packages("summarytools")
   library(summarytools)
@@ -56,32 +55,215 @@ if(!require(tidyverse)){
   install.packages("tidyverse")
   library(tidyverse)
 }
+
+
+if(!require(skimr)){
+  install.packages("skimr")
+  library(skimr)
+}
+
+if(!require(lavaan)){
+  install.packages("lavaan")
+  library(lavaan)
+}
+
 ```
 
 ```{r Set GLAD palette for plotting}
 glad_palette = c("#efc00b", "#b7dee8")
 ```
 
-```{r Source the credentials file}
-source("../../../Credentials/paths_anhedonia_analysis.R")
-```
-
 # Read in data
 
-```{r Read in COPING follow up A data}
+```{r Read in GAD, PHQ and MASQ data from the RAMP baseline cohort}
 # Read in the data
-COPING_followupA <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupa/masq_coping_followupa.rds"))
+MASQ <- readRDS(file =  "../../../data_clean/RAMP_masq/masq.clean_merged_baseline.RAMP.RDS")
+GAD7 <- readRDS(file =  "../../../data_clean/RAMP_gad/gad.clean_baseline.RAMP.RDS")
+PHQ9 <- readRDS(file =  "../../../data_clean/RAMP_phq/phq.clean_baseline.RAMP.RDS")
 
-  # Check column names
-COPING_followupA %>%
-  colnames()
-
-# Check dimensions
-COPING_followupA %>%
-  dim()
-
-# Look at top rows of the data frame
-COPING_followupA %>% 
-  head()
 ```
+
+# reverse MASQ scores to be in line with GAD & PHQ 
+
+also make -77 NA
+```{r recode MASQ}
+
+MASQ.recode <- MASQ %>%
+  mutate_at(vars(starts_with("masq")),
+            funs(case_when(
+             . == 1 ~ 5,
+             . == 2 ~ 4,
+             . == 3 ~ 3,
+             . == 4 ~ 2,
+             . == 5 ~ 1,
+             . == -77 ~ NA_real_,
+             TRUE ~  NA_real_)))
+  
+  
+```
+
+
+# merge MASQ, PHQ and GAD data
+
+```{r merge data}
+
+merged_data <- left_join(GAD7,PHQ9)
+merged_data <- left_join(merged_data,MASQ)
+
+```
+
+## check data names and dimensions
+
+```{r check data}
+
+head(merged_data)
+names(merged_data)
+dim(merged_data)
+```
+
+# drop uneccessary columns, blanks and duplicates
+
+```{r dropscols and blanks}
+
+cfa_data.clean <- merged_data %>% #new dataset with ID
+  drop_na(ID) %>% # Drop NAs
+  select(-c(sample,startDate,endDate))
+
+names(cfa_data.clean)
+
+```
+
+
+
+```{r drop duplicates}
+
+##Identify dup IDs. These seem to be cases where we randomly dropped different people from different datasets due to actually the same IDs occurring
+cfa_data.clean  %>%
+   group_by(ID) %>%
+   summarize(N = n()) %>%
+   filter(N > 1)
+
+## randomly retain 1 of each duplicate - whichever happens to be last
+
+cfa_data.clean <- cfa_data.clean %>% 
+    group_by(ID) %>% 
+    filter(!duplicated(ID,
+                      fromLast = TRUE)
+           ) %>%
+  ungroup()
+
+```
+
+# drop ID 
+```{r drop ID column}
+
+cfa_data <- cfa_data.clean %>%
+  select(-ID)
+
+```
+
+
+# define CFA
+
+What items will work best for the tripartite: specify the model
+
+***Item pool***
+gad7.pandemic_nervous_anxious_on_edge
+gad7.pandemic_cant_control_worry
+gad7.pandemic_worry_too_much
+gad7.pandemic_trouble_relaxing
+gad7.pandemic_restless
+gad7.pandemic_easily_annoyed
+gad7.pandemic_afraid_something_terrible_will_happen
+phq9.pandemic_little_interest_or_pleasure
+phq9.pandemic_down_depressed_hopeless
+phq9.pandemic_trouble_falling_or_staying_asleep
+phq9.pandemic_feel_tired_little_energy
+phq9.pandemic_poor_appetite_or_overeating
+phq9.pandemic_feeling_like_a_failure
+phq9.pandemic_trouble_concentrating
+phq9.pandemic_figeting_or_moving_slowly
+phq9.pandemic_thoughts_better_off_dead
+masq.pandemic_felt_successful
+masq.pandemic_felt_really_happy
+masq.pandemic_felt_optimistic
+masq.pandemic_lot_felt_fun
+masq.pandemic_felt_like_i_accomplished_a_lot
+masq.pandemic_forward_lot_felt
+masq.pandemic_felt_really_talkative
+masq.pandemic_felt_really_up_or_lively
+masq.pandemic_lot_felt_energy
+masq.pandemic_felt_really_good_about_myself
+
+
+**Kirstin item to factor spec:**
+
+*General distress*
+gad7.pandemic_nervous_anxious_on_edge
+gad7.pandemic_cant_control_worry
+gad7.pandemic_worry_too_much
+gad7.pandemic_easily_annoyed
+gad7.pandemic_afraid_something_terrible_will_happen
+phq9.pandemic_down_depressed_hopeless
+phq9.pandemic_trouble_falling_or_staying_asleep
+phq9.pandemic_feel_tired_little_energy
+phq9.pandemic_poor_appetite_or_overeating
+phq9.pandemic_feeling_like_a_failure
+phq9.pandemic_trouble_concentrating
+phq9.pandemic_thoughts_better_off_dead
+
+*Negative affect (anhedonia)*
+phq9.pandemic_little_interest_or_pleasure
+masq.pandemic_felt_successful
+masq.pandemic_felt_really_happy
+masq.pandemic_felt_optimistic
+masq.pandemic_lot_felt_fun
+masq.pandemic_felt_like_i_accomplished_a_lot
+masq.pandemic_forward_lot_felt
+masq.pandemic_felt_really_talkative
+masq.pandemic_felt_really_up_or_lively
+masq.pandemic_lot_felt_energy
+masq.pandemic_felt_really_good_about_myself
+
+*physiological arousal*
+gad7.pandemic_restless
+gad7.pandemic_trouble_relaxing
+phq9.pandemic_figeting_or_moving_slowly
+
+
+**Katie item to factor spec**
+*General distress*
+gad7.pandemic_cant_control_worry
+gad7.pandemic_worry_too_much
+gad7.pandemic_easily_annoyed
+gad7.pandemic_afraid_something_terrible_will_happen
+phq9.pandemic_down_depressed_hopeless
+phq9.pandemic_trouble_falling_or_staying_asleep
+phq9.pandemic_feel_tired_little_energy
+phq9.pandemic_poor_appetite_or_overeating
+phq9.pandemic_feeling_like_a_failure
+phq9.pandemic_trouble_concentrating
+phq9.pandemic_thoughts_better_off_dead
+phq9.pandemic_figeting_or_moving_slowly
+
+*Negative affect (anhedonia)*
+phq9.pandemic_little_interest_or_pleasure
+masq.pandemic_felt_successful
+masq.pandemic_felt_really_happy
+masq.pandemic_felt_optimistic
+masq.pandemic_lot_felt_fun
+masq.pandemic_felt_like_i_accomplished_a_lot
+masq.pandemic_forward_lot_felt
+masq.pandemic_felt_really_talkative
+masq.pandemic_felt_really_up_or_lively
+masq.pandemic_lot_felt_energy
+masq.pandemic_felt_really_good_about_myself
+
+*physiological arousal*
+gad7.pandemic_restless
+gad7.pandemic_trouble_relaxing
+gad7.pandemic_nervous_anxious_on_edge
+
+
+Final item to factor spec after consulting on any differences
 
