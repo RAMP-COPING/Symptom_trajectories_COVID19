@@ -67,6 +67,11 @@ if(!require(lavaan)){
   library(lavaan)
 }
 
+if(!require(geom_text)){
+  install.packages("geom_text")
+  library(geom_text)
+}
+
 ```
 
 ```{r Set GLAD palette for plotting}
@@ -108,7 +113,7 @@ MASQ.recode <- MASQ %>%
 ```{r merge data}
 
 merged_data <- left_join(GAD7,PHQ9)
-merged_data <- left_join(merged_data,MASQ)
+merged_data <- left_join(merged_data,MASQ.recode)
 
 ```
 
@@ -154,17 +159,75 @@ cfa_data.clean <- cfa_data.clean %>%
 
 ```
 
-# drop ID 
-```{r drop ID column}
+# Correlations
 
-cfa_data <- cfa_data.clean %>%
-  select(-ID)
+check the correlations between all items
 
+```{r upper and lower triangle functions}
+# Get lower triangle of the correlation matrix
+  get_lower_tri<-function(cormat){
+    cormat[upper.tri(cormat)] <- NA
+    return(cormat)
+  }
+  # Get upper triangle of the correlation matrix
+  get_upper_tri <- function(cormat){
+    cormat[lower.tri(cormat)]<- NA
+    return(cormat)
+  }
 ```
 
+```{r check item correlation}
 
-# define CFA
+cormat <- round(cor(!is.na(cfa_data.clean[,2:27])),2)
 
+upper_tri <- get_upper_tri(cormat)
+
+# Melt the correlation matrix
+melted_cormat <- melt(upper_tri, na.rm = TRUE)
+
+# Create a ggheatmap
+ggheatmap <- ggplot(melted_cormat, aes(Var2, Var1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+   midpoint = 0, limit = c(-1,1), space = "Lab", 
+    name="Pearson\nCorrelation") +
+  theme_minimal()+ # minimal theme
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+    size = 12, hjust = 1))+
+ coord_fixed()
+
+
+
+ggheatmap + 
+geom_text(aes(Var2, Var1, label = value), color = "black", size = 4) +
+theme(
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  panel.grid.major = element_blank(),
+  panel.border = element_blank(),
+  panel.background = element_blank(),
+  axis.ticks = element_blank(),
+  legend.justification = c(1, 0),
+  legend.position = c(0.6, 0.7),
+  legend.direction = "horizontal")+
+  guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
+                title.position = "top", title.hjust = 0.5))
+
+
+print(ggheatmap)
+```
+
+All basically very highly correlated. check lowest correlation between two item pairs:
+
+```{r check lowed cor}
+
+min(melted_cormat$value)
+
+melted_cormat[(melted_cormat$value == 0.63),]
+```
+# CFA
+
+## a prior model specficiation
 What items will work best for the tripartite: specify the model
 
 ***Item pool***
@@ -182,7 +245,7 @@ phq9.pandemic_feel_tired_little_energy
 phq9.pandemic_poor_appetite_or_overeating
 phq9.pandemic_feeling_like_a_failure
 phq9.pandemic_trouble_concentrating
-phq9.pandemic_figeting_or_moving_slowly
+phq9.pandemic_fidgeting_or_moving_slowly
 phq9.pandemic_thoughts_better_off_dead
 masq.pandemic_felt_successful
 masq.pandemic_felt_really_happy
@@ -228,7 +291,7 @@ masq.pandemic_felt_really_good_about_myself
 *physiological arousal*
 gad7.pandemic_restless
 gad7.pandemic_trouble_relaxing
-phq9.pandemic_figeting_or_moving_slowly
+phq9.pandemic_fidgeting_or_moving_slowly
 
 
 **Katie item to factor spec**
@@ -244,7 +307,7 @@ phq9.pandemic_poor_appetite_or_overeating
 phq9.pandemic_feeling_like_a_failure
 phq9.pandemic_trouble_concentrating
 phq9.pandemic_thoughts_better_off_dead
-phq9.pandemic_figeting_or_moving_slowly
+phq9.pandemic_fidgeting_or_moving_slowly
 
 *Negative affect (anhedonia)*
 phq9.pandemic_little_interest_or_pleasure
@@ -265,5 +328,69 @@ gad7.pandemic_trouble_relaxing
 gad7.pandemic_nervous_anxious_on_edge
 
 
-Final item to factor spec after consulting on any differences
+***Differences: (1) nervous, anxious and on edge (Katie Phys arousal, Kirstin general distress), (2) fidgeting or moving slowly (Katie general distress, Kirstin Physiological arousal)***
 
+**Final item to factor spec after consulting on any differences**
+(still being confirmed. Consulting with others and reading papers to align as closely as possible with theory)
+
+*General distress*
+gad7.pandemic_cant_control_worry
+gad7.pandemic_worry_too_much
+gad7.pandemic_easily_annoyed
+gad7.pandemic_afraid_something_terrible_will_happen
+phq9.pandemic_down_depressed_hopeless
+phq9.pandemic_trouble_falling_or_staying_asleep
+phq9.pandemic_feel_tired_little_energy
+phq9.pandemic_poor_appetite_or_overeating
+phq9.pandemic_feeling_like_a_failure
+phq9.pandemic_trouble_concentrating
+phq9.pandemic_thoughts_better_off_dead
+
+
+*Negative affect (anhedonia)*
+phq9.pandemic_little_interest_or_pleasure
+masq.pandemic_felt_successful
+masq.pandemic_felt_really_happy
+masq.pandemic_felt_optimistic
+masq.pandemic_lot_felt_fun
+masq.pandemic_felt_like_i_accomplished_a_lot
+masq.pandemic_forward_lot_felt
+masq.pandemic_felt_really_talkative
+masq.pandemic_felt_really_up_or_lively
+masq.pandemic_lot_felt_energy
+masq.pandemic_felt_really_good_about_myself
+
+*physiological arousal*
+gad7.pandemic_restless
+gad7.pandemic_trouble_relaxing
+gad7.pandemic_nervous_anxious_on_edge
+
+
+
+
+## specify the CFA in lavaan
+
+Free the parameter loading for the first parameter (otherwise it is fixed to 1 by default)
+```{r specify lavaan model}
+
+tripartite_model <- 'NA*General_distress =~ gad7.pandemic_cant_control_worry + gad7.pandemic_worry_too_much + gad7.pandemic_easily_annoyed + gad7.pandemic_afraid_something_terrible_will_happen + phq9.pandemic_down_depressed_hopeless + phq9.pandemic_trouble_falling_or_staying_asleep + phq9.pandemic_feel_tired_little_energy + phq9.pandemic_poor_appetite_or_overeating + phq9.pandemic_feeling_like_a_failure + phq9.pandemic_trouble_concentrating + phq9.pandemic_thoughts_better_off_dead
+
+negative_affect =~ NA*masq.pandemic_felt_successful + masq.pandemic_felt_really_happy + masq.pandemic_felt_optimistic + masq.pandemic_lot_felt_fun + masq.pandemic_felt_like_i_accomplished_a_lot + masq.pandemic_forward_lot_felt + masq.pandemic_felt_really_talkative + masq.pandemic_felt_really_up_or_lively + masq.pandemic_lot_felt_energy + masq.pandemic_felt_really_good_about_myself + phq9.pandemic_little_interest_or_pleasure
+
+anxious_arousal =~  NA*gad7.pandemic_restless + gad7.pandemic_trouble_relaxing + phq9.pandemic_fidgeting_or_moving_slowly + gad7.pandemic_nervous_anxious_on_edge'
+
+```
+
+```{r fit cfa}
+
+#fit <- cfa(tripartite_model, data=cfa_data.clean)
+
+```
+
+
+include the standardised factor loadings
+```{r summarise cfa model}
+
+#summary(fit,fit.measures = TRUE, standardized = TRUE)
+
+```
