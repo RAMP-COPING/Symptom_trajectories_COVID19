@@ -24,11 +24,33 @@ toc: yes
 remove(list = ls())
 ```
 
-```{r}
-# libraries
-library(data.table)
-library(lfactors)
-library(tidyverse)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment=NA,
+                      prompt=FALSE,
+                      cache=FALSE)
+```
+
+Note: load tidyverse last!
+```{r Load packages}
+if(!require(summarytools)){
+  install.packages("summarytools")
+  library(summarytools)
+}
+if(!require(ggplot2)){
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+
+if(!require(psych)){
+  install.packages("psych")
+  library(psych)
+}
+
+if(!require(tidyverse)){
+  install.packages("tidyverse")
+  library(tidyverse)
+}
 ```
 
 ```{r}
@@ -38,6 +60,446 @@ source("../../../Credentials/paths_anhedonia_analysis.R")
 ```
 
 
+## COPING follow up A
+
+```{r Read in COPING follow up A data}
+# Read in the data
+COPING_followupA <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupa/gad_coping_followupa.rds"))
+
+  # Check column names
+COPING_followupA %>%
+  colnames()
+
+# Check dimensions
+COPING_followupA %>%
+  dim()
+
+# Look at top rows of the data frame
+COPING_followupA %>% 
+  head()
+```
+
+```{r Select & rename relevant columns (will be a function at some point)}
+
+
+COPING_followupA.id <- COPING_followupA %>% #new dataset with ID
+  drop_na(externalDataReference) %>% # Drop NAs
+  add_column(sample = "COPING_followupA", .after = "externalDataReference") %>% #create new column 
+  select(-gad.difficult_daily_life_issues,
+         ID = externalDataReference, # ID
+         sample,
+         startDate,
+         endDate,
+         gad7.pandemic_nervous_anxious_on_edge = gad.feeling_nervous_anxious_or_on_edge,
+         gad7.pandemic_cant_control_worry = gad.control_worrying_stop,
+         gad7.pandemic_worry_too_much = gad.worrying_too_much_about_different_things,
+         gad7.pandemic_trouble_relaxing = gad.trouble_relaxing,
+         gad7.pandemic_restless = gad.sit_hard_restless,
+         gad7.pandemic_easily_annoyed = gad.becoming_easily_annoyed_or_irritable,
+         gad7.pandemic_afraid_something_terrible_will_happen = gad.awful_happen_feeling_afraid)
+
+# Inspect colnames
+colnames(COPING_followupA.id)
+
+```
+  
+## COPING follow up B
+
+```{r Read in COPING follow up A data}
+# Read in the data
+COPING_followupB <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupb/gad_coping_followupb.rds"))
+
+# Check column names
+COPING_followupB %>%
+  colnames()
+
+# Check dimensions
+COPING_followupB %>%
+  dim()
+
+# Look at top rows of the data frame
+COPING_followupB %>% 
+  head()
+```
+
+Select & rename relevant columns (will be a function at some point)
+```{r}
+
+
+COPING_followupB.id <- COPING_followupB %>% #new dataset with ID
+  drop_na(externalDataReference) %>% # Drop NAs
+  add_column(sample = "COPING_followupB", .after = "externalDataReference") %>% #create new column 
+  select(-gad.difficult_daily_life_issues,
+         ID = externalDataReference, # ID
+         sample,
+         startDate,
+         endDate,
+         gad7.pandemic_nervous_anxious_on_edge = gad.feeling_nervous_anxious_or_on_edge,
+         gad7.pandemic_cant_control_worry = gad.stop_control_worrying,
+         gad7.pandemic_worry_too_much = gad.worrying_too_much_about_different_things,
+         gad7.pandemic_trouble_relaxing = gad.trouble_relaxing,
+         gad7.pandemic_restless = gad.hard_sit_restless,
+         gad7.pandemic_easily_annoyed = gad.becoming_easily_annoyed_or_irritable,
+         gad7.pandemic_afraid_something_terrible_will_happen = gad.awful_feeling_afraid_happen)
+
+
+# Inspect colnames
+colnames(COPING_followupB.id)
+
+```
+
+## COPING followup A ongoing
+```{r}
+# Read in the data
+COPING_followupA_ong <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupa_ongoing/gad_coping_followupa_ongoing.rds"))
+
+# Check column names
+COPING_followupA_ong %>%
+  colnames()
+
+# Check dimensions
+COPING_followupA_ong %>%
+  dim()
+
+# Look at top rows of the data frame
+COPING_followupA_ong %>% 
+  head()
+```
+
+Select & rename relevant columns (will be a function at some point)
+```{r}
+
+COPING_followupA_ong.id <- COPING_followupA_ong %>% #new dataset with ID
+  drop_na(externalDataReference) %>% # Drop NAs
+
+  add_column(sample = "COPING_followupA_ong", .after = "externalDataReference") %>% #create new column 
+  select(-gad.difficult_daily_life_issues,
+         ID = externalDataReference, # ID
+         sample,
+         startDate,
+         endDate,
+         gad7.pandemic_nervous_anxious_on_edge = gad.feeling_nervous_anxious_or_on_edge,
+         gad7.pandemic_cant_control_worry = gad.control_worrying_stop,
+         gad7.pandemic_worry_too_much = gad.worrying_too_much_about_different_things,
+         gad7.pandemic_trouble_relaxing = gad.trouble_relaxing,
+         gad7.pandemic_restless = gad.sit_hard_restless,
+         gad7.pandemic_easily_annoyed = gad.becoming_easily_annoyed_or_irritable,
+         gad7.pandemic_afraid_something_terrible_will_happen = gad.awful_feeling_afraid_happen)
+
+
+# Inspect colnames
+colnames(COPING_followupA_ong.id)
+
+```
+# Join COPING follow up A and follow up A ongoing
+
+```{r Join COPING follow up A and COPING follow up A ongoing, eval=FALSE}
+# check column names match
+colnames(COPING_followupA.id)
+colnames(COPING_followupA_ong.id)
+
+# rbind
+COPING_followupA.id_joined <- rbind(COPING_followupA.id,
+                                    COPING_followupA_ong.id)
+
+dim(COPING_followupA.id_joined)
+```
+
+# COPING follow up survey dates
+
+##Create waves within the FOLLOW UP DATA ##
+Note: dates from google sheet from Kirstin
+Checked with Gerome - set start date as the date the survey was released, and keep window open until the DAY BEFORE the next survey was released
+```{r}
+
+# MAY 2 (wave 1) - FOLLOW UP A
+start1 <- as.POSIXct("2020-05-19")
+end1 <-  as.POSIXct("2020-06-01")  
+
+# JUNE 1 (wave 2) - FOLLOW UP B
+start2 <- as.POSIXct("2020-06-02")
+end2<-  as.POSIXct("2020-06-15")  
+
+# JUNE 2 (wave 3) - FOLLOW UP A
+start3 <- as.POSIXct("2020-06-16")
+end3 <-  as.POSIXct("2020-06-29") 
+
+# JULY 1 (wave 4) - FOLLOW UP B
+start4 <- as.POSIXct("2020-06-30")
+end4<-  as.POSIXct("2020-07-13") 
+
+# JULY 2 (wave 5) - FOLLOW UP A
+start5 <- as.POSIXct("2020-07-14")
+end5 <-  as.POSIXct("2020-07-27") ## Ongoing starts from here?
+
+# JULY - AUG (wave 6) - FOLLOW UP B
+start6 <- as.POSIXct("2020-07-28") 
+end6 <-  as.POSIXct("2020-08-24") 
+
+# AUG - SEPT (wave 7) - FOLLOW UP A
+start7 <- as.POSIXct("2020-08-25")
+end7 <-  as.POSIXct("2020-09-21") 
+
+# SEPT - OCT (wave 8) - FOLLOW UP B
+start8 <- as.POSIXct("2020-09-22")
+end8 <-  as.POSIXct("2020-10-19") 
+
+# OCT - NOV (wave 9) - FOLLOW UP A
+start9 <- as.POSIXct("2020-10-20")
+end9 <-  as.POSIXct("2020-11-16") 
+
+# NOV - DEC (wave 10) - FOLLOW UP B
+start10 <- as.POSIXct("2020-11-17")
+end10 <-  as.POSIXct("2020-12-14") 
+
+# DEC - JAN (wave 11) - FOLLOW UP A
+start11 <- as.POSIXct("2020-12-15")
+end11 <-  as.POSIXct("2021-01-11") 
+
+# JAN - FEB (wave 12) - FOLLOW UP B
+start12 <- as.POSIXct("2021-01-12")
+end12 <-  as.POSIXct("2021-02-08") 
+
+# FEB - MARCH (wave 13) - FOLLOW UP A
+start13 <- as.POSIXct("2021-02-09")
+end13 <-  as.POSIXct("2021-03-08") 
+
+# MARCH - APR (wave 14) - FOLLOW UP B
+start14 <- as.POSIXct("2021-03-09")
+end14 <-  as.POSIXct("2021-04-05") 
+
+# APR - MAY (wave 15) - FOLLOW UP A
+start15 <- as.POSIXct("2021-04-06")
+end15 <-  as.POSIXct("2021-05-03")
+
+# MAY - JUNE (wave 16) - FOLLOW UP B
+start16 <- as.POSIXct("2021-05-04")
+end16 <-  as.POSIXct("2021-05-31")
+
+# JUNE - JULY (wave 17) - FOLLOW UP A
+start17 <- as.POSIXct("2021-06-01")
+end17 <-  as.POSIXct("2021-06-28")
+
+# JUNE - JULY (wave 18) - FOLLOW UP B
+start18 <- as.POSIXct("2021-06-29")
+end18 <-  as.POSIXct("2021-07-26")
+
+# JUNE - JULY (wave 19) - FOLLOW UP A
+start19 <- as.POSIXct("2021-07-27")
+end19 <-  as.POSIXct("2021-08-17")
+
+#JM**do we have data beyond this?
+
+
+COPING_followupA.id <- COPING_followupA.id %>%
+  mutate(waveA = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_1A",
+                           startDate >= start2 & startDate <= end2 ~ ".Wave_1A_in_2B",
+                            startDate >= start3 & startDate <= end3 ~ ".Wave_1A_repeat",
+                           startDate >= start4 & startDate <= end4 ~ ".Wave_3A_in_4B",
+                            startDate >= start5 & startDate <= end5 ~ ".Wave_5A",
+                           startDate >= start6 & startDate <= end6 ~ ".Wave_5A_in_6B",
+                            startDate >= start7 & startDate <= end7 ~ ".Wave_7A",
+                           startDate >= start8 & startDate <= end8 ~ ".Wave_7A_in_8B",
+                            startDate >= start9 & startDate <= end9 ~ ".Wave_9A",
+                           startDate >= start10 & startDate <= end10 ~ ".Wave_9A_in_10B",
+                            startDate >= start11 & startDate <= end11 ~ ".Wave_11A",
+                           startDate >= start12 & startDate <= end12 ~ ".Wave_11A_in_12B",
+                            startDate >= start13 & startDate <= end13 ~ ".Wave_13A",
+                              startDate >= start14 & startDate <= end14 ~ ".Wave_13A_in_14B",
+                            startDate >= start15 & startDate <= end15 ~ ".Wave_15A",
+                            startDate >= start16 & startDate <= end16 ~ ".Wave_15A_in_16B",
+                           startDate >= start17 & startDate <= end17 ~ ".Wave_17A",
+                           startDate >= start18 & startDate <= end18 ~ ".Wave_17A_in_18B",
+                            startDate >= start19 & startDate <= end19 ~ ".Wave_19A"))
+
+COPING_followupA_ong.id <- COPING_followupA_ong.id %>%
+  mutate(waveA = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_1A",
+                           startDate >= start2 & startDate <= end2 ~ ".Wave_1A_in_2B",
+                            startDate >= start3 & startDate <= end3 ~ ".Wave_3A",
+                           startDate >= start4 & startDate <= end4 ~ ".Wave_3A_in_4B",
+                            startDate >= start5 & startDate < start6 ~ ".Wave_5A",
+                           startDate >= start6 & startDate <= end6 ~ ".Wave_5A_in_6B",
+                            startDate >= start7 & startDate <= end7 ~ ".Wave_7A",
+                           startDate >= start8 & startDate <= end8 ~ ".Wave_7A_in_8B",
+                            startDate >= start9 & startDate <= end9 ~ ".Wave_9A",
+                           startDate >= start10 & startDate <= end10 ~ ".Wave_9A_in_10B",
+                            startDate >= start11 & startDate <= end11 ~ ".Wave_11A",
+                           startDate >= start12 & startDate <= end12 ~ ".Wave_11A_in_12B",
+                            startDate >= start13 & startDate <= end13 ~ ".Wave_13A",
+                              startDate >= start14 & startDate <= end14 ~ ".Wave_13A_in_14B",
+                            startDate >= start15 & startDate <= end15 ~ ".Wave_15A",
+                            startDate >= start16 & startDate <= end16 ~ ".Wave_15A_in_16B",
+                           startDate >= start17 & startDate <= end17 ~ ".Wave_17A",
+                           startDate >= start18 & startDate <= end18 ~ ".Wave_17A_in_18B",
+                            startDate >= start19 & startDate <= end19 ~ ".Wave_19A"))
+
+COPING_followupB.id <- COPING_followupB.id %>%
+  mutate(waveB = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_1A_in_B", # should be impossible to exist
+                           startDate >= start2 & startDate <= end2 ~ ".Wave_2B",
+                            startDate >= start3 & startDate <= end3 ~ ".Wave_2B_in_3A",
+                           startDate >= start4 & startDate < start5 ~ ".Wave_4B",
+                            startDate >= start5 & startDate <= end5 ~ ".Wave_4B_in_5A",
+                           startDate >= start6 & startDate <= end6 ~ ".Wave_6B",
+                            startDate >= start7 & startDate <= end7 ~ ".Wave_6B_in_7A",
+                           startDate >= start8 & startDate <= end8 ~ ".Wave_8B",
+                            startDate >= start9 & startDate <= end9 ~ ".Wave_8B_in_9A",
+                           startDate >= start10 & startDate <= end10 ~ ".Wave_10B",
+                            startDate >= start11 & startDate <= end11 ~ ".Wave_10B_in_11A",
+                           startDate >= start12 & startDate <= end12 ~ ".Wave_12B",
+                            startDate >= start13 & startDate <= end13 ~ ".Wave_12B_in_13A",
+                              startDate >= start14 & startDate <= end14 ~ ".Wave_14B",
+                            startDate >= start15 & startDate <= end15 ~ ".Wave_14B_in_15A",
+                            startDate >= start16 & startDate <= end16 ~ ".Wave_16B",
+                           startDate >= start17 & startDate <= end17 ~ ".Wave_16B_in_17A",
+                           startDate >= start18 & startDate <= end18 ~ ".Wave_18B",
+                            startDate >= start19 & startDate <= end19 ~ ".Wave_18B_in_19A"))
+
+```
+
+## check for number of entries per wave
+
+```{r check for number of entries per wave}
+COPING_followupA.id %>%
+  group_by(waveA) %>%
+  count()
+
+COPING_followupA_ong.id %>%
+  group_by(waveA) %>%
+  count()
+
+COPING_followupB.id %>%
+  group_by(waveB) %>%
+  count()
+```
+
+## Identifying duplicate IDs in a single wave
+```{r Identifying duplicate IDs in a single wave}
+
+##Identify dup IDs in a single wave (follow up A)
+COPING_followupA.id %>%
+   group_by(waveA, ID) %>%
+   summarize(N = n()) %>%
+   filter(N > 1)
+
+
+##Identify dup IDs in a single wave (follow up A ongoing)
+COPING_followupA_ong.id %>%
+   group_by(waveA, ID) %>%
+   summarize(N = n()) %>%
+   filter(N > 1)
+
+
+##Identify dup IDs in a single wave (B) 
+COPING_followupB.id %>%
+   group_by(waveB, ID) %>%
+   summarize(N = n()) %>%
+   filter(N > 1)
+
+
+```
+
+**removing duplicates, reatining the latest possible data where there are repeats**
+
+## Want the LATER data entry from people who answered twice within a single wave 
+We want there to be unique IDs within each of the waves
+```{r}
+##FOLLOW UP A
+##confirm number of rows in current dataset (= 22542)
+nrow(COPING_followupA.id)
+
+#Filter out duplicated IDs AND wave, keeping the LAST entry
+COPING_followupA.id <- COPING_followupA.id %>% 
+    group_by(ID) %>% 
+    filter(!duplicated(waveA,
+                      fromLast = TRUE)
+           )
+
+##confirm number of rows in dataset after filtering (should be 22485)
+nrow(COPING_followupA.id)
+
+##FOLLOW UP A ONGOING
+##confirm number of rows in current dataset (= 22542)
+nrow(COPING_followupA_ong.id)
+
+#Filter out duplicated IDs AND wave, keeping the LAST entry
+COPING_followupA_ong.id <- COPING_followupA_ong.id %>% 
+    group_by(ID) %>% 
+    filter(!duplicated(waveA,
+                      fromLast = TRUE)
+           )
+
+##confirm number of rows in dataset after filtering (should be 22485)
+nrow(COPING_followupA_ong.id)
+
+
+##FOLLOW UP B
+##confirm number of rows in current dataset 
+nrow(COPING_followupB.id)
+
+#Filter out duplicated IDs AND wave, keeping the LAST entry
+COPING_followupB.id <- COPING_followupB.id %>% 
+    group_by(ID) %>% 
+    filter(!duplicated(waveB,
+                      fromLast = TRUE)
+           )
+
+##confirm number of rows in dataset after filtering 
+nrow(COPING_followupB.id)
+```
+
+## Change COPING follow up A and B from long to wide format (we want this for the numeric ones so we can sum them)
+```{r COPING follow up A and B long to wide format}
+
+COPING_followupA.id.long <- COPING_followupA.id %>%
+  group_by(waveA) %>%
+  tidyr::pivot_wider(id_cols = ID, 
+    names_from = waveA, 
+                     values_from = c(gad7.pandemic_nervous_anxious_on_edge,
+                                     gad7.pandemic_cant_control_worry,
+                                     gad7.pandemic_worry_too_much,
+                                     gad7.pandemic_trouble_relaxing,
+                                     gad7.pandemic_restless,
+                                     gad7.pandemic_easily_annoyed,
+                                     gad7.pandemic_afraid_something_terrible_will_happen)) 
+
+COPING_followupA_ong.id.long <- COPING_followupA_ong.id %>%
+  group_by(waveA) %>%
+  tidyr::pivot_wider(id_cols = ID, 
+    names_from = waveA, 
+                       values_from = c(gad7.pandemic_nervous_anxious_on_edge,
+                                     gad7.pandemic_cant_control_worry,
+                                     gad7.pandemic_worry_too_much,
+                                     gad7.pandemic_trouble_relaxing,
+                                     gad7.pandemic_restless,
+                                     gad7.pandemic_easily_annoyed,
+                                     gad7.pandemic_afraid_something_terrible_will_happen)) 
+
+COPING_followupB.id.long <- COPING_followupB.id %>%
+  group_by(waveB) %>%
+  tidyr::pivot_wider(id_cols = ID, 
+    names_from = waveB, 
+                     values_from = c(gad7.pandemic_nervous_anxious_on_edge,
+                                     gad7.pandemic_cant_control_worry,
+                                     gad7.pandemic_worry_too_much,
+                                     gad7.pandemic_trouble_relaxing,
+                                     gad7.pandemic_restless,
+                                     gad7.pandemic_easily_annoyed,
+                                     gad7.pandemic_afraid_something_terrible_will_happen)) 
+  
+
+# Check
+colnames(COPING_followupA.id.long)
+colnames(COPING_followupA_ong.id.long)
+colnames(COPING_followupB.id.long)
+
+
+```
+  
+  
+  
+  
+  
+# RAMP baseline 
 ```{r}
 # read in baseline data
 
