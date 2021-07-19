@@ -1522,12 +1522,7 @@ dim(masq.RAMP)
 colnames(masq.RAMP)
 ```
 
+## merge follow ups with baseline and RAMP with COPING
 
-# Write merged data frame to an .rds file
-```{r Write merged data frame to an .rds file}
-
-saveRDS(object = masq.RAMP, file = paste0("../../../data_clean/RAMP_masq/masq.clean_merged_followup_long.RAMP", ".rds"))
-saveRDS(object = RAMP_baseline.id.clean, file = paste0("../../../data_clean/RAMP_masq/masq.clean_merged_baseline.RAMP",  ".rds"))
-```
 
 

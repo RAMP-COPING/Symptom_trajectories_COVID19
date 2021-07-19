@@ -53,6 +53,11 @@ if(!require(tidyverse)){
   install.packages("tidyverse")
   library(tidyverse)
 }
+
+if(!require(kableExtra)){
+  install.packages("kableExtra")
+  library(kableExtra)
+}
 ```
 
 ```{r}
@@ -1657,7 +1662,7 @@ colnames(RAMP_followupB.id.long.clean)
 # Save baseline RAMP cleaned data items only for CFA
 ```{r}
 
-saveRDS(object = RAMP_baseline.id.clean, file = paste0("../../../data_clean/RAMP_gad/gad.clean_baseline_items.RAMP",  ".rds"))
+saveRDS(object = RAMP_baseline.id.clean, file = paste0("../../../data_clean/gad/gad.clean_baseline_items.RAMP",  ".rds"))
 
 ```
 
@@ -2031,6 +2036,545 @@ gad.clean <- gad.clean %>%
 
 gad.totals.clean <-
   gad.clean %>%
-  select(ID,
+  select(ID, sample,
          starts_with("gad.total_Wave_"))
+```
+
+## save
+```{r save final data}
+saveRDS(object = gad.totals.clean, file = paste0("../../../data_clean/gad/gad.clean_merged_total_scores",  ".rds"))
+```
+
+# summary table 
+
+## create a  summary table for every wave
+
+each component table by wave
+```{r built summary table 0}
+
+summary_table_0 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_0,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_0,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_0)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Baseline") %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_0 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_0,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_0,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_0)))  %>%
+    mutate(time.point = "Baseline" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_0 <- rbind (summary_table_sample_0,summary_table_0)
+
+```
+
+
+
+```{r built summary table 01}
+
+summary_table_01 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_01,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_01,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_01)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 01" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_01 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_01,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_01,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_01)))  %>%
+    mutate(time.point = "Follow up 01" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_01 <- rbind (summary_table_sample_01,summary_table_01)
+
+```
+
+
+```{r built summary table 02}
+
+summary_table_02 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_02,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_02,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_02)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 02" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_02 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_02,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_02,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_02)))  %>%
+    mutate(time.point = "Follow up 02" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_02 <- rbind (summary_table_sample_02,summary_table_02)
+
+```
+
+```{r built summary table 03}
+
+summary_table_03 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_03,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_03,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_03)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 03" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_03 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_03,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_03,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_03)))  %>%
+    mutate(time.point = "Follow up 03" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_03 <- rbind (summary_table_sample_03,summary_table_03)
+
+```
+
+```{r built summary table 04}
+
+summary_table_04 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_04,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_04,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_04)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 04" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_04 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_04,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_04,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_04)))  %>%
+    mutate(time.point = "Follow up 04" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_04 <- rbind (summary_table_sample_04,summary_table_04)
+
+```
+
+```{r built summary table 05}
+
+summary_table_05 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_05,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_05,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_05)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 05" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_05 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_05,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_05,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_05)))  %>%
+    mutate(time.point = "Follow up 05" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_05 <- rbind (summary_table_sample_05,summary_table_05)
+
+```
+
+```{r built summary table 06}
+
+summary_table_06 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_06,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_06,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_06)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 06" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_06 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_06,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_06,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_06)))  %>%
+    mutate(time.point = "Follow up 06" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_06 <- rbind (summary_table_sample_06,summary_table_06)
+
+```
+
+```{r built summary table 07}
+
+summary_table_07 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_07,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_07,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_07)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 07" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_07 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_07,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_07,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_07)))  %>%
+    mutate(time.point = "Follow up 07" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_07 <- rbind (summary_table_sample_07,summary_table_07)
+
+```
+
+```{r built summary table 08}
+
+summary_table_08 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_08,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_08,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_08)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 08" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_08 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_08,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_08,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_08)))  %>%
+    mutate(time.point = "Follow up 08" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_08 <- rbind (summary_table_sample_08,summary_table_08)
+
+```
+
+```{r built summary table 09}
+
+summary_table_09 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_09,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_09,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_09)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 09" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_09 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_09,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_09,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_09)))  %>%
+    mutate(time.point = "Follow up 09" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_09 <- rbind (summary_table_sample_09,summary_table_09)
+
+```
+
+```{r built summary table 10}
+
+summary_table_10 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_10,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_10,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_10)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 10" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_10 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_10,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_10,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_10)))  %>%
+    mutate(time.point = "Follow up 10" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_10 <- rbind (summary_table_sample_10,summary_table_10)
+
+```
+
+```{r built summary table 11}
+
+summary_table_11 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_11,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_11,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_11)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 11" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_11 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_11,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_11,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_11)))  %>%
+    mutate(time.point = "Follow up 11" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_11 <- rbind (summary_table_sample_11,summary_table_11)
+
+```
+
+```{r built summary table 12}
+
+summary_table_12 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_12,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_12,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_12)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 12" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_12 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_12,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_12,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_12)))  %>%
+    mutate(time.point = "Follow up 12" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_12 <- rbind (summary_table_sample_12,summary_table_12)
+
+```
+
+```{r built summary table 13}
+
+summary_table_13 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_13,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_13,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_13)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 13" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_13 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_13,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_13,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_13)))  %>%
+    mutate(time.point = "Follow up 13" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_13 <- rbind (summary_table_sample_13,summary_table_13)
+
+```
+
+```{r built summary table 14}
+
+summary_table_14 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_14,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_14,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_14)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 14" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_14 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_14,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_14,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_14)))  %>%
+    mutate(time.point = "Follow up 14" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_14 <- rbind (summary_table_sample_14,summary_table_14)
+
+```
+
+```{r built summary table 15}
+
+summary_table_15 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_15,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_15,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_15)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 15" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_15 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_15,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_15,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_15)))  %>%
+    mutate(time.point = "Follow up 15" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_15 <- rbind (summary_table_sample_15,summary_table_15)
+
+```
+
+```{r built summary table 16}
+
+summary_table_16 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_16,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_16,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_16)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 16" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_16 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_16,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_16,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_16)))  %>%
+    mutate(time.point = "Follow up 16" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_16 <- rbind (summary_table_sample_16,summary_table_16)
+
+```
+
+```{r built summary table 17}
+
+summary_table_17 <- 
+  
+  gad.totals.clean %>%
+  summarise(mean = mean(gad.total_Wave_17,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_17,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_17)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 17" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_17 <- 
+  
+  gad.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(gad.total_Wave_17,na.rm = TRUE),
+            standard.deviation = sd(gad.total_Wave_17,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(gad.total_Wave_17)))  %>%
+    mutate(time.point = "Follow up 17" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_17 <- rbind (summary_table_sample_17,summary_table_17)
+
+```
+
+## join all tables
+
+
+```{r join all waves}
+
+full_table <- rbind(table_time_0,table_time_01,table_time_02,table_time_03,table_time_04,table_time_05,
+                    table_time_06,table_time_07,table_time_08,table_time_09,table_time_10,
+                    table_time_11,table_time_12,table_time_13,table_time_14,table_time_15,
+                    table_time_16,table_time_17)
+
+print(full_table)
+```
+
+## prettify and save with KABLE (colour combined rows)
+
+```{r create an index list to specify coloured rows}
+colour.me <- which(full_table$sample == "Combined")
+```
+
+```{r make kable table}
+
+pretty_table <- full_table %>%
+  kable(booktabs = T,
+        align='llccc',
+        col.names = str_to_title(gsub("[.]", " ", names(full_table)))) %>%
+  kable_styling() %>%
+  row_spec(colour.me,bold=T,background = "lightgrey") %>%
+  row_spec(0,bold=T,background = "grey",font_size = 16)
+
+pretty_table 
+```
+```{r save kable}
+
+save_file <- file.path(dirname(dirname(getwd())),"output/gad.all_waves_summary_table.html")
+
+save_kable(pretty_table,
+           save_file)
+
 ```
