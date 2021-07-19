@@ -956,7 +956,7 @@ gad.merging <- list(COPING_baseline.id.clean,
 
 
 gad.COPING <- plyr::join_all(gad.merging,
-                    by = "ID",
+#                    by = "ID", #if included, this stops columns with the same name from combined. Allowing to merge on all common names columns
                     type = "full")
 
 # relocate ID to the beginning
@@ -1670,7 +1670,7 @@ gad.merging <- list(RAMP_baseline.id.clean,
 
 
 gad.RAMP <- plyr::join_all(gad.merging,
-                    by = "ID",
+     #               by = "ID", freeing to merge on all common columns so we dont drop anyything needlessly
                     type = "full")
 
   
