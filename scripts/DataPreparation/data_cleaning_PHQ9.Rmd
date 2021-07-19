@@ -209,7 +209,7 @@ colnames(COPING_NBR.id)
 # merge GLAD, EDGI and NBR
 
 COPING_baseline.id <- left_join(COPING_NBR.id, COPING_GLAD.id)
-COPING_baseline.id <- left_join(COPING_baseline, COPING_EDGI.id)
+COPING_baseline.id <- left_join(COPING_baseline.id, COPING_EDGI.id)
   
 # Check column names
 COPING_baseline.id %>%
@@ -254,13 +254,16 @@ COPING_followupA.id <- COPING_followupA %>% #new dataset with ID
          sample,
          startDate,
          endDate,
-         phq9.pandemic_nervous_anxious_on_edge = phq.feeling_nervous_anxious_or_on_edge,
-         phq9.pandemic_cant_control_worry = phq.control_worrying_stop,
-         phq9.pandemic_worry_too_much = phq.worrying_too_much_about_different_things,
-         phq9.pandemic_trouble_relaxing = phq.trouble_relaxing,
-         phq9.pandemic_restless = phq.sit_hard_restless,
-         phq9.pandemic_easily_annoyed = phq.becoming_easily_annoyed_or_irritable,
-         phq9.pandemic_afraid_something_terrible_will_happen = phq.awful_happen_feeling_afraid)
+         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq.failure_feeling_bad_family,
+         phq9.pandemic_trouble_concentrating = phq.newspaper_reading_things_trouble,
+         phq9.pandemic_moving_slowy = phq.slowly_speaking_moving_noticed,
+         phq9.pandemic_fidgeting = phq.fidgety_opposite_moving_restless,
+         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
 
 # Inspect colnames
 colnames(COPING_followupA.id)
@@ -298,13 +301,16 @@ COPING_followupB.id <- COPING_followupB %>% #new dataset with ID
          sample,
          startDate,
          endDate,
-         phq9.pandemic_nervous_anxious_on_edge = phq.feeling_nervous_anxious_or_on_edge,
-         phq9.pandemic_cant_control_worry = phq.stop_control_worrying,
-         phq9.pandemic_worry_too_much = phq.worrying_too_much_about_different_things,
-         phq9.pandemic_trouble_relaxing = phq.trouble_relaxing,
-         phq9.pandemic_restless = phq.hard_sit_restless,
-         phq9.pandemic_easily_annoyed = phq.becoming_easily_annoyed_or_irritable,
-         phq9.pandemic_afraid_something_terrible_will_happen = phq.awful_feeling_afraid_happen)
+         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq.failure_family_feeling_bad,
+         phq9.pandemic_trouble_concentrating = phq.trouble_concentrating_newspaper_reading,
+         phq9.pandemic_moving_slowy = phq.slowly_noticed_speaking_moving,
+         phq9.pandemic_fidgeting = phq.fidgety_opposite_moving_restless,
+         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
 
 
 # Inspect colnames
@@ -342,13 +348,16 @@ COPING_followupA_ong.id <- COPING_followupA_ong %>% #new dataset with ID
          sample,
          startDate,
          endDate,
-         phq9.pandemic_nervous_anxious_on_edge = phq.feeling_nervous_anxious_or_on_edge,
-         phq9.pandemic_cant_control_worry = phq.control_worrying_stop,
-         phq9.pandemic_worry_too_much = phq.worrying_too_much_about_different_things,
-         phq9.pandemic_trouble_relaxing = phq.trouble_relaxing,
-         phq9.pandemic_restless = phq.sit_hard_restless,
-         phq9.pandemic_easily_annoyed = phq.becoming_easily_annoyed_or_irritable,
-         phq9.pandemic_afraid_something_terrible_will_happen = phq.awful_feeling_afraid_happen)
+         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq.failure_feeling_bad_family,
+         phq9.pandemic_trouble_concentrating = phq.newspaper_reading_things_trouble,
+         phq9.pandemic_moving_slowy = phq.slowly_speaking_moving_noticed,
+         phq9.pandemic_fidgeting = phq.fidgety_opposite_moving_restless,
+         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
 
 
 # Inspect colnames
@@ -368,6 +377,22 @@ COPING_followupA.id_joined <- rbind(COPING_followupA.id,
                                     COPING_followupA_ong.id)
 
 dim(COPING_followupA.id_joined)
+```
+# fix 10 item issue
+COPING follow up PHQ coded one item (*Moving or speaking so slowly that other people could have noticed?
+Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual?*) into two items due to early mistake which meant that only the psychomotor retardation was being captured in early cases. I am resolving by taking the highest value for either item as the persons response
+
+```{r fix multiple item issue in COPING follow up PHQ}
+
+COPING_followupA.id_joined <- COPING_followupA.id_joined %>%
+  mutate(phq9.pandemic_fidgeting_or_moving_slowly = case_when(!is.na(phq9.pandemic_moving_slowy) & is.na(phq9.pandemic_fidgeting) ~ .$phq9.pandemic_moving_slowy,
+                                                              is.na(phq9.pandemic_moving_slowy) & !is.na(phq9.pandemic_fidgeting) ~ .$phq9.pandemic_fidgeting,
+                                                              phq9.pandemic_moving_slowy == phq9.pandemic_fidgeting ~ .$phq9.pandemic_moving_slowy,
+                                                              phq9.pandemic_moving_slowy > phq9.pandemic_fidgeting ~ .$phq9.pandemic_moving_slowy,
+                                                              phq9.pandemic_moving_slowy < phq9.pandemic_fidgeting ~ .$phq9.pandemic_fidgeting)) %>%
+  select(-phq9.pandemic_moving_slowy,
+         -phq9.pandemic_fidgeting)
+  
 ```
 
 ## Creating follow up time points
@@ -658,37 +683,46 @@ COPING_followupA.id.long <- COPING_followupA.id %>%
   group_by(waveA) %>%
   tidyr::pivot_wider(id_cols = ID, 
     names_from = waveA, 
-                     values_from = c(phq9.pandemic_nervous_anxious_on_edge,
-                                     phq9.pandemic_cant_control_worry,
-                                     phq9.pandemic_worry_too_much,
-                                     phq9.pandemic_trouble_relaxing,
-                                     phq9.pandemic_restless,
-                                     phq9.pandemic_easily_annoyed,
-                                     phq9.pandemic_afraid_something_terrible_will_happen)) 
+                     values_from = c(phq9.pandemic_little_interest_or_pleasure, 
+                                     phq9.pandemic_down_depressed_hopeless, 
+                                     phq9.pandemic_trouble_falling_or_staying_asleep,
+                                     phq9.pandemic_feel_tired_little_energy, 
+                                     phq9.pandemic_poor_appetite_or_overeating,
+                                     phq9.pandemic_feeling_like_a_failure,
+                                     phq9.pandemic_trouble_concentrating,
+                                     phq9.slowly_speaking_moving_noticed,
+                                     phq9.pandemic_fidgeting_or_moving_slowly,
+                                     phq9.pandemic_thoughts_better_off_dead)) 
 
 COPING_followupA_ong.id.long <- COPING_followupA_ong.id %>%
   group_by(waveA) %>%
   tidyr::pivot_wider(id_cols = ID, 
     names_from = waveA, 
-                       values_from = c(phq9.pandemic_nervous_anxious_on_edge,
-                                     phq9.pandemic_cant_control_worry,
-                                     phq9.pandemic_worry_too_much,
-                                     phq9.pandemic_trouble_relaxing,
-                                     phq9.pandemic_restless,
-                                     phq9.pandemic_easily_annoyed,
-                                     phq9.pandemic_afraid_something_terrible_will_happen)) 
+                     values_from = c(phq9.pandemic_little_interest_or_pleasure, 
+                                     phq9.pandemic_down_depressed_hopeless, 
+                                     phq9.pandemic_trouble_falling_or_staying_asleep,
+                                     phq9.pandemic_feel_tired_little_energy, 
+                                     phq9.pandemic_poor_appetite_or_overeating,
+                                     phq9.pandemic_feeling_like_a_failure,
+                                     phq9.pandemic_trouble_concentrating,
+                                     phq9.slowly_speaking_moving_noticed,
+                                     phq9.pandemic_fidgeting_or_moving_slowly,
+                                     phq9.pandemic_thoughts_better_off_dead)) 
 
 COPING_followupB.id.long <- COPING_followupB.id %>%
   group_by(waveB) %>%
   tidyr::pivot_wider(id_cols = ID, 
     names_from = waveB, 
-                     values_from = c(phq9.pandemic_nervous_anxious_on_edge,
-                                     phq9.pandemic_cant_control_worry,
-                                     phq9.pandemic_worry_too_much,
-                                     phq9.pandemic_trouble_relaxing,
-                                     phq9.pandemic_restless,
-                                     phq9.pandemic_easily_annoyed,
-                                     phq9.pandemic_afraid_something_terrible_will_happen)) 
+                     values_from = c(phq9.pandemic_little_interest_or_pleasure, 
+                                     phq9.pandemic_down_depressed_hopeless, 
+                                     phq9.pandemic_trouble_falling_or_staying_asleep,
+                                     phq9.pandemic_feel_tired_little_energy, 
+                                     phq9.pandemic_poor_appetite_or_overeating,
+                                     phq9.pandemic_feeling_like_a_failure,
+                                     phq9.pandemic_trouble_concentrating,
+                                     phq9.slowly_speaking_moving_noticed,
+                                     phq9.pandemic_fidgeting_or_moving_slowly,
+                                     phq9.pandemic_thoughts_better_off_dead)) 
   
 
 # Check
@@ -1457,26 +1491,32 @@ RAMP_followupA.id.long <- RAMP_followupA.id %>%
   group_by(waveA) %>%
   tidyr::pivot_wider(id_cols = ID, 
     names_from = waveA, 
-                     values_from = c(phq9.pandemic_nervous_anxious_on_edge,
-                                     phq9.pandemic_cant_control_worry,
-                                     phq9.pandemic_worry_too_much,
-                                     phq9.pandemic_trouble_relaxing,
-                                     phq9.pandemic_restless,
-                                     phq9.pandemic_easily_annoyed,
-                                     phq9.pandemic_afraid_something_terrible_will_happen)) 
+                     values_from = c(phq9.pandemic_little_interest_or_pleasure, 
+                                     phq9.pandemic_down_depressed_hopeless, 
+                                     phq9.pandemic_trouble_falling_or_staying_asleep,
+                                     phq9.pandemic_feel_tired_little_energy, 
+                                     phq9.pandemic_poor_appetite_or_overeating,
+                                     phq9.pandemic_feeling_like_a_failure,
+                                     phq9.pandemic_trouble_concentrating,
+                                     phq.slowly_speaking_moving_noticed,
+                                     phq9.pandemic_fidgeting_or_moving_slowly,
+                                     phq9.pandemic_thoughts_better_off_dead)) 
 
 
 RAMP_followupB.id.long <- RAMP_followupB.id %>%
   group_by(waveB) %>%
   tidyr::pivot_wider(id_cols = ID, 
     names_from = waveB, 
-                     values_from = c(phq9.pandemic_nervous_anxious_on_edge,
-                                     phq9.pandemic_cant_control_worry,
-                                     phq9.pandemic_worry_too_much,
-                                     phq9.pandemic_trouble_relaxing,
-                                     phq9.pandemic_restless,
-                                     phq9.pandemic_easily_annoyed,
-                                     phq9.pandemic_afraid_something_terrible_will_happen)) 
+                     values_from = c(phq9.pandemic_little_interest_or_pleasure, 
+                                     phq9.pandemic_down_depressed_hopeless, 
+                                     phq9.pandemic_trouble_falling_or_staying_asleep,
+                                     phq9.pandemic_feel_tired_little_energy, 
+                                     phq9.pandemic_poor_appetite_or_overeating,
+                                     phq9.pandemic_feeling_like_a_failure,
+                                     phq9.pandemic_trouble_concentrating,
+                                     phq.slowly_speaking_moving_noticed,
+                                     phq9.pandemic_fidgeting_or_moving_slowly,
+                                     phq9.pandemic_thoughts_better_off_dead)) 
   
 
 # Check
