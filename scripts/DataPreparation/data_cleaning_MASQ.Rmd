@@ -242,81 +242,97 @@ dim(COPING_followupA.id_joined)
 ##Create waves within the FOLLOW UP DATA ##
 Note: dates from google sheet from Kirstin
 Checked with Gerome - set start date as the date the survey was released, and keep window open until the DAY BEFORE the next survey was released
+
+NOTE: Am changing wave indicators to be in order
+
+For those who did an earlier wave during the time frame of a later wave, I include them in the later wave.
+
+Include RAMP waves in ordering, even though COPING waves started later. So some earlier waves will only be RAMP
+
 ```{r}
 
-# MAY 2 (wave 1) - FOLLOW UP A
+# April/May (wave 1) - FOLLOW UP A
+ramp_start1 <- as.POSIXct("2020-04-21")
+ramp_end1 <-  as.POSIXct("2020-05-04")  
+
+# May (wave 2) - FOLLOW UP B
+ramp_start2 <- as.POSIXct("2020-05-05")
+ramp_end2<-  as.POSIXct("2020-05-18")  
+
+
+# MAY 2 (wave 3) - FOLLOW UP A
 start1 <- as.POSIXct("2020-05-19")
 end1 <-  as.POSIXct("2020-06-01")  
 
-# JUNE 1 (wave 2) - FOLLOW UP B
+# JUNE 1 (wave 4) - FOLLOW UP B
 start2 <- as.POSIXct("2020-06-02")
 end2<-  as.POSIXct("2020-06-15")  
 
-# JUNE 2 (wave 3) - FOLLOW UP A
+# JUNE 2 (wave 5) - FOLLOW UP A
 start3 <- as.POSIXct("2020-06-16")
 end3 <-  as.POSIXct("2020-06-29") 
 
-# JULY 1 (wave 4) - FOLLOW UP B
+# JULY 1 (wave 6) - FOLLOW UP B
 start4 <- as.POSIXct("2020-06-30")
 end4<-  as.POSIXct("2020-07-13") 
 
-# JULY 2 (wave 5) - FOLLOW UP A
+# JULY 2 (wave 7) - FOLLOW UP A
 start5 <- as.POSIXct("2020-07-14")
 end5 <-  as.POSIXct("2020-07-27") ## Ongoing starts from here?
 
-# JULY - AUG (wave 6) - FOLLOW UP B
+# JULY - AUG (wave 8) - FOLLOW UP B
 start6 <- as.POSIXct("2020-07-28") 
 end6 <-  as.POSIXct("2020-08-24") 
 
-# AUG - SEPT (wave 7) - FOLLOW UP A
+# AUG - SEPT (wave 9) - FOLLOW UP A
 start7 <- as.POSIXct("2020-08-25")
 end7 <-  as.POSIXct("2020-09-21") 
 
-# SEPT - OCT (wave 8) - FOLLOW UP B
+# SEPT - OCT (wave 10) - FOLLOW UP B
 start8 <- as.POSIXct("2020-09-22")
 end8 <-  as.POSIXct("2020-10-19") 
 
-# OCT - NOV (wave 9) - FOLLOW UP A
+# OCT - NOV (wave 11) - FOLLOW UP A
 start9 <- as.POSIXct("2020-10-20")
 end9 <-  as.POSIXct("2020-11-16") 
 
-# NOV - DEC (wave 10) - FOLLOW UP B
+# NOV - DEC (wave 12) - FOLLOW UP B
 start10 <- as.POSIXct("2020-11-17")
 end10 <-  as.POSIXct("2020-12-14") 
 
-# DEC - JAN (wave 11) - FOLLOW UP A
+# DEC - JAN (wave 13) - FOLLOW UP A
 start11 <- as.POSIXct("2020-12-15")
 end11 <-  as.POSIXct("2021-01-11") 
 
-# JAN - FEB (wave 12) - FOLLOW UP B
+# JAN - FEB (wave 14) - FOLLOW UP B
 start12 <- as.POSIXct("2021-01-12")
 end12 <-  as.POSIXct("2021-02-08") 
 
-# FEB - MARCH (wave 13) - FOLLOW UP A
+# FEB - MARCH (wave 15) - FOLLOW UP A
 start13 <- as.POSIXct("2021-02-09")
 end13 <-  as.POSIXct("2021-03-08") 
 
-# MARCH - APR (wave 14) - FOLLOW UP B
+# MARCH - APR (wave 16) - FOLLOW UP B
 start14 <- as.POSIXct("2021-03-09")
 end14 <-  as.POSIXct("2021-04-05") 
 
-# APR - MAY (wave 15) - FOLLOW UP A
+# APR - MAY (wave 17) - FOLLOW UP A
 start15 <- as.POSIXct("2021-04-06")
 end15 <-  as.POSIXct("2021-05-03")
 
-# MAY - JUNE (wave 16) - FOLLOW UP B
+# MAY - JUNE (wave 18) - FOLLOW UP B
 start16 <- as.POSIXct("2021-05-04")
 end16 <-  as.POSIXct("2021-05-31")
 
-# JUNE - JULY (wave 17) - FOLLOW UP A
+# JUNE - JULY (wave 19) - FOLLOW UP A
 start17 <- as.POSIXct("2021-06-01")
 end17 <-  as.POSIXct("2021-06-28")
 
-# JUNE - JULY (wave 18) - FOLLOW UP B
+# JUNE - JULY (wave 20) - FOLLOW UP B
 start18 <- as.POSIXct("2021-06-29")
 end18 <-  as.POSIXct("2021-07-26")
 
-# JUNE - JULY (wave 19) - FOLLOW UP A
+# JUNE - JULY (wave 21) - FOLLOW UP A
 start19 <- as.POSIXct("2021-07-27")
 end19 <-  as.POSIXct("2021-08-17")
 
@@ -324,69 +340,69 @@ end19 <-  as.POSIXct("2021-08-17")
 
 
 COPING_followupA.id <- COPING_followupA.id %>%
-  mutate(waveA = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_1A",
-                           startDate >= start2 & startDate <= end2 ~ ".Wave_1A_in_2B",
-                            startDate >= start3 & startDate <= end3 ~ ".Wave_1A_repeat",
-                           startDate >= start4 & startDate <= end4 ~ ".Wave_3A_in_4B",
-                            startDate >= start5 & startDate <= end5 ~ ".Wave_5A",
-                           startDate >= start6 & startDate <= end6 ~ ".Wave_5A_in_6B",
-                            startDate >= start7 & startDate <= end7 ~ ".Wave_7A",
-                           startDate >= start8 & startDate <= end8 ~ ".Wave_7A_in_8B",
-                            startDate >= start9 & startDate <= end9 ~ ".Wave_9A",
-                           startDate >= start10 & startDate <= end10 ~ ".Wave_9A_in_10B",
-                            startDate >= start11 & startDate <= end11 ~ ".Wave_11A",
-                           startDate >= start12 & startDate <= end12 ~ ".Wave_11A_in_12B",
-                            startDate >= start13 & startDate <= end13 ~ ".Wave_13A",
-                              startDate >= start14 & startDate <= end14 ~ ".Wave_13A_in_14B",
-                            startDate >= start15 & startDate <= end15 ~ ".Wave_15A",
-                            startDate >= start16 & startDate <= end16 ~ ".Wave_15A_in_16B",
-                           startDate >= start17 & startDate <= end17 ~ ".Wave_17A",
-                           startDate >= start18 & startDate <= end18 ~ ".Wave_17A_in_18B",
-                            startDate >= start19 & startDate <= end19 ~ ".Wave_19A"))
+  mutate(waveA = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_03",
+                           startDate >= start2 & startDate <= end2 ~ ".Wave_04",
+                            startDate >= start3 & startDate <= end3 ~ ".Wave_03", #repeat
+                           startDate >= start4 & startDate <= end4 ~ ".Wave_06",
+                            startDate >= start5 & startDate <= end5 ~ ".Wave_07",
+                           startDate >= start6 & startDate <= end6 ~ ".Wave_08",
+                            startDate >= start7 & startDate <= end7 ~ ".Wave_09",
+                           startDate >= start8 & startDate <= end8 ~ ".Wave_10",
+                            startDate >= start9 & startDate <= end9 ~ ".Wave_11",
+                           startDate >= start10 & startDate <= end10 ~ ".Wave_12",
+                            startDate >= start11 & startDate <= end11 ~ ".Wave_13",
+                           startDate >= start12 & startDate <= end12 ~ ".Wave_14",
+                            startDate >= start13 & startDate <= end13 ~ ".Wave_15",
+                              startDate >= start14 & startDate <= end14 ~ ".Wave_16",
+                            startDate >= start15 & startDate <= end15 ~ ".Wave_17",
+                            startDate >= start16 & startDate <= end16 ~ ".Wave_18",
+                           startDate >= start17 & startDate <= end17 ~ ".Wave_19",
+                           startDate >= start18 & startDate <= end18 ~ ".Wave_20",
+                            startDate >= start19 & startDate <= end19 ~ ".Wave_21"))
 
 COPING_followupA_ong.id <- COPING_followupA_ong.id %>%
-  mutate(waveA = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_1A",
-                           startDate >= start2 & startDate <= end2 ~ ".Wave_1A_in_2B",
-                            startDate >= start3 & startDate <= end3 ~ ".Wave_3A",
-                           startDate >= start4 & startDate <= end4 ~ ".Wave_3A_in_4B",
-                            startDate >= start5 & startDate < start6 ~ ".Wave_5A",
-                           startDate >= start6 & startDate <= end6 ~ ".Wave_5A_in_6B",
-                            startDate >= start7 & startDate <= end7 ~ ".Wave_7A",
-                           startDate >= start8 & startDate <= end8 ~ ".Wave_7A_in_8B",
-                            startDate >= start9 & startDate <= end9 ~ ".Wave_9A",
-                           startDate >= start10 & startDate <= end10 ~ ".Wave_9A_in_10B",
-                            startDate >= start11 & startDate <= end11 ~ ".Wave_11A",
-                           startDate >= start12 & startDate <= end12 ~ ".Wave_11A_in_12B",
-                            startDate >= start13 & startDate <= end13 ~ ".Wave_13A",
-                              startDate >= start14 & startDate <= end14 ~ ".Wave_13A_in_14B",
-                            startDate >= start15 & startDate <= end15 ~ ".Wave_15A",
-                            startDate >= start16 & startDate <= end16 ~ ".Wave_15A_in_16B",
-                           startDate >= start17 & startDate <= end17 ~ ".Wave_17A",
-                           startDate >= start18 & startDate <= end18 ~ ".Wave_17A_in_18B",
-                            startDate >= start19 & startDate <= end19 ~ ".Wave_19A"))
+  mutate(waveA = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_03",
+                           startDate >= start2 & startDate <= end2 ~ ".Wave_04",
+                            startDate >= start3 & startDate <= end3 ~ ".Wave_05",
+                           startDate >= start4 & startDate <= end4 ~ ".Wave_06",
+                            startDate >= start5 & startDate < start6 ~ ".Wave_07",
+                           startDate >= start6 & startDate <= end6 ~ ".Wave_08",
+                            startDate >= start7 & startDate <= end7 ~ ".Wave_09",
+                           startDate >= start8 & startDate <= end8 ~ ".Wave_10",
+                            startDate >= start9 & startDate <= end9 ~ ".Wave_11",
+                           startDate >= start10 & startDate <= end10 ~ ".Wave_12",
+                            startDate >= start11 & startDate <= end11 ~ ".Wave_13",
+                           startDate >= start12 & startDate <= end12 ~ ".Wave_14",
+                            startDate >= start13 & startDate <= end13 ~ ".Wave_15",
+                              startDate >= start14 & startDate <= end14 ~ ".Wave_16",
+                            startDate >= start15 & startDate <= end15 ~ ".Wave_17",
+                            startDate >= start16 & startDate <= end16 ~ ".Wave_18",
+                           startDate >= start17 & startDate <= end17 ~ ".Wave_19",
+                           startDate >= start18 & startDate <= end18 ~ ".Wave_20",
+                            startDate >= start19 & startDate <= end19 ~ ".Wave_21"))
 
 COPING_followupB.id <- COPING_followupB.id %>%
-  mutate(waveB = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_1A_in_B", # should be impossible to exist
-                           startDate >= start2 & startDate <= end2 ~ ".Wave_2B",
-                            startDate >= start3 & startDate <= end3 ~ ".Wave_2B_in_3A",
-                           startDate >= start4 & startDate < start5 ~ ".Wave_4B",
-                            startDate >= start5 & startDate <= end5 ~ ".Wave_4B_in_5A",
-                           startDate >= start6 & startDate <= end6 ~ ".Wave_6B",
-                            startDate >= start7 & startDate <= end7 ~ ".Wave_6B_in_7A",
-                           startDate >= start8 & startDate <= end8 ~ ".Wave_8B",
-                            startDate >= start9 & startDate <= end9 ~ ".Wave_8B_in_9A",
-                           startDate >= start10 & startDate <= end10 ~ ".Wave_10B",
-                            startDate >= start11 & startDate <= end11 ~ ".Wave_10B_in_11A",
-                           startDate >= start12 & startDate <= end12 ~ ".Wave_12B",
-                            startDate >= start13 & startDate <= end13 ~ ".Wave_12B_in_13A",
-                              startDate >= start14 & startDate <= end14 ~ ".Wave_14B",
-                            startDate >= start15 & startDate <= end15 ~ ".Wave_14B_in_15A",
-                            startDate >= start16 & startDate <= end16 ~ ".Wave_16B",
-                           startDate >= start17 & startDate <= end17 ~ ".Wave_16B_in_17A",
-                           startDate >= start18 & startDate <= end18 ~ ".Wave_18B",
-                            startDate >= start19 & startDate <= end19 ~ ".Wave_18B_in_19A"))
-
+  mutate(waveB = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_3A_in_B", # should be impossible to exist
+                           startDate >= start2 & startDate <= end2 ~ ".Wave_04",
+                            startDate >= start3 & startDate <= end3 ~ ".Wave_05",
+                           startDate >= start4 & startDate < start5 ~ ".Wave_06",
+                            startDate >= start5 & startDate <= end5 ~ ".Wave_07",
+                           startDate >= start6 & startDate <= end6 ~ ".Wave_08",
+                            startDate >= start7 & startDate <= end7 ~ ".Wave_09",
+                           startDate >= start8 & startDate <= end8 ~ ".Wave_10",
+                            startDate >= start9 & startDate <= end9 ~ ".Wave_11",
+                           startDate >= start10 & startDate <= end10 ~ ".Wave_12",
+                            startDate >= start11 & startDate <= end11 ~ ".Wave_13",
+                           startDate >= start12 & startDate <= end12 ~ ".Wave_14",
+                            startDate >= start13 & startDate <= end13 ~ ".Wave_15",
+                              startDate >= start14 & startDate <= end14 ~ ".Wave_16",
+                            startDate >= start15 & startDate <= end15 ~ ".Wave_17",
+                            startDate >= start16 & startDate <= end16 ~ ".Wave_18",
+                           startDate >= start17 & startDate <= end17 ~ ".Wave_19",
+                           startDate >= start18 & startDate <= end18 ~ ".Wave_20",
+                            startDate >= start19 & startDate <= end19 ~ ".Wave_21"))
 ```
+
 
 ## check for number of entries per wave
 
@@ -954,9 +970,14 @@ colnames(RAMP_followupB.id)
 
 # RAMP follow up survey dates
 
+# RAMP follow up survey dates
+
 ##Create waves within the FOLLOW UP DATA ##
 Note: dates from google sheet from Kirstin
 Checked with Gerome - set start date as the date the survey was released, and keep window open until the DAY BEFORE the next survey was released
+
+these are in order, incorporating everyone into wave according to date of completion as per the COPING above. 
+
 ```{r}
 
 # April/May (wave 1) - FOLLOW UP A
@@ -1037,53 +1058,55 @@ ramp_end19 <-  as.POSIXct("2021-06-28")
 
 
 #JM**do we have data beyond this?
+## KLP corrected the below to ensure 6 people who were NA (1 in wave A, 5 in wave B) are correctly allocated to the correct wave. easy check for dates for these wave NAs is to run the following after you run these chunks the first time: RAMP_followupA.id$endDate[is.na(RAMP_followupA.id$waveA)]
 
 RAMP_followupA.id <- RAMP_followupA.id %>%
-  mutate(waveA = case_when(startDate >= ramp_start1 & startDate < ramp_start2 ~ ".Wave_1A",
-                           startDate >= ramp_start2 & startDate <= ramp_end2 ~ ".Wave_1A_in_2B",
-                            startDate >= ramp_start3 & startDate <= ramp_end3 ~ ".Wave_3A",
-                           startDate >= ramp_start4 & startDate <= ramp_end4 ~ ".Wave_3A_in_4B",
-                            startDate >= ramp_start5 & startDate <= ramp_end5 ~ ".Wave_5A",
-                           startDate >= ramp_start6 & startDate <= ramp_end6 ~ ".Wave_5A_in_6B",
-                            startDate >= ramp_start7 & startDate <= ramp_end7 ~ ".Wave_7A",
-                           startDate >= ramp_start8 & startDate <= ramp_end8 ~ ".Wave_7A_in_8B",
-                            startDate >= ramp_start9 & startDate <= ramp_end9 ~ ".Wave_9A",
-                           startDate >= ramp_start10 & startDate <= ramp_end10 ~ ".Wave_9A_in_10B",
-                            startDate >= ramp_start11 & startDate <= ramp_end11 ~ ".Wave_11A",
-                           startDate >= ramp_start12 & startDate <= ramp_end12 ~ ".Wave_11A_in_12B",
-                            startDate >= ramp_start13 & startDate <= ramp_end13 ~ ".Wave_13A",
-                              startDate >= ramp_start14 & startDate <= ramp_end14 ~ ".Wave_13A_in_14B",
-                            startDate >= ramp_start15 & startDate <= ramp_end15 ~ ".Wave_15A",
-                            startDate >= ramp_start16 & startDate <= ramp_end16 ~ ".Wave_15A_in_16B",
-                           startDate >= ramp_start17 & startDate <= ramp_end17 ~ ".Wave_17A",
-                           startDate >= ramp_start18 & startDate <= ramp_end18 ~ ".Wave_17A_in_18B",
-                            startDate >= ramp_start19 & startDate <= ramp_end19 ~ ".Wave_19A")
+  mutate(waveA = case_when(startDate >= ramp_start1 & startDate < ramp_start2 ~ ".Wave_01",
+                           startDate >= ramp_start2 & startDate <= ramp_end2 ~ ".Wave_02",
+                            startDate >= ramp_start3 & startDate <= ramp_end3 ~ ".Wave_03",
+                           startDate >= ramp_start4 & startDate <= ramp_end4 ~ ".Wave_04",
+                            startDate >= ramp_start5 & startDate <= ramp_end5 ~ ".Wave_05",
+                           startDate >= ramp_start6 & startDate <= ramp_end6 ~ ".Wave_06",
+                            startDate >= ramp_start7 & startDate <= ramp_end7 ~ ".Wave_07",
+                           startDate >= ramp_start8 & startDate <= ramp_end8 ~ ".Wave_08",
+                            startDate >= ramp_start9 & startDate <= ramp_end9 ~ ".Wave_09",
+                           startDate >= ramp_start10 & startDate <= ramp_end10 ~ ".Wave_10",
+                            startDate >= ramp_start11 & startDate <= ramp_end11 ~ ".Wave_11",
+                           startDate >= ramp_start12 & startDate <= ramp_end12 ~ ".Wave_12",
+                            startDate >= ramp_start13 & startDate <= ramp_end13 ~ ".Wave_13",
+                              startDate >= ramp_start14 & startDate <= ramp_end14 ~ ".Wave_14",
+                            startDate >= ramp_start15 & startDate <= ramp_end15 ~ ".Wave_15",
+                            startDate >= ramp_start16 & startDate <= ramp_end16 ~ ".Wave_16",
+                           startDate >= ramp_start17 & startDate <= ramp_end17 ~ ".Wave_17",
+                           startDate >= ramp_start18 & startDate <= ramp_end18 ~ ".Wave_18",
+                            startDate >= ramp_start19 & startDate <= ramp_end19 ~ ".Wave_19")
          )
 
 RAMP_followupB.id <- RAMP_followupB.id %>%
   mutate(waveB = case_when(startDate >= ramp_start1 & startDate < ramp_end1 ~ ".Wave_1A_in_B", # should be impossible to exist
-                           startDate >= ramp_start2 & startDate < ramp_start3 ~ ".Wave_2B",
-                            startDate >= ramp_start3 & startDate <= ramp_end3 ~ ".Wave_2B_in_3A",
-                           startDate >= ramp_start4 & startDate <= ramp_end4 ~ ".Wave_4B",
-                            startDate >= ramp_start5 & startDate <= ramp_end5 ~ ".Wave_4B_in_5A",
-                           startDate >= ramp_start6 & startDate <= ramp_end6 ~ ".Wave_6B",
-                            startDate >= ramp_start7 & startDate <= ramp_end7 ~ ".Wave_6B_in_7A",
-                           startDate >= ramp_start8 & startDate <= ramp_end8 ~ ".Wave_8B",
-                            startDate >= ramp_start9 & startDate <= ramp_end9 ~ ".Wave_8B_in_9A",
-                           startDate >= ramp_start10 & startDate <= ramp_end10 ~ ".Wave_10B",
-                            startDate >= ramp_start11 & startDate <= ramp_end11 ~ ".Wave_10B_in_11A",
-                           startDate >= ramp_start12 & startDate <= ramp_end12 ~ ".Wave_12B",
-                            startDate >= ramp_start13 & startDate <= ramp_end13 ~ ".Wave_12B_in_13A",
-                              startDate >= ramp_start14 & startDate <= ramp_end14 ~ ".Wave_14B",
-                            startDate >= ramp_start15 & startDate <= ramp_end15 ~ ".Wave_14B_in_15A",
-                            startDate >= ramp_start16 & startDate <= ramp_end16 ~ ".Wave_16B",
-                           startDate >= ramp_start17 & startDate <= ramp_end17 ~ ".Wave_16B_in_17A",
-                           startDate >= ramp_start18 & startDate <= ramp_end18 ~ ".Wave_18B",
-                            startDate >= ramp_start19 & startDate <= ramp_end19 ~ ".Wave_18B_in_19A"))
+                           startDate >= ramp_start2 & startDate < ramp_start3 ~ ".Wave_02",
+                            startDate >= ramp_start3 & startDate <= ramp_end3 ~ ".Wave_03",
+                           startDate >= ramp_start4 & startDate <= ramp_end4 ~ ".Wave_04",
+                            startDate >= ramp_start5 & startDate <= ramp_end5 ~ ".Wave_05",
+                           startDate >= ramp_start6 & startDate <= ramp_end6 ~ ".Wave_06",
+                            startDate >= ramp_start7 & startDate <= ramp_end7 ~ ".Wave_07",
+                           startDate >= ramp_start8 & startDate <= ramp_end8 ~ ".Wave_08",
+                            startDate >= ramp_start9 & startDate <= ramp_end9 ~ ".Wave_09",
+                           startDate >= ramp_start10 & startDate <= ramp_end10 ~ ".Wave_10",
+                            startDate >= ramp_start11 & startDate <= ramp_end11 ~ ".Wave_11",
+                           startDate >= ramp_start12 & startDate <= ramp_end12 ~ ".Wave_12",
+                            startDate >= ramp_start13 & startDate <= ramp_end13 ~ ".Wave_13",
+                              startDate >= ramp_start14 & startDate <= ramp_end14 ~ ".Wave_14",
+                            startDate >= ramp_start15 & startDate <= ramp_end15 ~ ".Wave_15",
+                            startDate >= ramp_start16 & startDate <= ramp_end16 ~ ".Wave_16",
+                           startDate >= ramp_start17 & startDate <= ramp_end17 ~ ".Wave_17",
+                           startDate >= ramp_start18 & startDate <= ramp_end18 ~ ".Wave_18",
+                            startDate >= ramp_start19 & startDate <= ramp_end19 ~ ".Wave_19"))
 
 
 
 ```
+
 
 ## check for number of entries per wave
 
