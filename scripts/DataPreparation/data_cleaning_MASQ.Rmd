@@ -1,13 +1,28 @@
 ---
-title: "data_cleaning_MASQ for RAMP and COPING"
-author: "Jessica Mundy"
-date: "08/06/2021"
-output: html_document
+title: "Clean MASQ data for all waves. Save a seperate RAMP baseline data for CFA in addition to all wave for GMM"
+author: "K L Purves"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: show
+
+html_notebook:
+  theme: cerulean
+toc: yes
 ---
 
-#Set up 
+# Setup
 
-```{r Delete everything in your global environment}
+```{r}
+# clear global environment
 remove(list = ls())
 ```
 
@@ -38,28 +53,35 @@ if(!require(tidyverse)){
   install.packages("tidyverse")
   library(tidyverse)
 }
+
+if(!require(kableExtra)){
+  install.packages("kableExtra")
+  library(kableExtra)
+}
 ```
 
-```{r Set GLAD palette for plotting}
-glad_palette = c("#efc00b", "#b7dee8")
-```
+```{r}
+# read in the files (save to environment)
 
-```{r Retrieve the recent date}
-date = Sys.Date()
-date
-```
-
-```{r Source the add_numeric function}
-source(file = "../functions/add_numeric.R") # used to convert character variables into numeric variables.
-```
-
-```{r Source the credentials file}
 source("../../../Credentials/paths_anhedonia_analysis.R")
 ```
 
-# Read in data
+## read in all functions from function library
 
-## COPING follow up A
+```{r call in function library functions}
+# source all functions in the function library folder
+files.sources = paste0("../functions/",list.files("../functions"))
+sapply(files.sources, source)
+
+```
+
+# COPING data preprocessing {.tabset}
+
+Important note: COPING did not include the masq at baseline. 
+
+## read in and rename
+
+### COPING follow up A
 
 ```{r Read in COPING follow up A data}
 # Read in the data
@@ -78,12 +100,11 @@ COPING_followupA %>%
   head()
 ```
 
-```{r Select & rename relevant columns (will be a function at some point)}
+```{r}
 
 
 COPING_followupA.id <- COPING_followupA %>% #new dataset with ID
   drop_na(externalDataReference) %>% # Drop NAs
-  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for COPING data
   add_column(sample = "COPING_followupA", .after = "externalDataReference") %>% #create new column 
   select(
          ID = externalDataReference, # ID
@@ -117,10 +138,9 @@ colnames(COPING_followupA.id)
 
 ```
   
+### COPING follow up B
 
-## COPING follow up B
-
-```{r Read in COPING follow up A data}
+```{r Read in COPING follow up B data}
 # Read in the data
 COPING_followupB <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupb/masq_coping_followupb.rds"))
 
@@ -143,7 +163,6 @@ Select & rename relevant columns (will be a function at some point)
 
 COPING_followupB.id <- COPING_followupB %>% #new dataset with ID
   drop_na(externalDataReference) %>% # Drop NAs
-
   add_column(sample = "COPING_followupB", .after = "externalDataReference") %>% #create new column 
   select(
          ID = externalDataReference, # ID
@@ -162,12 +181,13 @@ COPING_followupB.id <- COPING_followupB %>% #new dataset with ID
          masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself) 
 
 
+
 # Inspect colnames
 colnames(COPING_followupB.id)
 
 ```
 
-## COPING followup A ongoing
+### COPING followup A ongoing
 ```{r}
 # Read in the data
 COPING_followupA_ong <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupa_ongoing/masq_coping_followupa_ongoing.rds"))
@@ -190,7 +210,6 @@ Select & rename relevant columns (will be a function at some point)
 
 COPING_followupA_ong.id <- COPING_followupA_ong %>% #new dataset with ID
   drop_na(externalDataReference) %>% # Drop NAs
-
   add_column(sample = "COPING_followupA_ong", .after = "externalDataReference") %>% #create new column 
   select(
          ID = externalDataReference, # ID
@@ -209,37 +228,15 @@ COPING_followupA_ong.id <- COPING_followupA_ong %>% #new dataset with ID
          masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself) 
 
 
+
 # Inspect colnames
 colnames(COPING_followupA_ong.id)
 
 ```
-# Join COPING follow up A and follow up A ongoing
-For the purpose of data cleaning, I am going to drop the prepandemic questions.
 
-```{r Drop prepandemic questions, eval=FALSE}
-COPING_followupA.id_no_prepan <- COPING_followupA.id %>% 
-  select(!contains("masq.pre_pandemic_")) %>% 
-  select(!contains("masq.feelings_felt_before_pandemic"))
-  
-colnames(COPING_followupA.id_no_prepan)
+## Creating follow up time points
 
-```
-
-```{r Join COPING follow up A and COPING follow up A ongoing, eval=FALSE}
-# check column names match
-colnames(COPING_followupA.id_no_prepan)
-colnames(COPING_followupA_ong.id)
-
-# rbind
-COPING_followupA.id_joined <- rbind(COPING_followupA.id_no_prepan,
-                                    COPING_followupA_ong.id)
-
-dim(COPING_followupA.id_joined)
-```
-
-# COPING follow up survey dates
-
-##Create waves within the FOLLOW UP DATA ##
+### Create waves within the FOLLOW UP DATA 
 Note: dates from google sheet from Kirstin
 Checked with Gerome - set start date as the date the survey was released, and keep window open until the DAY BEFORE the next survey was released
 
@@ -248,6 +245,7 @@ NOTE: Am changing wave indicators to be in order
 For those who did an earlier wave during the time frame of a later wave, I include them in the later wave.
 
 Include RAMP waves in ordering, even though COPING waves started later. So some earlier waves will only be RAMP
+
 
 ```{r}
 
@@ -401,12 +399,12 @@ COPING_followupB.id <- COPING_followupB.id %>%
                            startDate >= start17 & startDate <= end17 ~ ".Wave_19",
                            startDate >= start18 & startDate <= end18 ~ ".Wave_20",
                             startDate >= start19 & startDate <= end19 ~ ".Wave_21"))
+
 ```
 
+### check for number of entries per wave
 
-## check for number of entries per wave
-
-```{r check for number of entries per wave}
+```{r check for number of entries per wave COPING}
 COPING_followupA.id %>%
   group_by(waveA) %>%
   count()
@@ -420,8 +418,8 @@ COPING_followupB.id %>%
   count()
 ```
 
-## Identifying duplicate IDs in a single wave
-```{r Identifying duplicate IDs in a single wave}
+### Identifying duplicate IDs in a single wave
+```{r Identifying duplicate IDs in a single wave COPING}
 
 ##Identify dup IDs in a single wave (follow up A)
 COPING_followupA.id %>%
@@ -444,11 +442,13 @@ COPING_followupB.id %>%
    filter(N > 1)
 
 
+
+
 ```
 
 **removing duplicates, reatining the latest possible data where there are repeats**
 
-## Want the LATER data entry from people who answered twice within a single wave 
+### Want the LATER data entry from people who answered twice within a single wave 
 We want there to be unique IDs within each of the waves
 ```{r}
 ##FOLLOW UP A
@@ -493,6 +493,8 @@ COPING_followupB.id <- COPING_followupB.id %>%
 
 ##confirm number of rows in dataset after filtering 
 nrow(COPING_followupB.id)
+
+
 ```
 
 ## Change COPING follow up A and B from long to wide format (we want this for the numeric ones so we can sum them)
@@ -528,6 +530,7 @@ COPING_followupA_ong.id.long <- COPING_followupA_ong.id %>%
                                      masq.pandemic_lot_felt_energy,
                                      masq.pandemic_felt_really_good_about_myself)) 
 
+
 COPING_followupB.id.long <- COPING_followupB.id %>%
   group_by(waveB) %>%
   tidyr::pivot_wider(id_cols = ID, 
@@ -551,11 +554,20 @@ colnames(COPING_followupB.id.long)
 
 
 ```
-# Data cleaning
+  
+# Clean COPING data {.tabset}
+
+## Set minimum and maximum values 
+```{r Set minimum and maximum values}
+masq.min.scale <- 1
+masq.max.scale <- 5
+```
+
+
 
 ## COPING follow up A
 
-```{r Add "_unc" to the end of all variables}
+```{r Add "_unc" to the end of all variables COPING follow up A}
 COPING_followupA.id.long <- COPING_followupA.id.long %>% 
   rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
 
@@ -565,25 +577,20 @@ colnames(COPING_followupA.id.long)
 
 ```{r COPING follow up A inspect the variables}
 COPING_followupA.id.long %>% 
-  freq(masq.pandemic_felt_successful_.Wave_1A_unc)
+  freq(masq.pandemic_felt_successful_.Wave_03_unc)
 ```
 
-## Make list of variables for cleaning
-```{r Make list of variables for cleaning}
+### Make list of variables for cleaning
+```{r Make list of variables for cleaning COPING A}
 masq.items.followupA_unc <- COPING_followupA.id.long %>% 
   select(contains("_unc")) %>% 
   colnames()
 
 masq.items.followupA_unc
 ```
-## Set minimum and maximum values 
-```{r Set minimum and maximum values}
-masq.min.scale <- 1
-masq.max.scale <- 5
-```
 
-## Recode implausuble values
-```{r Recode implausible values}
+### Recode implausuble values
+```{r Recode implausible values COPING A}
 # Recode and clean
 COPING_followupA.id.long <- COPING_followupA.id.long %>%
    mutate(
@@ -604,16 +611,16 @@ COPING_followupA.id.long <- COPING_followupA.id.long %>%
 # Check
 colnames(COPING_followupA.id.long)
 ```
-## Make new list of cleaned variables
+### Make new list of cleaned variables
 ```{r}
 masq.items.followupA_clean <- COPING_followupA.id.long %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
-  select(!contains("ID")) %>% # deselect the ID variable
+  select(!"ID") %>% # deselect the ID variable
   colnames()
 
 masq.items.followupA_clean
 ```
-## Check number of implausible values
+### Check number of implausible values
 ```{r}
 # Check for implausible values
 masq_followupA_imp_n <- COPING_followupA.id.long %>% 
@@ -623,13 +630,13 @@ masq_followupA_imp_n <- COPING_followupA.id.long %>%
 
 # If statement
 if (masq_followupA_imp_n == 0) {
-  print(paste0("The number of implausible values in the coping follow up A MASQ variables is ", masq_followupA_imp_n, ". Can leave these variables as they are."))
+  print(paste0("The number of implausible values in the coping follow up A masq variables is ", masq_followupA_imp_n, ". Can leave these variables as they are."))
 } else {
-  print(paste0("The number of implausible values in the coping follow up A MASQ variables is ", masq_followupA_imp_n, ". Please investigate."))
+  print(paste0("The number of implausible values in the coping follow up A masq variables is ", masq_followupA_imp_n, ". Please investigate."))
 }
 ```
 
-# Select only the clean variables
+### Select only the clean variables
 Note: keep ID in this data set
 ```{r}
 COPING_followupA.id.long.clean <- COPING_followupA.id.long %>% 
@@ -638,10 +645,9 @@ COPING_followupA.id.long.clean <- COPING_followupA.id.long %>%
 colnames(COPING_followupA.id.long.clean)
 ```
 
-
 ## COPING follow up A ongoing
 
-```{r Add "_unc" to the end of all variables}
+```{r Add "_unc" to the end of all variables COPING follow up A ongoing}
 COPING_followupA_ong.id.long <- COPING_followupA_ong.id.long %>% 
   rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
 
@@ -649,13 +655,13 @@ COPING_followupA_ong.id.long <- COPING_followupA_ong.id.long %>%
 colnames(COPING_followupA_ong.id.long)
 ```
 
-```{r COPING follow up A inspect the variables}
+```{r COPING follow up A ongoing inspect the variables}
 COPING_followupA_ong.id.long %>% 
-  freq(masq.pandemic_felt_successful_.Wave_3A_unc)
+  freq(masq.pandemic_felt_successful_.Wave_05_unc)
 ```
 
-## Make list of variables for cleaning
-```{r Make list of variables for cleaning}
+### Make list of variables for cleaning
+```{r Make list of variables for cleaning COPING A ongoing}
 masq.items.followupA_ong_unc <- COPING_followupA_ong.id.long %>% 
   select(contains("_unc")) %>% 
   colnames()
@@ -663,8 +669,8 @@ masq.items.followupA_ong_unc <- COPING_followupA_ong.id.long %>%
 masq.items.followupA_ong_unc
 ```
 
-## Recode implausible values
-```{r Recode implausible values}
+### Recode implausible values
+```{r Recode implausible values COPING A ongoing}
 # Recode and clean
 COPING_followupA_ong.id.long <- COPING_followupA_ong.id.long %>%
    mutate(
@@ -686,17 +692,17 @@ COPING_followupA_ong.id.long <- COPING_followupA_ong.id.long %>%
 colnames(COPING_followupA_ong.id.long)
 ```
 
-## Make new list of cleaned variables
+### Make new list of cleaned variables
 ```{r}
 masq.items.followupA_ong_clean <- COPING_followupA_ong.id.long %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
-  select(!contains("ID")) %>% # deselect the ID variable
+  select(!"ID") %>% # deselect the ID variable
   colnames()
 
 masq.items.followupA_ong_clean
 ```
 
-## Check number of implausible values
+### Check number of implausible values
 ```{r}
 # Check for implausible values
 masq_followupA_ong_imp_n <- COPING_followupA_ong.id.long %>% 
@@ -706,13 +712,13 @@ masq_followupA_ong_imp_n <- COPING_followupA_ong.id.long %>%
 
 # If statement
 if (masq_followupA_ong_imp_n == 0) {
-  print(paste0("The number of implausible values in the coping follow up A ongoing MASQ variables is ", masq_followupA_ong_imp_n, ". Can leave these variables as they are."))
+  print(paste0("The number of implausible values in the coping follow up A ongoing masq variables is ", masq_followupA_ong_imp_n, ". Can leave these variables as they are."))
 } else {
-  print(paste0("The number of implausible values in the coping follow up A ongoing MASQ variables is ", masq_followupA_ong_imp_n, ". Please investigate."))
+  print(paste0("The number of implausible values in the coping follow up A ongoing masq variables is ", masq_followupA_ong_imp_n, ". Please investigate."))
 }
 ```
 
-# Select only the clean variables
+### Select only the clean variables
 Note: keep ID in this data set
 ```{r}
 COPING_followupA_ong.id.long.clean <- COPING_followupA_ong.id.long %>% 
@@ -722,15 +728,15 @@ colnames(COPING_followupA_ong.id.long.clean)
 ```
 
 
-# COPING follow up B
+## COPING follow up B
 
-```{r Add "_unc" to the end of all variables}
+```{r Add "_unc" to the end of all variables COPING follow up B}
 COPING_followupB.id.long <- COPING_followupB.id.long %>% 
   rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
 ```
 
-## Make list of variables for cleaning
-```{r Make list of variables for cleaning}
+### Make list of variables for cleaning
+```{r Make list of variables for cleaning COPING B}
 masq.items.followupB_unc <- COPING_followupB.id.long %>% 
   select(contains("_unc")) %>% 
   colnames()
@@ -738,8 +744,8 @@ masq.items.followupB_unc <- COPING_followupB.id.long %>%
 masq.items.followupB_unc
 ```
 
-## Recode implausible values
-```{r Recode implausible values}
+### Recode implausible values
+```{r Recode implausible valuesCOPING B}
 # Recode and clean
 COPING_followupB.id.long <- COPING_followupB.id.long %>%
    mutate(
@@ -760,16 +766,16 @@ COPING_followupB.id.long <- COPING_followupB.id.long %>%
 # Check
 colnames(COPING_followupB.id.long)
 ```
-## Make new list of cleaned variables
+### Make new list of cleaned variables
 ```{r}
 masq.items.followupB_clean <- COPING_followupB.id.long %>% 
   select(!contains("_unc")) %>% 
-  select(!contains("ID")) %>% 
+  select(!"ID") %>% 
   colnames()
 
 masq.items.followupB_clean
 ```
-## Check number of implausible values
+### Check number of implausible values
 ```{r}
 # Check for implausible values
 masq_followupB_imp_n <- COPING_followupB.id.long %>% 
@@ -779,13 +785,13 @@ masq_followupB_imp_n <- COPING_followupB.id.long %>%
 
 # If statement
 if (masq_followupB_imp_n == 0) {
-  print(paste0("The number of implausible values in the coping follow up B MASQ variables is ", masq_followupB_imp_n, ". Can leave these variables as they are."))
+  print(paste0("The number of implausible values in the coping follow up B masq variables is ", masq_followupB_imp_n, ". Can leave these variables as they are."))
 } else {
-  print(paste0("The number of implausible values in the coping follow up B MASQ variables is ", masq_followupB_imp_n, ". Please investigate."))
+  print(paste0("The number of implausible values in the coping follow up B masq variables is ", masq_followupB_imp_n, ". Please investigate."))
 }
 ```
 
-# Select only the clean variables
+### Select only the clean variables
 ```{r}
 COPING_followupB.id.long.clean <- COPING_followupB.id.long %>% 
   select(!contains("_unc"))
@@ -793,7 +799,8 @@ COPING_followupB.id.long.clean <- COPING_followupB.id.long %>%
 colnames(COPING_followupB.id.long.clean)
 ```
 
-# Merge COPING follow up A and B surveys
+
+# Merge COPING Baseline, follow up A and B surveys
 Note: full join (i.e. to get all participants in all three data sets)
 ```{r Merge COPING follow up A and B surveys}
 masq.merging <- list(COPING_followupA_ong.id.long.clean,
@@ -802,9 +809,12 @@ masq.merging <- list(COPING_followupA_ong.id.long.clean,
 
 
 masq.COPING <- plyr::join_all(masq.merging,
-                    by = "ID",
+#                    by = "ID", #if included, this stops columns with the same name from combined. Allowing to merge on all common names columns
                     type = "full")
 
+
+  
+  
 # check
 dim(COPING_followupA.id.long.clean)
 dim(COPING_followupA_ong.id.long.clean)
@@ -812,25 +822,23 @@ dim(COPING_followupB.id.long.clean)
 dim(masq.COPING)
 
 colnames(masq.COPING)
+
+
+# reorder so that it is easy to see each wave in place.
+masq.COPING.reordered <- masq.COPING %>% 
+  select(order(names(masq.COPING)))
+
+colnames(masq.COPING.reordered)
+
 ```
+  
+# RAMP data preprocessing {.tabset}
+## RAMP baseline 
+```{r}
+# read in baseline data
+RAMP_baseline = readRDS(paste0(ilovedata,"/data_raw/2021-02-18/ramp/masq_ramp.rds"))
 
-
-# Write merged data frame to an .rds file
-```{r Write merged data frame to an .rds file}
-saveRDS(object = masq.COPING, file = paste0("../../../data_clean/COPING_masq/masq.clean_merged_A_B_long",  ".rds"))
-```
-
-
-# RAMP MASQ data
-
-
-## RAMP baseline
-
-```{r Read in RAMP baseline data}
-# Read in the data
-RAMP_baseline <- readRDS(file = paste0(ilovedata, "/data_raw/2021-02-18/ramp/masq_ramp.rds"))
-
-  # Check column names
+# Check column names
 RAMP_baseline %>%
   colnames()
 
@@ -843,14 +851,14 @@ RAMP_baseline %>%
   head()
 ```
 
-```{r Select & rename relevant columns (will be a function at some point)}
+```{r}
+#Recode column names to harmonised variable names
+
+
 RAMP_baseline.id <- RAMP_baseline %>% #new dataset with ID
   drop_na("Login ID") %>% # Drop NAs
-  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for RAMP data
-  add_column(sample = "RAMP_baseline", .after = "Login ID") %>% #create new column 
   select(
          ID = "Login ID", # ID
-         sample,
          startDate,
          endDate,
          masq.pandemic_felt_successful = masq.felt_successful,
@@ -863,14 +871,27 @@ RAMP_baseline.id <- RAMP_baseline %>% #new dataset with ID
          masq.pandemic_felt_really_up_or_lively = masq.felt_really_up_or_lively,
          masq.pandemic_lot_felt_energy = masq.energy_lot_felt,
          masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself)
+         
 
 # Inspect colnames
 colnames(RAMP_baseline.id)
 
+
 ```
+
+
+```{r}
+#seen but not answered (-99 & -77 ) as NA
+RAMP_baseline.id <- RAMP_baseline.id %>%
+  mutate_at(vars(starts_with("masq")),
+            funs(case_when(
+
+             . == -77 ~ NA_real_,
+             TRUE ~  .)))
   
-  
-  
+
+```
+
 ## RAMP follow up A
 
 ```{r Read in RAMP follow up A data}
@@ -891,11 +912,10 @@ RAMP_followupA %>%
 ```
 
 
-```{r Select & rename relevant columns (will be a function at some point)}
+```{r }
 
 RAMP_followupA.id <- RAMP_followupA %>% #new dataset with ID
   drop_na(externalDataReference) %>% # Drop NAs
-  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for RAMP data
   add_column(sample = "RAMP_followupA", .after = "externalDataReference") %>% #create new column 
   select(
          ID = externalDataReference, # ID
@@ -913,6 +933,7 @@ RAMP_followupA.id <- RAMP_followupA %>% #new dataset with ID
          masq.pandemic_lot_felt_energy = masq.lot_felt_energy,
          masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself)
 
+
 # Inspect colnames
 colnames(RAMP_followupA.id)
 
@@ -921,7 +942,7 @@ colnames(RAMP_followupA.id)
 
 ## RAMP follow up B
 
-```{r Read in RAMP follow up A data}
+```{r Read in RAMP follow up B data}
 # Read in the data
 RAMP_followupB <- readRDS(file = paste0(ilovedata, "/data_raw/2021-04-09/ramp_followupb/masq_ramp_followupb.rds"))
 
@@ -944,7 +965,6 @@ Select & rename relevant columns (will be a function at some point)
 
 RAMP_followupB.id <- RAMP_followupB %>% #new dataset with ID
   drop_na(externalDataReference) %>% # Drop NAs
-  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for RAMP data
   add_column(sample = "RAMP_followupB", .after = "externalDataReference") %>% #create new column 
   select(
          ID = externalDataReference, # ID
@@ -963,16 +983,15 @@ RAMP_followupB.id <- RAMP_followupB %>% #new dataset with ID
          masq.pandemic_felt_really_good_about_myself = masq.felt_really_good_about_myself) 
 
 
+
 # Inspect colnames
 colnames(RAMP_followupB.id)
 
 ```
 
-# RAMP follow up survey dates
+## Creating follow up time points RAMP 
 
-# RAMP follow up survey dates
-
-##Create waves within the FOLLOW UP DATA ##
+### Create waves within the FOLLOW UP DATA 
 Note: dates from google sheet from Kirstin
 Checked with Gerome - set start date as the date the survey was released, and keep window open until the DAY BEFORE the next survey was released
 
@@ -1108,14 +1127,9 @@ RAMP_followupB.id <- RAMP_followupB.id %>%
 ```
 
 
-## check for number of entries per wave
+### check for number of entries per wave
 
-```{r check for number of entries per wave}
-
-RAMP_baseline.id %>%
-  group_by(sample) %>%
-  count()
-
+```{r check for number of entries per wave RAMP}
 
 RAMP_followupA.id %>%
   group_by(waveA) %>%
@@ -1127,10 +1141,10 @@ RAMP_followupB.id %>%
   count()
 ```
 
-## Identifying duplicate IDs in a single wave
-```{r Identifying duplicate IDs in a single wave}
+### Identifying duplicate IDs in a single wave
+```{r Identifying duplicate IDs in a single wave RAMP}
 
-##Identify dup IDs in a single wave (aseline)
+##Identify dup IDs in a single wave (baseline)
 RAMP_baseline.id %>%
    group_by(ID) %>%
    summarize(N = n()) %>%
@@ -1153,7 +1167,7 @@ RAMP_followupB.id %>%
 
 **removing duplicates, retaining the latest possible data where there are repeats**
 
-## Want the LATER data entry from people who answered twice within a single wave 
+### Want the LATER data entry from people who answered twice within a single wave 
 We want there to be unique IDs within each of the waves
 ```{r}
 
@@ -1165,8 +1179,8 @@ nrow(RAMP_baseline.id)
 #Filter out duplicated IDs AND wave, keeping the LAST entry
 RAMP_baseline.id <- RAMP_baseline.id %>% 
     group_by(ID) %>% 
-    filter(!duplicated(sample,
-                      fromLast = TRUE)
+    filter(!duplicated(ID,
+                       fromLast = TRUE)
           
            )  %>%
              ungroup()
@@ -1245,10 +1259,22 @@ colnames(RAMP_followupB.id.long)
 
 
 ```
-# Data cleaning
-## RAMP Baseline
 
-```{r Add "_unc" to the end of all variables}
+
+
+# clean RAMP data {.tabset}
+
+## RAMP Baseline
+add wave 0 to the end of all variable names to indicate baseline
+```{r Add "_.Wave_0" to the end of all variables RAMP baseline}
+RAMP_baseline.id <- RAMP_baseline.id %>% 
+  rename_with( ~ paste(.x, ".Wave_0", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
+
+# check
+colnames(RAMP_baseline.id)
+```
+
+```{r Add "_unc" to the end of all variables RAMP baseline}
 RAMP_baseline.id <- RAMP_baseline.id %>% 
   rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
 
@@ -1258,25 +1284,20 @@ colnames(RAMP_baseline.id)
 
 ```{r RAMP Baseline inspect the variables}
 RAMP_baseline.id %>% 
-  freq(masq.pandemic_felt_successful_unc)
+  freq(masq.pandemic_felt_successful_.Wave_0_unc)
 ```
 
-## Make list of variables for cleaning
-```{r Make list of variables for cleaning}
+### Make list of variables for cleaning
+```{r Make list of variables for cleaning RAMP baseline}
 masq.items.baseline_unc <- RAMP_baseline.id %>% 
   select(contains("_unc")) %>% 
   colnames()
 
 masq.items.baseline_unc
 ```
-## Set minimum and maximum values 
-```{r Set minimum and maximum values}
-masq.min.scale <- 1
-masq.max.scale <- 5
-```
 
-## Recode implausuble values
-```{r Recode implausible values}
+### Recode implausuble values
+```{r Recode implausible values RAMP baseline}
 # Recode and clean
 RAMP_baseline.id <- RAMP_baseline.id %>%
    mutate(
@@ -1297,16 +1318,16 @@ RAMP_baseline.id <- RAMP_baseline.id %>%
 # Check
 colnames(RAMP_baseline.id)
 ```
-## Make new list of cleaned variables
+### Make new list of cleaned variables
 ```{r}
 masq.items.baseline_clean <- RAMP_baseline.id %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
-  select(!contains("ID")) %>% # deselect the ID variable
+  select(!"ID") %>% # deselect the ID variable
   colnames()
 
 masq.items.baseline_clean
 ```
-## Check number of implausible values
+### Check number of implausible values
 ```{r}
 # Check for implausible values
 masq_baseline_imp_n <- RAMP_baseline.id %>% 
@@ -1322,7 +1343,7 @@ if (masq_baseline_imp_n == 0) {
 }
 ```
 
-# Select only the clean variables
+### Select only the clean variables
 Note: keep ID in this data set
 ```{r}
 RAMP_baseline.id.clean <- RAMP_baseline.id %>% 
@@ -1334,7 +1355,7 @@ colnames(RAMP_baseline.id.clean)
 
 ## RAMP follow up A
 
-```{r Add "_unc" to the end of all variables}
+```{r Add "_unc" to the end of all variablesRAMP follow up A}
 RAMP_followupA.id.long <- RAMP_followupA.id.long %>% 
   rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
 
@@ -1344,25 +1365,20 @@ colnames(RAMP_followupA.id.long)
 
 ```{r RAMP follow up A inspect the variables}
 RAMP_followupA.id.long %>% 
-  freq(masq.pandemic_felt_successful_.Wave_1A_unc)
+  freq(masq.pandemic_felt_successful_.Wave_01_unc)
 ```
 
-## Make list of variables for cleaning
-```{r Make list of variables for cleaning}
+### Make list of variables for cleaning
+```{r Make list of variables for cleaningRAMP A}
 masq.items.followupA_unc <- RAMP_followupA.id.long %>% 
   select(contains("_unc")) %>% 
   colnames()
 
 masq.items.followupA_unc
 ```
-## Set minimum and maximum values 
-```{r Set minimum and maximum values}
-masq.min.scale <- 1
-masq.max.scale <- 5
-```
 
-## Recode implausuble values
-```{r Recode implausible values}
+### Recode implausuble values
+```{r Recode implausible values RAMP A}
 # Recode and clean
 RAMP_followupA.id.long <- RAMP_followupA.id.long %>%
    mutate(
@@ -1383,16 +1399,18 @@ RAMP_followupA.id.long <- RAMP_followupA.id.long %>%
 # Check
 colnames(RAMP_followupA.id.long)
 ```
-## Make new list of cleaned variables
+
+
+### Make new list of cleaned variables
 ```{r}
 masq.items.followupA_clean <- RAMP_followupA.id.long %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
-  select(!contains("ID")) %>% # deselect the ID variable
+  select(!"ID") %>% # deselect the ID variable
   colnames()
 
 masq.items.followupA_clean
 ```
-## Check number of implausible values
+### Check number of implausible values
 ```{r}
 # Check for implausible values
 masq_followupA_imp_n <- RAMP_followupA.id.long %>% 
@@ -1408,7 +1426,7 @@ if (masq_followupA_imp_n == 0) {
 }
 ```
 
-# Select only the clean variables
+### Select only the clean variables
 Note: keep ID in this data set
 ```{r}
 RAMP_followupA.id.long.clean <- RAMP_followupA.id.long %>% 
@@ -1419,7 +1437,7 @@ colnames(RAMP_followupA.id.long.clean)
 
 ## RAMP follow up B
 
-```{r Add "_unc" to the end of all variables}
+```{r Add "_unc" to the end of all variables RAMP follow up B}
 RAMP_followupB.id.long <- RAMP_followupB.id.long %>% 
   rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("masq")) # Add suffix "unc" for all uncleaned data columns
 
@@ -1429,25 +1447,20 @@ colnames(RAMP_followupB.id.long)
 
 ```{r RAMP follow up B inspect the variables}
 RAMP_followupB.id.long %>% 
-  freq(masq.pandemic_felt_successful_.Wave_6B_unc)
+  freq(masq.pandemic_felt_successful_.Wave_02_unc)
 ```
 
-## Make list of variables for cleaning
-```{r Make list of variables for cleaning}
+### Make list of variables for cleaning
+```{r Make list of variables for cleaning RAMP B}
 masq.items.followupB_unc <- RAMP_followupB.id.long %>% 
   select(contains("_unc")) %>% 
   colnames()
 
 masq.items.followupB_unc
 ```
-## Set minimum and maximum values 
-```{r Set minimum and maximum values}
-masq.min.scale <- 1
-masq.max.scale <- 5
-```
 
-## Recode implausuble values
-```{r Recode implausible values}
+### Recode implausuble values
+```{r Recode implausible values RAMP B}
 # Recode and clean
 RAMP_followupB.id.long <- RAMP_followupB.id.long %>%
    mutate(
@@ -1468,16 +1481,16 @@ RAMP_followupB.id.long <- RAMP_followupB.id.long %>%
 # Check
 colnames(RAMP_followupB.id.long)
 ```
-## Make new list of cleaned variables
+### Make new list of cleaned variables
 ```{r}
 masq.items.followupB_clean <- RAMP_followupB.id.long %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
-  select(!contains("ID")) %>% # deselect the ID variable
+  select(!"ID") %>% # deselect the ID variable
   colnames()
 
 masq.items.followupB_clean
 ```
-## Check number of implausible values
+### Check number of implausible values
 ```{r}
 # Check for implausible values
 masq_followupB_imp_n <- RAMP_followupB.id.long %>% 
@@ -1493,7 +1506,7 @@ if (masq_followupB_imp_n == 0) {
 }
 ```
 
-# Select only the clean variables
+### Select only the clean variables
 Note: keep ID in this data set
 ```{r}
 RAMP_followupB.id.long.clean <- RAMP_followupB.id.long %>% 
@@ -1502,27 +1515,950 @@ RAMP_followupB.id.long.clean <- RAMP_followupB.id.long %>%
 colnames(RAMP_followupB.id.long.clean)
 ```
 
+# Save baseline RAMP cleaned data items only for CFA
+```{r}
 
-# Merge RAMP follow up A and B surveys
+saveRDS(object = RAMP_baseline.id.clean, file = paste0("../../../data_clean/masq/masq.clean_baseline_items.RAMP_notrecoded",  ".rds"))
+
+```
+
+# Merge RAMP baseline, follow up A and B surveys
 Note: full join (i.e. to get all participants in all three data sets)
 ```{r Merge RAMP follow up A and B surveys}
-masq.merging <- list(RAMP_followupA.id.long.clean,
+masq.merging <- list(RAMP_baseline.id.clean,
+                       RAMP_followupA.id.long.clean,
                        RAMP_followupB.id.long.clean)
 
 
 masq.RAMP <- plyr::join_all(masq.merging,
-                    by = "ID",
+     #               by = "ID", freeing to merge on all common columns so we dont drop anyything needlessly
                     type = "full")
 
+  
 # check
 dim(RAMP_followupA.id.long.clean)
 dim(RAMP_followupB.id.long.clean)
+dim(RAMP_baseline.id.clean)
 dim(masq.RAMP)
 
 colnames(masq.RAMP)
+
+
+# reorder so that it is easy to see each wave in place.
+masq.RAMP.reordered <- masq.RAMP %>% 
+  select(order(names(masq.RAMP))) 
+
+colnames(masq.RAMP.reordered)
+
 ```
 
-## merge follow ups with baseline and RAMP with COPING
+# merge COPING and RAMP all wave data
+
+Merge by all common columns so that we dont duplicate waves. This is effectively an rbind action (adding a row for every case but keeping columns standard across)
+
+```{r merge RAMP and COPING}
+
+# add a sample columns
+masq.RAMP.for.merging <- masq.RAMP.reordered %>%
+  mutate(sample = "RAMP") %>%
+  relocate(sample, .after = ID)
+
+masq.COPING.for.merging <- masq.COPING.reordered %>%
+  mutate(sample = "COPING") %>%
+  relocate(sample, .after = ID)
+
+masq.merged <- full_join(masq.RAMP.for.merging,masq.COPING.for.merging)
+
+dim(masq.RAMP.for.merging)
+dim(masq.COPING.for.merging)
+dim(masq.merged)
+names(masq.merged)
+```
+
+## drop data from waves after 6 April 2021 (see pre registration for re-agreed data boundaries)
+
+```{r drop later waves}
+masq.clean <- masq.merged %>%
+  select(!contains("Wave_18"),
+         -endDate,
+         -startDate)
+
+names(masq.clean)
+```
+
+# create sum scores
+
+## recode variables so that it is reversed (higher scores are negatve) and range 0-4 instead of 1-5
+
+also make -77 NA. This will mean we can no longer distinguish between missing variable and someone who is missing altogether(did not complete survey) but this should be evident from the number of peope whos NA == 7 per wave.
+
+This will take this from being a score where higher == positive affect to higher ==  negative affect
+```{r recode MASQ}
+
+masq.recode <- masq.clean %>%
+  mutate_at(vars(starts_with("masq")),
+            funs(case_when(
+             . == 1 ~ 4,
+             . == 2 ~ 3,
+             . == 3 ~ 2,
+             . == 4 ~ 1,
+             . == 5 ~ 0,
+             . == -77 ~ NA_real_,
+             TRUE ~  NA_real_)))
+  
+  
+```
+
+```{r check recode}
+masq.recode %>%
+  freq(masq.pandemic_lot_felt_energy_.Wave_0)
+```
+
+## create total score parameter info
+
+scoring variables to use in function below
+```{r}
+#Scoring variables
+MASQ.n.items = 10 # Enter here the total number of items of the questionnaire
+MASQ.maximum.missing.items = 2 # Enter here the number of required items a participant can miss before they are dropped
+
+#Limits for data cleaning
+MASQ.total.score_upper_limit = 40
+MASQ.total.score_lower_limit = 0
+
+MASQ.min.value = 0
+MASQ.max.value = 4
+```
+
+
+## add columns for sum scores for each wave. {.tabset}
+use functions that generate items for masq using wave number as a user input. This function is specific to my data naming conventions.
+
+Use a second function to calculate the total scores. This can be applied to any scale. it takes a dataframe, list of keys, list of items, minimum and maximum item values, and maximum allowed missing items. It calculates total scores, using mean imputation for any missing items. It drops scores for anyone who misses more than the maximum allowed items. It describes how many missing items there are, and the total scores after dropping anyone for high missingness, and shows the internal consistency metrics for the scale. Finally, it returns  column of total scores as output.
+
+
+***Will do a chunk for every wave to make output clear and easy to distinguish and examine for every wave***
+
+### Baseline 
+```{r baseline sumscore test}
+
+keys_masq <- c(1,1,1,1,1,1,1,1,1,1)
+items_masq <- generate_items_masq(0)
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_0 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 01
+```{r}
+
+
+items_masq <- generate_items_masq("01")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_01 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 02
+```{r}
+
+
+items_masq <- generate_items_masq("02")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_02 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 03
+```{r}
+
+
+items_masq <- generate_items_masq("03")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_03 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 04
+```{r}
+
+
+items_masq <- generate_items_masq("04")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_04 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 05
+```{r}
+
+
+items_masq <- generate_items_masq("05")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_05 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 06
+```{r}
+
+
+items_masq <- generate_items_masq("06")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_06 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 07
+```{r}
+
+
+items_masq <- generate_items_masq("07")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_07 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 08
+```{r}
+
+
+items_masq <- generate_items_masq("08")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_08 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 09
+```{r}
+
+
+items_masq <- generate_items_masq("09")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_09 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 10
+```{r}
+
+
+items_masq <- generate_items_masq("10")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_10 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 11
+```{r}
+
+
+items_masq <- generate_items_masq("11")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_11 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 12
+```{r}
+
+
+items_masq <- generate_items_masq("12")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_12 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 13
+```{r}
+
+
+items_masq <- generate_items_masq("13")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_13 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 14
+```{r}
+
+
+items_masq <- generate_items_masq("14")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_14 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 15
+```{r}
+
+
+items_masq <- generate_items_masq("15")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_15 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 16
+```{r}
+
+
+items_masq <- generate_items_masq("16")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_16 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+### Follow up 17
+```{r}
+
+
+items_masq <- generate_items_masq("17")
+
+masq.recode <- masq.recode %>%
+  mutate(masq.total_Wave_17 = calculate_totals(dataframe=.,
+                                                itemlist = items_masq,
+                                                keylist = keys_masq,
+                                                minval = MASQ.min.value,
+                                                maxval = MASQ.max.value,
+                                                maxmissing = MASQ.maximum.missing.items))
+```
+
+# select total scores per wave and save this dataset
+
+```{r drop item data}
+
+masq.totals.clean <-
+  masq.recode %>%
+  select(ID, sample,
+         starts_with("masq.total_Wave_"))
+```
+
+## save
+```{r save final data}
+saveRDS(object = masq.totals.clean, file = paste0("../../../data_clean/masq/masq.clean_merged_total_scores",  ".rds"))
+```
+
+# summary table 
+
+## create a  summary table for every wave
+
+each component table by wave
+```{r built summary table 0}
+
+summary_table_0 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_0,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_0,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_0)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Baseline") %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_0 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_0,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_0,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_0)))  %>%
+    mutate(time.point = "Baseline" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_0 <- rbind (summary_table_sample_0,summary_table_0)
+
+```
+
+
+
+```{r built summary table 01}
+
+summary_table_01 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_01,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_01,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_01)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 01" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_01 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_01,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_01,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_01)))  %>%
+    mutate(time.point = "Follow up 01" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_01 <- rbind (summary_table_sample_01,summary_table_01)
+
+```
+
+
+```{r built summary table 02}
+
+summary_table_02 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_02,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_02,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_02)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 02" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_02 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_02,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_02,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_02)))  %>%
+    mutate(time.point = "Follow up 02" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_02 <- rbind (summary_table_sample_02,summary_table_02)
+
+```
+
+```{r built summary table 03}
+
+summary_table_03 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_03,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_03,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_03)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 03" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_03 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_03,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_03,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_03)))  %>%
+    mutate(time.point = "Follow up 03" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_03 <- rbind (summary_table_sample_03,summary_table_03)
+
+```
+
+```{r built summary table 04}
+
+summary_table_04 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_04,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_04,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_04)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 04" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_04 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_04,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_04,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_04)))  %>%
+    mutate(time.point = "Follow up 04" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_04 <- rbind (summary_table_sample_04,summary_table_04)
+
+```
+
+```{r built summary table 05}
+
+summary_table_05 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_05,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_05,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_05)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 05" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_05 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_05,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_05,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_05)))  %>%
+    mutate(time.point = "Follow up 05" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_05 <- rbind (summary_table_sample_05,summary_table_05)
+
+```
+
+```{r built summary table 06}
+
+summary_table_06 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_06,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_06,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_06)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 06" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_06 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_06,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_06,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_06)))  %>%
+    mutate(time.point = "Follow up 06" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_06 <- rbind (summary_table_sample_06,summary_table_06)
+
+```
+
+```{r built summary table 07}
+
+summary_table_07 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_07,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_07,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_07)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 07" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_07 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_07,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_07,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_07)))  %>%
+    mutate(time.point = "Follow up 07" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_07 <- rbind (summary_table_sample_07,summary_table_07)
+
+```
+
+```{r built summary table 08}
+
+summary_table_08 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_08,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_08,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_08)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 08" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_08 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_08,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_08,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_08)))  %>%
+    mutate(time.point = "Follow up 08" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_08 <- rbind (summary_table_sample_08,summary_table_08)
+
+```
+
+```{r built summary table 09}
+
+summary_table_09 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_09,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_09,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_09)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 09" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_09 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_09,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_09,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_09)))  %>%
+    mutate(time.point = "Follow up 09" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_09 <- rbind (summary_table_sample_09,summary_table_09)
+
+```
+
+```{r built summary table 10}
+
+summary_table_10 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_10,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_10,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_10)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 10" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_10 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_10,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_10,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_10)))  %>%
+    mutate(time.point = "Follow up 10" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_10 <- rbind (summary_table_sample_10,summary_table_10)
+
+```
+
+```{r built summary table 11}
+
+summary_table_11 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_11,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_11,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_11)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 11" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_11 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_11,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_11,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_11)))  %>%
+    mutate(time.point = "Follow up 11" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_11 <- rbind (summary_table_sample_11,summary_table_11)
+
+```
+
+```{r built summary table 12}
+
+summary_table_12 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_12,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_12,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_12)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 12" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_12 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_12,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_12,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_12)))  %>%
+    mutate(time.point = "Follow up 12" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_12 <- rbind (summary_table_sample_12,summary_table_12)
+
+```
+
+```{r built summary table 13}
+
+summary_table_13 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_13,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_13,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_13)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 13" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_13 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_13,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_13,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_13)))  %>%
+    mutate(time.point = "Follow up 13" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_13 <- rbind (summary_table_sample_13,summary_table_13)
+
+```
+
+```{r built summary table 14}
+
+summary_table_14 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_14,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_14,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_14)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 14" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_14 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_14,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_14,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_14)))  %>%
+    mutate(time.point = "Follow up 14" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_14 <- rbind (summary_table_sample_14,summary_table_14)
+
+```
+
+```{r built summary table 15}
+
+summary_table_15 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_15,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_15,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_15)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 15" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_15 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_15,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_15,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_15)))  %>%
+    mutate(time.point = "Follow up 15" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_15 <- rbind (summary_table_sample_15,summary_table_15)
+
+```
+
+```{r built summary table 16}
+
+summary_table_16 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_16,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_16,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_16)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 16" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_16 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_16,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_16,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_16)))  %>%
+    mutate(time.point = "Follow up 16" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_16 <- rbind (summary_table_sample_16,summary_table_16)
+
+```
+
+```{r built summary table 17}
+
+summary_table_17 <- 
+  
+  masq.totals.clean %>%
+  summarise(mean = mean(masq.total_Wave_17,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_17,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_17)))  %>%
+    mutate(sample = "Combined",
+      time.point = "Follow up 17" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+
+summary_table_sample_17 <- 
+  
+  masq.totals.clean %>%
+  group_by(sample) %>%
+  summarise(mean = mean(masq.total_Wave_17,na.rm = TRUE),
+            standard.deviation = sd(masq.total_Wave_17,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(masq.total_Wave_17)))  %>%
+    mutate(time.point = "Follow up 17" ) %>%
+  relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
+  
+
+table_time_17 <- rbind (summary_table_sample_17,summary_table_17)
+
+```
+
+## join all tables
+
+
+```{r join all waves}
+
+full_table <- rbind(table_time_0,table_time_01,table_time_02,table_time_03,table_time_04,table_time_05,
+                    table_time_06,table_time_07,table_time_08,table_time_09,table_time_10,
+                    table_time_11,table_time_12,table_time_13,table_time_14,table_time_15,
+                    table_time_16,table_time_17)
+
+print(full_table)
+```
+
+## prettify and save with KABLE (colour combined rows)
+
+```{r create an index list to specify coloured rows}
+colour.me <- which(full_table$sample == "Combined")
+```
+
+```{r make kable table}
+
+pretty_table <- full_table %>%
+  kable(booktabs = T,
+        align='llccc',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(full_table)))) %>%
+  kable_styling() %>%
+  row_spec(colour.me,bold=T,background = "lightgrey") %>%
+  row_spec(0,bold=T,background = "grey",font_size = 16)
+
+pretty_table 
+```
+```{r save kable}
+
+save_file <- file.path(dirname(dirname(getwd())),"output/masq.all_waves_summary_table.html")
+
+save_kable(pretty_table,
+           save_file)
+
+```
+
 
 
 

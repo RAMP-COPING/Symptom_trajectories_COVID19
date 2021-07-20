@@ -2563,6 +2563,7 @@ colour.me <- which(full_table$sample == "Combined")
 pretty_table <- full_table %>%
   kable(booktabs = T,
         align='llccc',
+        digits = 2,
         col.names = str_to_title(gsub("[.]", " ", names(full_table)))) %>%
   kable_styling() %>%
   row_spec(colour.me,bold=T,background = "lightgrey") %>%

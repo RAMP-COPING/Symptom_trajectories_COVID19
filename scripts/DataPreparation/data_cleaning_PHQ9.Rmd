@@ -365,26 +365,13 @@ colnames(COPING_followupA_ong.id)
 
 ```
 
-## Join COPING follow up A and follow up A ongoing
-
-```{r Join COPING follow up A and COPING follow up A ongoing, eval=FALSE}
-# check column names match
-colnames(COPING_followupA.id)
-colnames(COPING_followupA_ong.id)
-
-# rbind
-COPING_followupA.id_joined <- rbind(COPING_followupA.id,
-                                    COPING_followupA_ong.id)
-
-dim(COPING_followupA.id_joined)
-```
 # fix 10 item issue
 COPING follow up PHQ coded one item (*Moving or speaking so slowly that other people could have noticed?
 Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual?*) into two items due to early mistake which meant that only the psychomotor retardation was being captured in early cases. I am resolving by taking the highest value for either item as the persons response
 
 ```{r fix multiple item issue in COPING follow up PHQ}
 
-COPING_followupA.id_joined <- COPING_followupA.id_joined %>%
+COPING_followupA.id <- COPING_followupA.id %>%
   mutate(phq9.pandemic_fidgeting_or_moving_slowly = case_when(!is.na(phq9.pandemic_moving_slowy) & is.na(phq9.pandemic_fidgeting) ~ .$phq9.pandemic_moving_slowy,
                                                               is.na(phq9.pandemic_moving_slowy) & !is.na(phq9.pandemic_fidgeting) ~ .$phq9.pandemic_fidgeting,
                                                               phq9.pandemic_moving_slowy == phq9.pandemic_fidgeting ~ .$phq9.pandemic_moving_slowy,
@@ -392,7 +379,39 @@ COPING_followupA.id_joined <- COPING_followupA.id_joined %>%
                                                               phq9.pandemic_moving_slowy < phq9.pandemic_fidgeting ~ .$phq9.pandemic_fidgeting)) %>%
   select(-phq9.pandemic_moving_slowy,
          -phq9.pandemic_fidgeting)
-  
+
+
+
+
+COPING_followupA_ong.id <- COPING_followupA_ong.id %>%
+  mutate(phq9.pandemic_fidgeting_or_moving_slowly = case_when(!is.na(phq9.pandemic_moving_slowy) & is.na(phq9.pandemic_fidgeting) ~ .$phq9.pandemic_moving_slowy,
+                                                              is.na(phq9.pandemic_moving_slowy) & !is.na(phq9.pandemic_fidgeting) ~ .$phq9.pandemic_fidgeting,
+                                                              phq9.pandemic_moving_slowy == phq9.pandemic_fidgeting ~ .$phq9.pandemic_moving_slowy,
+                                                              phq9.pandemic_moving_slowy > phq9.pandemic_fidgeting ~ .$phq9.pandemic_moving_slowy,
+                                                              phq9.pandemic_moving_slowy < phq9.pandemic_fidgeting ~ .$phq9.pandemic_fidgeting)) %>%
+  select(-phq9.pandemic_moving_slowy,
+         -phq9.pandemic_fidgeting)
+
+
+COPING_followupB.id <- COPING_followupB.id %>%
+  mutate(phq9.pandemic_fidgeting_or_moving_slowly = case_when(!is.na(phq9.pandemic_moving_slowy) & is.na(phq9.pandemic_fidgeting) ~ .$phq9.pandemic_moving_slowy,
+                                                              is.na(phq9.pandemic_moving_slowy) & !is.na(phq9.pandemic_fidgeting) ~ .$phq9.pandemic_fidgeting,
+                                                              phq9.pandemic_moving_slowy == phq9.pandemic_fidgeting ~ .$phq9.pandemic_moving_slowy,
+                                                              phq9.pandemic_moving_slowy > phq9.pandemic_fidgeting ~ .$phq9.pandemic_moving_slowy,
+                                                              phq9.pandemic_moving_slowy < phq9.pandemic_fidgeting ~ .$phq9.pandemic_fidgeting)) %>%
+  select(-phq9.pandemic_moving_slowy,
+         -phq9.pandemic_fidgeting)
+
+
+
+
+names(COPING_followupA_ong.id)
+names(COPING_followupA.id)
+names(COPING_followupB.id)
+
+
+
+
 ```
 
 ## Creating follow up time points
@@ -690,7 +709,6 @@ COPING_followupA.id.long <- COPING_followupA.id %>%
                                      phq9.pandemic_poor_appetite_or_overeating,
                                      phq9.pandemic_feeling_like_a_failure,
                                      phq9.pandemic_trouble_concentrating,
-                                     phq9.slowly_speaking_moving_noticed,
                                      phq9.pandemic_fidgeting_or_moving_slowly,
                                      phq9.pandemic_thoughts_better_off_dead)) 
 
@@ -705,9 +723,9 @@ COPING_followupA_ong.id.long <- COPING_followupA_ong.id %>%
                                      phq9.pandemic_poor_appetite_or_overeating,
                                      phq9.pandemic_feeling_like_a_failure,
                                      phq9.pandemic_trouble_concentrating,
-                                     phq9.slowly_speaking_moving_noticed,
                                      phq9.pandemic_fidgeting_or_moving_slowly,
                                      phq9.pandemic_thoughts_better_off_dead)) 
+
 
 COPING_followupB.id.long <- COPING_followupB.id %>%
   group_by(waveB) %>%
@@ -720,7 +738,6 @@ COPING_followupB.id.long <- COPING_followupB.id %>%
                                      phq9.pandemic_poor_appetite_or_overeating,
                                      phq9.pandemic_feeling_like_a_failure,
                                      phq9.pandemic_trouble_concentrating,
-                                     phq9.slowly_speaking_moving_noticed,
                                      phq9.pandemic_fidgeting_or_moving_slowly,
                                      phq9.pandemic_thoughts_better_off_dead)) 
   
@@ -762,7 +779,7 @@ colnames(COPING_baseline.id)
 
 ```{r COPING baseline inspect the variables}
 COPING_baseline.id %>% 
-  freq(phq9.pandemic_nervous_anxious_on_edge_.Wave_0_unc)
+  freq(phq9.pandemic_down_depressed_hopeless_.Wave_0_unc)
 ```
 
 ### Make list of variables for cleaning
@@ -843,7 +860,7 @@ colnames(COPING_followupA.id.long)
 
 ```{r COPING follow up A inspect the variables}
 COPING_followupA.id.long %>% 
-  freq(phq9.pandemic_cant_control_worry_.Wave_03_unc)
+  freq(phq9.pandemic_little_interest_or_pleasure_.Wave_03_unc)
 ```
 
 ### Make list of variables for cleaning
@@ -911,7 +928,6 @@ COPING_followupA.id.long.clean <- COPING_followupA.id.long %>%
 colnames(COPING_followupA.id.long.clean)
 ```
 
-
 ## COPING follow up A ongoing
 
 ```{r Add "_unc" to the end of all variables COPING follow up A ongoing}
@@ -924,7 +940,7 @@ colnames(COPING_followupA_ong.id.long)
 
 ```{r COPING follow up A ongoing inspect the variables}
 COPING_followupA_ong.id.long %>% 
-  freq(phq9.pandemic_nervous_anxious_on_edge_.Wave_05_unc)
+  freq(phq9.pandemic_little_interest_or_pleasure_.Wave_05_unc)
 ```
 
 ### Make list of variables for cleaning
@@ -1101,8 +1117,7 @@ colnames(phq.COPING)
 phq.COPING.reordered <- phq.COPING %>% 
   select(order(names(phq.COPING)),
          -startDate,
-         -endDate) %>%
-  relocate(ID, .before = phq9.pandemic_afraid_something_terrible_will_happen_.Wave_0)
+         -endDate)
 
 colnames(phq.COPING.reordered)
 
@@ -1136,15 +1151,31 @@ RAMP_baseline %>%
 
 RAMP_baseline.id <- RAMP_baseline %>% #new dataset with ID
   drop_na("Login ID") %>% # Drop NAs
-  select(
+ select(-phq.little_interest_or_pleasure_in_doing_things.1,
+         -phq.feeling_down_depressed_or_hopeless.1,
+         -phq.staying_asleep_sleeping_trouble.1,
+         -phq.feeling_tired_or_having_little_energy.1,
+         -phq.poor_appetite_or_overeating.1,
+         -phq.feeling_bad_failure_family.1,
+         -phq.trouble_concentrating_newspaper_reading.1,
+         -phq.moving_fidgety_opposite_slowly.1,
+         -phq.dead_hurting_thoughts.1,
+         -phq.pandemic_feelings_felt,
+        -phq.pandemic_feelings_felt.1,
+         -externalDataReference,
          ID = "Login ID", # ID
-         phq9.pandemic_nervous_anxious_on_edge = phq9.feeling_nervous_anxious_or_on_edge,
-         phq9.pandemic_cant_control_worry = phq9.control_worrying_stop,
-         phq9.pandemic_worry_too_much = phq9.worrying_too_much_about_different_things,
-         phq9.pandemic_trouble_relaxing = phq9.trouble_relaxing,
-         phq9.pandemic_restless = phq9.sit_hard_restless,
-         phq9.pandemic_easily_annoyed = phq9.becoming_easily_annoyed_or_irritable,
-         phq9.pandemic_afraid_something_terrible_will_happen = phq9.awful_feeling_afraid_happen)
+         -startDate,
+         -endDate,
+         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq.feeling_bad_failure_family,
+         phq9.pandemic_trouble_concentrating = phq.trouble_concentrating_newspaper_reading,
+         phq9.pandemic_fidgeting_or_moving_slowly = phq.moving_fidgety_opposite_slowly,
+         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts) %>%
+  relocate(ID, .before = phq9.pandemic_little_interest_or_pleasure)
          
 
 # Inspect colnames
@@ -1196,13 +1227,15 @@ RAMP_followupA.id <- RAMP_followupA %>% #new dataset with ID
          sample,
          startDate,
          endDate,
-         phq9.pandemic_nervous_anxious_on_edge = phq.feeling_nervous_anxious_or_on_edge,
-         phq9.pandemic_cant_control_worry = phq.control_worrying_stop,
-         phq9.pandemic_worry_too_much = phq.worrying_too_much_about_different_things,
-         phq9.pandemic_trouble_relaxing = phq.trouble_relaxing,
-         phq9.pandemic_restless = phq.sit_hard_restless,
-         phq9.pandemic_easily_annoyed = phq.becoming_easily_annoyed_or_irritable,
-         phq9.pandemic_afraid_something_terrible_will_happen = phq.awful_happen_feeling_afraid)
+         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq.failure_feeling_bad_family,
+         phq9.pandemic_trouble_concentrating = phq.newspaper_reading_things_trouble,
+         phq9.pandemic_fidgeting_or_moving_slowly = phq.moving_fidgety_opposite_slowly,
+         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
 
 # Inspect colnames
 colnames(RAMP_followupA.id)
@@ -1241,13 +1274,15 @@ RAMP_followupB.id <- RAMP_followupB %>% #new dataset with ID
          sample,
          startDate,
          endDate,
-         phq9.pandemic_nervous_anxious_on_edge = phq.feeling_nervous_anxious_or_on_edge,
-         phq9.pandemic_cant_control_worry = phq.stop_control_worrying,
-         phq9.pandemic_worry_too_much = phq.worrying_too_much_about_different_things,
-         phq9.pandemic_trouble_relaxing = phq.trouble_relaxing,
-         phq9.pandemic_restless = phq.hard_sit_restless,
-         phq9.pandemic_easily_annoyed = phq.becoming_easily_annoyed_or_irritable,
-         phq9.pandemic_afraid_something_terrible_will_happen = phq.awful_feeling_afraid_happen) 
+         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq.failure_family_feeling_bad,
+         phq9.pandemic_trouble_concentrating = phq.trouble_concentrating_newspaper_reading,
+         phq9.pandemic_fidgeting_or_moving_slowly = phq.fidgety_opposite_slowly_speaking,
+         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
 
 
 # Inspect colnames
@@ -1498,7 +1533,6 @@ RAMP_followupA.id.long <- RAMP_followupA.id %>%
                                      phq9.pandemic_poor_appetite_or_overeating,
                                      phq9.pandemic_feeling_like_a_failure,
                                      phq9.pandemic_trouble_concentrating,
-                                     phq.slowly_speaking_moving_noticed,
                                      phq9.pandemic_fidgeting_or_moving_slowly,
                                      phq9.pandemic_thoughts_better_off_dead)) 
 
@@ -1514,7 +1548,6 @@ RAMP_followupB.id.long <- RAMP_followupB.id %>%
                                      phq9.pandemic_poor_appetite_or_overeating,
                                      phq9.pandemic_feeling_like_a_failure,
                                      phq9.pandemic_trouble_concentrating,
-                                     phq.slowly_speaking_moving_noticed,
                                      phq9.pandemic_fidgeting_or_moving_slowly,
                                      phq9.pandemic_thoughts_better_off_dead)) 
   
@@ -1550,7 +1583,7 @@ colnames(RAMP_baseline.id)
 
 ```{r RAMP Baseline inspect the variables}
 RAMP_baseline.id %>% 
-  freq(phq9.pandemic_cant_control_worry_.Wave_0_unc)
+  freq(phq9.pandemic_down_depressed_hopeless_.Wave_0_unc)
 ```
 
 ### Make list of variables for cleaning
@@ -1631,7 +1664,7 @@ colnames(RAMP_followupA.id.long)
 
 ```{r RAMP follow up A inspect the variables}
 RAMP_followupA.id.long %>% 
-  freq(phq9.pandemic_nervous_anxious_on_edge_.Wave_01_unc)
+  freq(phq9.pandemic_little_interest_or_pleasure_.Wave_01_unc)
 ```
 
 ### Make list of variables for cleaning
@@ -1713,7 +1746,7 @@ colnames(RAMP_followupB.id.long)
 
 ```{r RAMP follow up B inspect the variables}
 RAMP_followupB.id.long %>% 
-  freq(phq9.pandemic_nervous_anxious_on_edge_.Wave_02_unc)
+  freq(phq9.pandemic_little_interest_or_pleasure_.Wave_02_unc)
 ```
 
 ### Make list of variables for cleaning
@@ -1812,8 +1845,7 @@ colnames(phq.RAMP)
 
 # reorder so that it is easy to see each wave in place.
 phq.RAMP.reordered <- phq.RAMP %>% 
-  select(order(names(phq.RAMP))) %>%
-  relocate(ID, .before = phq9.pandemic_afraid_something_terrible_will_happen_.Wave_0)
+  select(order(names(phq.RAMP))) 
 
 colnames(phq.RAMP.reordered)
 
@@ -1855,11 +1887,11 @@ names(phq.clean)
 scoring variables to use in function below
 ```{r}
 #Scoring variables
-PHQ.n.items = 7 # Enter here the total number of items of the questionnaire
+PHQ.n.items = 9 # Enter here the total number of items of the questionnaire
 PHQ.maximum.missing.items = 2 # Enter here the number of required items a participant can miss before they are dropped
 
 #Limits for data cleaning
-PHQ.total.score_upper_limit = 21
+PHQ.total.score_upper_limit = 27
 PHQ.total.score_lower_limit = 0
 
 PHQ.min.value = 0
@@ -1867,7 +1899,7 @@ PHQ.max.value = 3
 ```
 
 ### make -77 NA
-This will mean we can no longer distinguish between missing variable andsomeone who is missing altogether(did not complete survey) but this should be evident from the number of peope whos NA == 7 per wave.
+This will mean we can no longer distinguish between missing variable and someone who is missing altogether(did not complete survey) but this should be evident from the number of peope whos NA == 7 per wave.
 
 ```{r recalculate - 77}
 phq.clean<- na_if(phq.clean, -77)
@@ -1885,8 +1917,8 @@ Use a second function to calculate the total scores. This can be applied to any 
 ### Baseline 
 ```{r baseline sumscore test}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items(0)
+keys_phq <- c(1,1,1,1,1,1,1,1,1)
+items_phq <- generate_items_phq(0)
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_0 = calculate_totals(dataframe=.,
@@ -1900,8 +1932,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 01
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("01")
+
+items_phq <- generate_items_phq("01")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_01 = calculate_totals(dataframe=.,
@@ -1915,8 +1947,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 02
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("02")
+
+items_phq <- generate_items_phq("02")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_02 = calculate_totals(dataframe=.,
@@ -1930,8 +1962,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 03
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("03")
+
+items_phq <- generate_items_phq("03")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_03 = calculate_totals(dataframe=.,
@@ -1945,8 +1977,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 04
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("04")
+
+items_phq <- generate_items_phq("04")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_04 = calculate_totals(dataframe=.,
@@ -1960,8 +1992,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 05
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("05")
+
+items_phq <- generate_items_phq("05")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_05 = calculate_totals(dataframe=.,
@@ -1975,8 +2007,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 06
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("06")
+
+items_phq <- generate_items_phq("06")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_06 = calculate_totals(dataframe=.,
@@ -1990,8 +2022,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 07
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("07")
+
+items_phq <- generate_items_phq("07")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_07 = calculate_totals(dataframe=.,
@@ -2005,8 +2037,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 08
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("08")
+
+items_phq <- generate_items_phq("08")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_08 = calculate_totals(dataframe=.,
@@ -2020,8 +2052,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 09
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("09")
+
+items_phq <- generate_items_phq("09")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_09 = calculate_totals(dataframe=.,
@@ -2035,8 +2067,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 10
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("10")
+
+items_phq <- generate_items_phq("10")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_10 = calculate_totals(dataframe=.,
@@ -2050,8 +2082,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 11
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("11")
+
+items_phq <- generate_items_phq("11")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_11 = calculate_totals(dataframe=.,
@@ -2065,8 +2097,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 12
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("12")
+
+items_phq <- generate_items_phq("12")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_12 = calculate_totals(dataframe=.,
@@ -2080,8 +2112,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 13
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("13")
+
+items_phq <- generate_items_phq("13")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_13 = calculate_totals(dataframe=.,
@@ -2095,8 +2127,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 14
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("14")
+
+items_phq <- generate_items_phq("14")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_14 = calculate_totals(dataframe=.,
@@ -2110,8 +2142,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 15
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("15")
+
+items_phq <- generate_items_phq("15")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_15 = calculate_totals(dataframe=.,
@@ -2125,8 +2157,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 16
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("16")
+
+items_phq <- generate_items_phq("16")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_16 = calculate_totals(dataframe=.,
@@ -2140,8 +2172,8 @@ phq.clean <- phq.clean %>%
 ### Follow up 17
 ```{r}
 
-keys_phq <- c(1,1,1,1,1,1,1)
-items_phq <- generate_items("17")
+
+items_phq <- generate_items_phq("17")
 
 phq.clean <- phq.clean %>%
   mutate(phq.total_Wave_17 = calculate_totals(dataframe=.,
@@ -2685,6 +2717,7 @@ colour.me <- which(full_table$sample == "Combined")
 pretty_table <- full_table %>%
   kable(booktabs = T,
         align='llccc',
+        digits = 2,
         col.names = str_to_title(gsub("[.]", " ", names(full_table)))) %>%
   kable_styling() %>%
   row_spec(colour.me,bold=T,background = "lightgrey") %>%
@@ -2708,55 +2741,3 @@ save_kable(pretty_table,
 
 
 
-
-
-```{r}
-#Recode column names to harmonised variable names
-
-#phq.x.0 - pre pandemic
-#phq.x.1 - Baseline current
-#phq.pandemic.change - item asking if this is different from before pandemic
-
-data_phq_renamed <- data_raw %>% #new dataset with ID
-  drop_na("Login.ID") %>% # Drop NAs
-  #distinct(externalDataReference, .keep_all = TRUE) %>% # don't want to do this for RAMP data
-  add_column(sample = "RAMP_baseline", .after = "Login.ID") %>% #create new column 
-  select(
-         ID = "Login.ID", # ID
-         sample,
-         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
-         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
-         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
-         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
-         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
-         phq9.pandemic_feeling_like_a_failure = phq.feeling_bad_failure_family,
-         phq9.pandemic_trouble_concentrating = phq.trouble_concentrating_newspaper_reading,
-         phq9.pandemic_fidgeting_or_moving_slowly = phq.moving_fidgety_opposite_slowly,
-         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
-         
-
-# Inspect colnames
-colnames(data_phq_renamed)
-
-
-```
-
-
-```{r}
-#seen but not answered (-99) as NA
-data_phq_renamed <- data_phq_renamed %>%
-  mutate_at(vars(starts_with("phq")),
-            funs(case_when(
-             . == -99 ~ NA_real_,
-             . == -77 ~ NA_real_,
-             TRUE ~  .)))
-  
-
-```
-
-
-```{r}
-
-saveRDS(object = data_phq_renamed, file = paste0("../../../data_clean/RAMP_phq/phq.clean_baseline.RAMP",  ".rds"))
-
-```

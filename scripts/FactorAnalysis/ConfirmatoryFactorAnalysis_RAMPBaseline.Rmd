@@ -82,9 +82,9 @@ glad_palette = c("#efc00b", "#b7dee8")
 
 ```{r Read in GAD, PHQ and MASQ data from the RAMP baseline cohort}
 # Read in the data
-MASQ <- readRDS(file =  "../../../data_clean/RAMP_masq/masq.clean_merged_baseline.RAMP.RDS")
-GAD7 <- readRDS(file =  "../../../data_clean/RAMP_gad/gad.clean_baseline_items.RAMP.RDS")
-PHQ9 <- readRDS(file =  "../../../data_clean/RAMP_phq/phq.clean_baseline_items.RAMP.RDS")
+MASQ <- readRDS(file =  "../../../data_clean/masq/masq.clean_baseline_items.RAMP_notrecoded.RDS")
+GAD7 <- readRDS(file =  "../../../data_clean/gad/gad.clean_baseline_items.RAMP.RDS")
+PHQ9 <- readRDS(file =  "../../../data_clean/phq/phq.clean_baseline_items.RAMP.RDS")
 
 ```
 
