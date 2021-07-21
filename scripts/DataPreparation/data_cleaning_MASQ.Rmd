@@ -1,7 +1,9 @@
 ---
 title: "Clean MASQ data for all waves. Save a seperate RAMP baseline data for CFA in addition to all wave for GMM"
 author: "K L Purves"
+version_label: 
 date: '`r format(Sys.time(), "%d %B, %Y")`'
+
 output:
   html_document:
     df_print: paged
@@ -13,6 +15,7 @@ output:
     highlight: monochrome
     theme: cerulean
 code_folding: show
+
 
 html_notebook:
   theme: cerulean
@@ -58,6 +61,13 @@ if(!require(kableExtra)){
   install.packages("kableExtra")
   library(kableExtra)
 }
+
+
+if(!require(multiplex)){
+  install.packages("multiplex")
+  library(multiplex)
+}
+
 ```
 
 ```{r}
@@ -1923,6 +1933,39 @@ masq.totals.clean <-
 ```{r save final data}
 saveRDS(object = masq.totals.clean, file = paste0("../../../data_clean/masq/masq.clean_merged_total_scores",  ".rds"))
 ```
+
+
+## save as csv without any rown names for MPLUS
+
+create a list of column names in order to save alongside the data file and remove ID
+```{r mplus remove id make name codebook}
+
+masq.mplus <- masq.totals.clean %>%
+  select(-ID,-sample)
+
+masq.mplus.names <- names(masq.mplus)
+masq.mplus.names.columns <- seq(1,length(masq.mplus.names))
+
+masq.mplus.names <- data.frame(cbind(masq.mplus.names,masq.mplus.names.columns))
+
+names(masq.mplus.names) <- c("Variable","Column")
+
+```
+## remove column names
+```{r remove col names}
+
+names(masq.mplus) <- NULL
+
+```
+##save .dat file for MPlus without headers, and corresponding orderd list of variables
+
+```{r save plus dat files}
+
+write.dat(masq.mplus, "../../../data_clean/masq/masq.clean_merged_total_scores.dat")
+write_csv(masq.mplus.names, "../../../data_clean/masq/masq.clean_merged_total_scores.dat/masq.clean_merged_total_scores_codebook.csv")
+
+```
+
 
 # summary table 
 

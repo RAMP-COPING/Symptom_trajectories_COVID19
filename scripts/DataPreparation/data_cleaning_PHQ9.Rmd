@@ -58,6 +58,12 @@ if(!require(kableExtra)){
   install.packages("kableExtra")
   library(kableExtra)
 }
+
+if(!require(multiplex)){
+  install.packages("multiplex")
+  library(multiplex)
+}
+
 ```
 
 ```{r}
@@ -2196,8 +2202,43 @@ phq.totals.clean <-
 
 ## save
 ```{r save final data}
+
 saveRDS(object = phq.totals.clean, file = paste0("../../../data_clean/phq/phq.clean_merged_total_scores",  ".rds"))
+saveRDS(object = phq.clean, file = paste0("../../../data_clean/phq/phq.clean_merged_items",  ".rds"))
+
 ```
+
+## save as csv without any rown names for MPLUS
+
+create a list of column names in order to save alongside the data file and remove ID
+```{r mplus remove id make name codebook}
+
+phq.mplus <- phq.totals.clean %>%
+  select(-ID,-sample)
+
+phq.mplus.names <- names(phq.mplus)
+phq.mplus.names.columns <- seq(1,length(phq.mplus.names))
+
+phq.mplus.names <- data.frame(cbind(phq.mplus.names,phq.mplus.names.columns))
+
+names(phq.mplus.names) <- c("Variable","Column")
+
+```
+## remove column names
+```{r remove col names}
+
+names(phq.mplus) <- NULL
+
+```
+##save .dat file for MPlus without headers, and corresponding orderd list of variables
+
+```{r save plus dat files}
+
+write.dat(phq.mplus, "../../../data_clean/phq/phq.clean_merged_total_scores.dat")
+write_csv(phq.mplus.names, "../../../data_clean/phq/phq.clean_merged_total_scores.dat/phq.clean_merged_total_scores_codebook.csv")
+
+```
+
 
 # summary table 
 

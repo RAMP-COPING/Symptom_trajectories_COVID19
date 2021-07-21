@@ -58,6 +58,13 @@ if(!require(kableExtra)){
   install.packages("kableExtra")
   library(kableExtra)
 }
+
+
+if(!require(multiplex)){
+  install.packages("multiplex")
+  library(multiplex)
+}
+
 ```
 
 ```{r}
@@ -2043,6 +2050,38 @@ gad.totals.clean <-
 ## save
 ```{r save final data}
 saveRDS(object = gad.totals.clean, file = paste0("../../../data_clean/gad/gad.clean_merged_total_scores",  ".rds"))
+```
+
+
+## save as csv without any rown names for MPLUS
+
+create a list of column names in order to save alongside the data file and remove ID
+```{r mplus remove id make name codebook}
+
+gad.mplus <- gad.totals.clean %>%
+  select(-ID,-sample)
+
+gad.mplus.names <- names(gad.mplus)
+gad.mplus.names.columns <- seq(1,length(gad.mplus.names))
+
+gad.mplus.names <- data.frame(cbind(gad.mplus.names,gad.mplus.names.columns))
+
+names(gad.mplus.names) <- c("Variable","Column")
+
+```
+## remove column names
+```{r remove col names}
+
+names(gad.mplus) <- NULL
+
+```
+##save .dat file for MPlus without headers, and corresponding orderd list of variables
+
+```{r save plus dat files}
+
+write.dat(gad.mplus, "../../../data_clean/gad/gad.clean_merged_total_scores.dat")
+write_csv(gad.mplus.names, "../../../data_clean/gad/gad.clean_merged_total_scores.dat/gad.clean_merged_total_scores_codebook.csv")
+
 ```
 
 # summary table 
