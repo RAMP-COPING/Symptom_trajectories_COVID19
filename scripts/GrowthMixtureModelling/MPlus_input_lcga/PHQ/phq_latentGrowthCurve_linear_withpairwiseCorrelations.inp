@@ -1,6 +1,6 @@
 TITLE:
 Depression symptoms in RAMP and COPING April 2020 - April 2021: Linear Growth Curve
-No pairwise correlations
+With pairwise correlations
 
 DATA:
   	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
@@ -36,7 +36,7 @@ MODEL:
 	
 	int WITH slope;
     	
-   	!phq_t1 - phq_t10 PWITH phq_t2 - phq_t11; !run first with no correlations
+   	phq_t0 - phq_t16 PWITH phq_t1 - phq_t17;
 	
 PLOT:
 	TYPE = PLOT3; !do not get plots on Mac but we use the gh5 file in R
@@ -53,4 +53,4 @@ OUTPUT:
 SAVEDATA:
 
    ! SAVE=FS;		
-   ! FILE IS lgc-phq9-linear.dat;	
+   ! FILE IS lgc-phq9-linear-wcorrelations.dat;	

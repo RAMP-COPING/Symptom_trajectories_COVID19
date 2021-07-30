@@ -1933,6 +1933,20 @@ masq.totals.clean <-
          starts_with("masq.total_Wave_"))
 ```
 
+## drop duplicates introduced in the follow up merge.
+
+```{r drop follow u duplicate rows}
+
+masq.totals.clean <- masq.totals.clean %>%
+    group_by(ID) %>% 
+    filter(!duplicated(ID,
+                      fromLast = TRUE)
+           ) %>%
+  ungroup()
+
+```
+
+
 ## save
 ```{r save final data}
 saveRDS(object = masq.totals.clean, file = paste0("../../../data_clean/masq/masq.clean_merged_total_scores",  ".rds"))

@@ -147,7 +147,18 @@ Identify the best fitting latent growth curve form, i.e. that which fits all of 
 print(getwd())
 phq_check <-  readRDS("../../../data_clean/phq/phq.clean_merged_items.rds")
 
-sum(complete.cases(phq_check[165:dim(phq_check)[2]]))
+# get a list of the total score columns
+total_cols <- grep("total_Wave", names(phq_check))
+
+#count how many columns we have
+n_cols <- length(total_cols)
+
+# create a list of how many NAs are missing across these 18 columns per row
+list_n_missing <- apply(phq_check[total_cols],1,function(x) sum(is.na(x)))
+
+# count how many of people are missing data for all columns (NA = total_cols)
+list_all_missing <-  sum(list_n_missing ==n_cols)
+
 
 ```
 Data set contains cases with missing on all variables. These cases were not included in the analysis. Number of cases with missing on all variables: 328

@@ -2051,6 +2051,28 @@ gad.totals.clean <-
          starts_with("gad.total_Wave_"))
 ```
 
+## drop duplicates introduced in the follow up merge.
+
+```{r drop follow u duplicate rows}
+
+gad.totals.clean <- gad.totals.clean %>%
+    group_by(ID) %>% 
+    filter(!duplicated(ID,
+                      fromLast = TRUE)
+           ) %>%
+  ungroup()
+
+gad.clean <- gad.clean %>%
+    group_by(ID) %>% 
+    filter(!duplicated(ID,
+                      fromLast = TRUE)
+           ) %>%
+  ungroup()
+  
+
+```
+
+
 ## save
 ```{r save final data}
 saveRDS(object = gad.totals.clean, file = paste0("../../../data_clean/gad/gad.clean_merged_total_scores",  ".rds"))

@@ -2204,6 +2204,27 @@ phq.totals.clean <-
          starts_with("phq.total_Wave_"))
 ```
 
+## drop duplicates introduced in the follow up merge.
+
+```{r drop follow u duplicate rows}
+
+phq.totals.clean <- phq.totals.clean %>%
+    group_by(ID) %>% 
+    filter(!duplicated(ID,
+                      fromLast = TRUE)
+           ) %>%
+  ungroup()
+
+phq.clean <- phq.clean %>%
+    group_by(ID) %>% 
+    filter(!duplicated(ID,
+                      fromLast = TRUE)
+           ) %>%
+  ungroup()
+  
+
+```
+
 ## save
 ```{r save final data}
 
