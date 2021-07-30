@@ -1,0 +1,51 @@
+TITLE:
+Depression symptoms in ieso IAPT: Linear Growth Curve
+
+DATA:
+  	FILE IS "/Users/megskelton/OneDrive - King's College London/ieso_GMM/
+  	ieso_data/ieso_gmm_phq_data_140621.csv";
+
+VARIABLE:
+
+	NAMES ARE
+		id phq_t1 phq_t2 phq_t3 phq_t4 phq_t5 phq_t6
+		phq_t7 phq_t8 phq_t9 phq_t10 phq_t11;
+				
+	USEVARIABLES ARE
+		phq_t1 phq_t2 phq_t3 phq_t4 phq_t5 phq_t6
+		phq_t7 phq_t8 phq_t9 phq_t10 phq_t11;
+		
+	MISSING ARE ALL (-99);
+	IDVARIABLE IS id;
+	
+	!CLASSES = c(1);
+	
+ANALYSIS:
+	
+	ESTIMATOR = MLR;
+	PROCESSORS = 2; !only 2 on Mac
+	
+MODEL:
+
+	int slope| phq_t1@0 phq_t2@1 phq_t3@2 phq_t4@3 phq_t5@4
+    		 phq_t6@5 phq_t7@6 phq_t8@7 phq_t9@8 phq_t10@9 
+    		 phq_t11@10;
+	
+	int WITH slope;
+    	
+   	!phq_t1 - phq_t10 PWITH phq_t2 - phq_t11; !run first with no correlations
+	
+PLOT:
+	TYPE = PLOT3; !do not get plots on Mac but we use the gh5 file in R
+	
+	SERIES = phq_t1(0) phq_t2(1) phq_t3(2) phq_t4(3) phq_t5(4)
+    	phq_t6(5) phq_t7(6) phq_t8(7) phq_t9(8) phq_t10(9) phq_t11(10);
+    
+	
+OUTPUT:
+	STDYX MODINDICES(30) RESIDUAL;
+
+SAVEDATA:
+
+   ! SAVE=FS;		
+   ! FILE IS lgc-phq9-linear.dat;	

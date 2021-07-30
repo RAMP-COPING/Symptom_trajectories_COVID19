@@ -1,0 +1,221 @@
+---
+title: "Run Latent Class Growth Analyses and Growth Mixture Modelling for RAMP longitudinal abnalyses of common mental health symptoms: GAD and PHQ"
+author: "K L Purves"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: show
+
+html_notebook:
+  theme: cerulean
+toc: yes
+---
+
+This workbook centralises analyses of the PHQ-9 and GAD-7 total scores longtiduinal analyses in the RAMP and COPING samples. This corresponds with analytic steps 1-2 in the pre-registration for project ["Moderators of symptom trajectories of depression and anxiety during the COVID-19 pandemic"](!https://osf.io/jvca5/).
+
+The analytic steps that will be followed for PHQ and GAD respectively are:
+
+1. perform latent growth curve analysis of total scores across all time points to identify the best fitting trajectory for the whole sample     
+2. perform growth mixture modelling to identify latent classes in trajectory that may correspond with distinct subgroups in our data
+
+# Setup
+
+***note: some of the install and update processes require command line verification in the console. If you are running this script for the first time and it does not proceed, pen and check the console***
+
+```{r setup, include=FALSE}
+
+# Install / load packages
+
+if(!require(knitr)){
+  install.packages("knitr")
+  library(knitr)
+}
+
+if(!require(summarytools)){
+  install.packages("summarytools")
+  library(summarytools)
+}
+
+if(!require(data.table)){
+  install.packages("data.table")
+  library(data.table)
+}
+
+
+if(!require(kableExtra)){
+  install.packages("kableExtra")
+  library(kableExtra)
+}
+
+if(!require(glue)){
+  install.packages("glue")
+  library(glue)
+}
+
+if(!require(MplusAutomation)){
+  install.packages("MplusAutomation")
+  library(MplusAutomation)
+}
+
+
+
+if(!require(texreg)){
+  install.packages("texreg")
+  library(texreg)
+}
+
+if(!require(relimp)){
+  install.packages("relimp")
+  library(relimp)
+}
+
+if(!require(BiocManager)){
+  install.packages("BiocManager")
+  library(BiocManager)
+}
+
+if(!require(rhdf5)){
+  BiocManager::install("rhdf5")
+  library(rhdf5)
+}
+
+if(!require(plyr)){
+  install.packages("plyr")
+  library(plyr)
+}
+
+
+if(!require(tidyverse)){
+  install.packages("tidyverse")
+  library(tidyverse)
+}
+
+
+## global workbook settings
+
+
+knitr::opts_chunk$set(results = 'asis',      
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE, 
+                      warning = FALSE,
+                      echo = TRUE,
+                      fig.height = 5,
+                      fig.width = 10,
+                      fig.align = "center")
+
+st_options(plain.ascii = FALSE,       
+            style = "rmarkdown",      
+            footnote = NA,            
+            subtitle.emphasis = FALSE)                         
+
+
+options(scipen = 999)
+```
+
+
+# Colour palette
+
+RAMP colours (first) from website and second is a generated left tetradic (rectangular) colour complement of the RAMP logo green for contrast and complement. 
+```{r ieso colour palette, include=FALSE}
+
+pres.palette <- c("#4ED1B7", "#F6C66A", "#6A6680", "#1A3E72", "#FFED04","#3F9D8A", "#FFFFFF") 
+
+prev.pres.palette<-c("#4590B8", "#4D68D1", "#D14D68", "#D1B74D", "#68D14D", "#B74DD1", "#D1754D")
+
+```
+
+
+# Latent Growth Curves {.tabset}
+
+Identify the best fitting latent growth curve form, i.e. that which fits all of the data best, on average, for each outcome
+
+## PHQ9: Current Depression Symptoms Latent Growth Curve Model
+
+### check number of rows missing on all variables in the dataset
+
+```{r read in phq and check missing all cases}
+
+print(getwd())
+phq_check <-  readRDS("../../../data_clean/phq/phq.clean_merged_items.rds")
+
+sum(complete.cases(phq_check[165:dim(phq_check)[2]]))
+
+```
+Data set contains cases with missing on all variables. These cases were not included in the analysis. Number of cases with missing on all variables: 328
+  
+Initial checks in Mplus output file:  
+- warnings  
+- that none of the residual variances are negative and significant  
+- loadings of indicators and intercept should all be 1, and estimates should relate to the timepoints you specified (e.g. lin 0, 1, 2; quad 0, 1, 4) 
+- intercept 0 for all and correlations look sensible
+
+```{r Read in Depression Traj Data, include = FALSE}
+
+# runModels("/Users/megskelton/OneDrive - King's College London/ieso_GMM/ieso_scripts/ieso_Mplus/PHQ/traj_form", recursive = TRUE)
+dep.traj.all <- readModels("/Users/megskelton/OneDrive - King's College London/ieso_GMM/ieso_scripts/ieso_Mplus/PHQ/traj_form", recursive=TRUE)
+
+#This also reads in the gh5 files which we use for plotting
+```
+
+**To do** : The mplusautomation showsummarytable uses X11 and outputs in a separate window - if want to create one inside rmarkdown will have to do manually 
+
+```{r Fit Indices for Depression LGC, warnings = FALSE}
+
+showSummaryTable(dep.traj.all, keepCols=c("Title", "Observations", "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate"), sortBy="BIC") #throws error but does print!
+
+```
+
+### Format Data for Plots 
+
+Plotting the estimated means for the trajectories with adjacent residuals correlated as these all had better fit than uncorrelated models
+
+Preference for labelling as 1 to 11 or 0 to 10? Latter looks 'neater' and is more accurate in a way as the scores are taken prior to the session
+```{r Format Depression Growth Curve Data}
+
+dat_dep<-data.frame(matrix(nrow=11, ncol=4))
+colnames(dat_dep)<-c("Observed", "Linear", "Quadratic", "Log")
+dat_dep$Observed<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_linear.out$gh5$means_and_variances_data$y_observed_means$values
+dat_dep$Linear<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_linear_corr.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep$Quadratic<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_quadratic_corr.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep$Log<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_log_corr.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep$timepoint<-c(0:10) 
+
+dat_dep<-dat_dep%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Observed", "Linear", "Log", "Quadratic")))
+
+```
+
+### Growth Curve Models Plot 
+
+```{r Depression Growth Curve Forms}
+
+ggplot() +
+  geom_line(data = dat_dep,
+        aes(x = timepoint, y = score, colour = Model), size = 1) +
+  geom_point(data = dat_dep,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette[c(4, 1:3)]) +
+  labs(x = "Therapy Session", y ="PHQ9 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0, 27, 3)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,10.5), breaks=seq(0, 10, by = 1)) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+```
+
+
+

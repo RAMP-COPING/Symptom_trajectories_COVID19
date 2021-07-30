@@ -65,6 +65,10 @@ if(!require(multiplex)){
   library(multiplex)
 }
 
+if(!require(modeest)){
+  install.packages("modeest")
+  library(modeest)
+}
 ```
 
 ```{r}
@@ -2055,11 +2059,11 @@ saveRDS(object = gad.totals.clean, file = paste0("../../../data_clean/gad/gad.cl
 
 ## save as csv without any rown names for MPLUS
 
-create a list of column names in order to save alongside the data file and remove ID
+create a list of column names in order to save alongside the data file
 ```{r mplus remove id make name codebook}
 
 gad.mplus <- gad.totals.clean %>%
-  select(-ID,-sample)
+  select(-sample)
 
 gad.mplus.names <- names(gad.mplus)
 gad.mplus.names.columns <- seq(1,length(gad.mplus.names))
@@ -2616,5 +2620,55 @@ save_file <- file.path(dirname(dirname(getwd())),"output/gad.all_waves_summary_t
 
 save_kable(pretty_table,
            save_file)
+
+```
+
+
+# examine data (total scores) for normality
+
+## descriptives
+
+
+```{r}
+
+### Check distributions of raw data, square root transformed data and log transformed data (bring above 1 first...) using histograms
+
+gad.totals.clean %>%
+  describe(.)
+
+```
+
+##  histograms
+
+```{r differentials_variable_transformation_histograms,fig.height=12,fig.width=8}
+
+layout(matrix(c(1:18), nrow=6, byrow=T))
+
+hist(gad.totals.clean$gad.total_Wave_0, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_01, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_02, breaks="FD")
+
+hist(gad.totals.clean$gad.total_Wave_03, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_04, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_05, breaks="FD")
+
+hist(gad.totals.clean$gad.total_Wave_06, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_07, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_08, breaks="FD")
+
+hist(gad.totals.clean$gad.total_Wave_09, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_10, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_11, breaks="FD")
+
+hist(gad.totals.clean$gad.total_Wave_12, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_13, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_14, breaks="FD")
+
+hist(gad.totals.clean$gad.total_Wave_15, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_16, breaks="FD")
+hist(gad.totals.clean$gad.total_Wave_17, breaks="FD")
+
+layout(1)
+
 
 ```

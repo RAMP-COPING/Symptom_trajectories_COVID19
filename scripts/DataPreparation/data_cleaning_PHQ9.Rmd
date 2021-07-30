@@ -64,6 +64,10 @@ if(!require(multiplex)){
   library(multiplex)
 }
 
+if(!require(modeest)){
+  install.packages("modeest")
+  library(modeest)
+}
 ```
 
 ```{r}
@@ -2210,11 +2214,11 @@ saveRDS(object = phq.clean, file = paste0("../../../data_clean/phq/phq.clean_mer
 
 ## save as csv without any rown names for MPLUS
 
-create a list of column names in order to save alongside the data file and remove ID
+create a list of column names in order to save alongside the data file 
 ```{r mplus remove id make name codebook}
 
 phq.mplus <- phq.totals.clean %>%
-  select(-ID,-sample)
+  select(-sample)
 
 phq.mplus.names <- names(phq.mplus)
 phq.mplus.names.columns <- seq(1,length(phq.mplus.names))
@@ -2239,8 +2243,185 @@ write_csv(phq.mplus.names, "../../../data_clean/phq/phq.clean_merged_total_score
 
 ```
 
+# Obtain mode for questionaire date for each wave, and the variance in start date for each wave to add to our summary tables
 
-# summary table 
+As per pre reg specification. Not I said I would provide the average start date, however on reflection this does not make sense and mode is a more informative metric. Thus this will be a minor point of deviation from the preregistration document.
+
+
+## get mode, earliest and latest time points for all
+```{r create table of mode and variance for dates}
+
+RAMPbase <- RAMP_baseline %>%
+    summarise(mode = mlv(format(as.POSIXct(startDate), format='%d/%m/%Y'),method='mfv'),
+            earliest = min(as.Date(startDate,format = '%d/%m/%Y')),
+            latest = max(as.Date(startDate,format = '%d/%m/%Y'))) %>%
+    mutate(sample = "RAMP",
+           mode = as.Date(mode,format='%d/%m/%Y'),
+           time.point = "Baseline") %>%
+  select(time.point,sample,mode,earliest,latest)
+
+
+RAMPA <- RAMP_followupA.id %>%
+  group_by(waveA) %>%
+   summarise(mode = mlv(format(as.POSIXct(startDate), format='%d/%m/%Y'),method='mfv'),
+            earliest = min(as.Date(startDate,format = '%d/%m/%Y')),
+            latest = max(as.Date(startDate,format = '%d/%m/%Y'))) %>%
+    mutate(sample = "RAMP",
+           mode = as.Date(mode,format='%d/%m/%Y')) %>%
+  rename(time.point = waveA) %>%
+  select(time.point,sample,mode,earliest,latest)
+
+RAMPB <- RAMP_followupB.id %>%
+  group_by(waveB) %>%
+  summarise(mode = mlv(format(as.POSIXct(startDate), format='%d/%m/%Y'),method='mfv'),
+            earliest = min(as.Date(startDate,format = '%d/%m/%Y')),
+            latest = max(as.Date(startDate,format = '%d/%m/%Y'))) %>%
+    mutate(sample = "RAMP",
+           mode = as.Date(mode,format='%d/%m/%Y')) %>%
+  rename(time.point = waveB) %>%
+  select(time.point,sample,mode,earliest,latest)
+
+COPEbase <- COPING_baseline.id %>%
+   summarise(mode = mlv(format(as.POSIXct(startDate), format='%d/%m/%Y'),method='mfv'),
+            earliest = min(as.Date(startDate,format = '%d/%m/%Y')),
+            latest = max(as.Date(startDate,format = '%d/%m/%Y'))) %>%
+    mutate(sample = "COPING",
+           mode = as.Date(mode,format='%d/%m/%Y'),
+           time.point = "Baseline") %>%
+  select(time.point,sample,mode,earliest,latest)
+
+
+COPINGA <- COPING_followupA.id %>%
+  group_by(waveA) %>%
+  summarise(mode = mlv(format(as.POSIXct(startDate), format='%d/%m/%Y'),method='mfv'),
+            earliest = min(as.Date(startDate,format = '%d/%m/%Y')),
+            latest = max(as.Date(startDate,format = '%d/%m/%Y'))) %>%
+    mutate(sample = "COPING",
+           mode = as.Date(mode,format='%d/%m/%Y')) %>%
+  rename(time.point = waveA) %>%
+  select(time.point,sample,mode,earliest,latest)
+
+
+COPINGAong <- COPING_followupA_ong.id %>%
+  group_by(waveA) %>%
+    summarise(mode = mlv(format(as.POSIXct(startDate), format='%d/%m/%Y'),method='mfv'),
+            earliest = min(as.Date(startDate,format = '%d/%m/%Y')),
+            latest = max(as.Date(startDate,format = '%d/%m/%Y'))) %>%
+    mutate(sample = "COPING",
+           mode = as.Date(mode,format='%d/%m/%Y')) %>%
+  rename(time.point = waveA) %>%
+  select(time.point,sample,mode,earliest,latest)
+
+COPINGB <- COPING_followupB.id %>%
+  group_by(waveB) %>%
+  summarise(mode = mlv(format(as.POSIXct(startDate), format='%d/%m/%Y'),method='mfv'),
+            earliest = min(as.Date(startDate,format = '%d/%m/%Y')),
+            latest = max(as.Date(startDate,format = '%d/%m/%Y'))) %>%
+    mutate(sample = "COPING",
+           mode = as.Date(mode,format='%d/%m/%Y')) %>%
+  rename(time.point = waveB) %>%
+  select(time.point,sample,mode,earliest,latest)
+
+
+# create combined data 
+
+BaseSet <- full_join(COPING_baseline.id,RAMP_baseline) %>%
+    summarise(mode = mlv(format(as.POSIXct(startDate), format='%d/%m/%Y'),method='mfv'),
+            earliest = min(as.Date(startDate,format = '%d/%m/%Y')),
+            latest = max(as.Date(startDate,format = '%d/%m/%Y'))) %>%
+    mutate(sample = "Combined",
+           mode = as.Date(mode,format='%d/%m/%Y'),
+           time.point = "Baseline") %>%
+  select(time.point,sample,mode,earliest,latest)
+
+Aset <- full_join(COPING_followupA.id,RAMP_followupA.id) %>%
+  group_by(waveA) %>%
+   summarise(mode = mlv(format(as.POSIXct(startDate), format='%d/%m/%Y'),method='mfv'),
+            earliest = min(as.Date(startDate,format = '%d/%m/%Y')),
+            latest = max(as.Date(startDate,format = '%d/%m/%Y'))) %>%
+    mutate(sample = "Combined",
+           mode = as.Date(mode,format='%d/%m/%Y')) %>%
+  rename(time.point = waveA) %>%
+  select(time.point,sample,mode,earliest,latest)
+
+Bset <- full_join(COPING_followupB.id,RAMP_followupB.id) %>%
+  group_by(waveB) %>%
+   summarise(mode = mlv(format(as.POSIXct(startDate), format='%d/%m/%Y'),method='mfv'),
+            earliest = min(as.Date(startDate,format = '%d/%m/%Y')),
+            latest = max(as.Date(startDate,format = '%d/%m/%Y'))) %>%
+    mutate(sample = "Combined",
+           mode = as.Date(mode,format='%d/%m/%Y')) %>%
+  rename(time.point = waveB) %>%
+  select(time.point,sample,mode,earliest,latest)
+
+```
+
+
+## merge together the summary tables
+```{r merge time summary}
+
+date.merging <- list(RAMPbase,
+                     COPEbase,
+                     RAMPA,
+                     COPINGA,
+                     COPINGAong,
+                     RAMPB,
+                     COPINGB,
+                     BaseSet,
+                     Aset,
+                     Bset)
+
+date.merge <- plyr::join_all(date.merging,
+                             by=c("time.point","sample"),
+                    type = "full") %>%
+  filter(!time.point == ".Wave_18") %>%
+  mutate(time.point = case_when(time.point == ".Wave_01"~ "Follow up 01",
+                                time.point == ".Wave_02"~ "Follow up 02",
+                                time.point == ".Wave_03"~ "Follow up 03",
+                                time.point == ".Wave_04"~ "Follow up 04",
+                                time.point == ".Wave_05"~ "Follow up 05",
+                                time.point == ".Wave_06"~ "Follow up 06",
+                                time.point == ".Wave_07"~ "Follow up 07",
+                                time.point == ".Wave_08"~ "Follow up 08",
+                                time.point == ".Wave_09"~ "Follow up 09",
+                                time.point == ".Wave_10"~ "Follow up 10",
+                                time.point == ".Wave_11"~ "Follow up 11",
+                                time.point == ".Wave_12"~ "Follow up 12",
+                                time.point == ".Wave_13"~ "Follow up 13",
+                                time.point == ".Wave_14"~ "Follow up 14",
+                                time.point == ".Wave_15"~ "Follow up 15",
+                                time.point == ".Wave_16"~ "Follow up 16",
+                                time.point == ".Wave_17"~ "Follow up 17",
+                                TRUE ~"Baseline")) %>%
+  arrange(time.point,sample)
+
+# get the earliest date where there were duplicate waves due to COPING ongoing and coping (waves 6,7 and 8)
+
+date.merge <- date.merge %>%
+  group_by(time.point,sample) %>%
+  summarise(most.frequent.completion.date =  min(mode),
+            earliest.completion.date = min(earliest),
+            latest.completion.date = max(latest))
+
+
+
+
+# reformat dates
+
+date.merge <- date.merge %>%
+  mutate(most.frequent.completion.date = format(most.frequent.completion.date, "%d-%m-%Y"),
+         earliest.completion.date = format(earliest.completion.date, "%d-%m-%Y"),
+         latest.completion.date = format(latest.completion.date, "%d-%m-%Y"))
+
+# check
+
+colnames(date.merge)
+print(date.merge)
+
+```
+
+
+# summary tables 
 
 ## create a  summary table for every wave
 
@@ -2746,6 +2927,14 @@ full_table <- rbind(table_time_0,table_time_01,table_time_02,table_time_03,table
 
 print(full_table)
 ```
+## merge with dates
+
+```{r join all waves to date merge}
+
+full_table <- full_join(full_table,date.merge)
+
+print(full_table)
+```
 
 ## prettify and save with KABLE (colour combined rows)
 
@@ -2776,8 +2965,54 @@ save_kable(pretty_table,
 ```
 
 
+# examine data (total scores) for normality
+
+## descriptives
 
 
+```{r}
+
+### Check distributions of raw data, square root transformed data and log transformed data (bring above 1 first...) using histograms
+
+phq.totals.clean %>%
+  describe(.)
+
+```
+
+##  histograms
+
+```{r differentials_variable_transformation_histograms,fig.height=12,fig.width=8}
+
+layout(matrix(c(1:18), nrow=6, byrow=T))
+
+hist(phq.totals.clean$phq.total_Wave_0, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_01, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_02, breaks="FD")
+
+hist(phq.totals.clean$phq.total_Wave_03, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_04, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_05, breaks="FD")
+
+hist(phq.totals.clean$phq.total_Wave_06, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_07, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_08, breaks="FD")
+
+hist(phq.totals.clean$phq.total_Wave_09, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_10, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_11, breaks="FD")
+
+hist(phq.totals.clean$phq.total_Wave_12, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_13, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_14, breaks="FD")
+
+hist(phq.totals.clean$phq.total_Wave_15, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_16, breaks="FD")
+hist(phq.totals.clean$phq.total_Wave_17, breaks="FD")
+
+layout(1)
+
+
+```
 
 
 
