@@ -1,6 +1,6 @@
 Mplus VERSION 8.2 (Mac)
 MUTHEN & MUTHEN
-07/30/2021   4:12 PM
+07/30/2021   7:06 PM
 
 INPUT INSTRUCTIONS
 
@@ -10,7 +10,7 @@ INPUT INSTRUCTIONS
 
   DATA:
     	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
-    	data_clean/phq/phq.clean_merged_total_scores.dat/phq.mplus.dat";
+    	data_clean/phq/"phq.clean_merged_total_scores.dat"/phq.mplus.dat";
 
   VARIABLE:
 
@@ -30,12 +30,13 @@ INPUT INSTRUCTIONS
   	
   ANALYSIS:
   	
-  	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors as data is skew for PHQ
+  	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors
+  	!as data is skew for PHQ at all time points
   	PROCESSORS = 2; !only 2 on Mac
   	
   MODEL:
 
-  	int slope| phq_t0@0 phq_t1@1 phq_t2@2 phq_t3@3 phq_t54@4
+  	int slope| phq_t0@0 phq_t1@1 phq_t2@2 phq_t3@3 phq_t4@4
       		 phq_t5@5 phq_t6@6 phq_t7@7 phq_t8@8 phq_t9@9
       		 phq_t10@10 phq_t11@11 phq_t12@12 phq_t13@13
       		 phq_t14@14 phq_t15@15 phq_t16@16 phq_t17@17;
@@ -61,24 +62,3 @@ INPUT INSTRUCTIONS
      ! SAVE=FS;		
      ! FILE IS lgc-phq9-linear-wcorrelations.dat;	
 
-*** WARNING
-  Input line exceeded 90 characters. Some input may be truncated.
-  	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors as data is skew for PHQ a
-*** ERROR
-  The number of observations is 0.  Check your data and format statement.
-  Data file:  /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/data_clean/phq/phq.clean_merged_total_scores.
-*** ERROR
-  Invalid symbol in data file:
-  "b505a12db9cf8b09b0a7b82eb954" at record #: 1, field #: 1
-
-
-MUTHEN & MUTHEN
-3463 Stoner Ave.
-Los Angeles, CA  90066
-
-Tel: (310) 391-9971
-Fax: (310) 391-8971
-Web: www.StatModel.com
-Support: Support@StatModel.com
-
-Copyright (c) 1998-2018 Muthen & Muthen
