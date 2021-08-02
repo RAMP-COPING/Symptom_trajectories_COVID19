@@ -235,8 +235,6 @@ runModels("./MPlus_input_lcga/PHQ",
           showOutput=TRUE,
           replaceOutfile="never")
 
-#add once scripts are working
-#
 ```
 
 
@@ -249,6 +247,8 @@ dep.traj.all <- readModels("./MPlus_input_lcga/PHQ",
 
 #This also reads in the gh5 files which we use for plotting
 ```
+
+
 
 ### Initial checks in Mplus output files {.tabset}
 
@@ -269,13 +269,165 @@ justWarnings
 
 ```
 
-
-#### check if any residual variances are negative and significant
-
-#### Check loadings of indicators and intercept sare 1, and estimates relate to specified timepoints
+Warnings are all about missing data (missing on all obs, this number lines up with our expectations from the dataset in the section above) and the length of a comment n piecewise scripts
 
 
-#### intercept 0 for all and correlations look sensible
+Otherwise, no warnings. Check one complete.
+#### check errors
+
+Check any errors with running any of the models. Oytput here will not say whicu model it belongs to, so will need to manually examine if errors occu,
+
+```{r check errors}
+
+justErrors <- do.call("paste",
+  sapply(dep.traj.all ,"[", "errors"))
+
+justErrors
+
+```
+
+
+One of the models has failed to converge. (Linear trajectory with pairwise correlations). 
+
+Tried to increase the number of iterations to 5000 (did not work) and 10000 (also did not work). Tried to specify random start value (STARTS = 40), also didnt help, although it dramatically increased run time.
+
+
+#### check if any residual variances are negative and significant {.tabset}
+
+##### Linear 
+```{r check if residual variances negative lin}
+
+model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+##### Linear with pairwise correlations
+```{r check if residual variances negative lin pairwise}
+
+model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+##### Quadratic 
+```{r check if residual variances negative quad}
+
+model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+##### Quadratic with pairwise correlations
+```{r check if residual variances negative quad pairwise}
+
+model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+##### Piecewise 1
+```{r check if residual variances negative piece 1}
+
+model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+##### Piecewise 1 with pairwise correlations
+```{r check if residual variances negative piece 1 pairwise}
+
+model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces_wPairwise_correlations.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+
+##### Piecewise 2
+```{r check if residual variances negative piece 2}
+
+model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+##### Piecewise 2 with pairwise correlations
+```{r check if residual variances negative piece 2 pairwise}
+
+model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+#### Check loadings of indicators and intercepts are 1, and estimates relate to specified timepoints, intercept 0 for all and correlations look sensible {.tabset}
+
+Print output file for each correlation for examination of these details and any other relavant information
+
+##### Linear 
+```{r check full output negative lin}
+
+dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear.out$output
+
+
+```
+
+##### Linear with pairwise correlations
+```{r check full output negative lin pairwise}
+
+dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output
+
+
+```
+
+##### Quadratic 
+```{r check full output negative quad}
+
+dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic.out$output
+
+
+```
+
+##### Quadratic with pairwise correlations
+```{r check full output negative quad pairwise}
+
+dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output
+
+
+```
+
+##### Piecewise 1
+```{r check full output negative piece 1}
+
+dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces.out$output
+
+
+```
+
+##### Piecewise 1 with pairwise correlations
+```{r check full output negative piece 1 pairwise}
+
+dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces_wPairwise_correlations.out$output
+
+
+```
+
+
+##### Piecewise 2
+```{r check full output negative piece 2}
+
+dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces.out$output
+
+
+```
+
+##### Piecewise 2 with pairwise correlations
+```{r check full output negative piece 2 pairwise}
+
+dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$output
+
+
+```
+
 
 
 ### Summary table of all fit indices
@@ -294,21 +446,33 @@ Plotting the estimated means for the trajectories with adjacent residuals correl
 
 ```{r Format Depression Growth Curve Data}
 
-dat_dep<-data.frame(matrix(nrow=11, ncol=4))
+dat_dep<-data.frame(matrix(nrow=18, ncol=3))
 
-colnames(dat_dep)<-c("Observed", "Linear", "Quadratic", "Log")
+colnames(dat_dep)<-c("Linear", "Quadratic",  "Piecewise3")
 
-dat_dep$Observed <-
-  dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_linear.out$gh5$means_and_variances_data$y_observed_means$values
+#  "LinearCor", "QuadraticCor","Piecewise4", "Piecewise4Cor",, "Piecewise3Cor"
 
-dat_dep$Linear<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_linear_corr.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep$Linear <-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear.out$gh5$means_and_variances_data$y_estimated_means$values
 
-dat_dep$Quadratic<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_quadratic_corr.out$gh5$means_and_variances_data$y_estimated_means$values
+#dat_dep$LinearCor<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 
-dat_dep$Log<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_log_corr.out$gh5$means_and_variances_data$y_estimated_means$values
-dat_dep$timepoint<-c(0:10) 
+dat_dep$Quadratic<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic.out$gh5$means_and_variances_data$y_estimated_means$values
 
-dat_dep<-dat_dep%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Observed", "Linear", "Log", "Quadratic")))
+#dat_dep$QuadraticCor<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+#dat_dep$Piecewise4<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces.out$gh5$means_and_variances_data$y_estimated_means$values
+
+#dat_dep$Piecewise4Cor<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+
+dat_dep$Piecewise3<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces.out$gh5$means_and_variances_data$y_estimated_means$values
+
+#dat_dep$Piecewise3Cor<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+
+dat_dep$timepoint<-c(0:17) 
+
+dat_dep<-dat_dep%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic","Piecewise3")))
 
 ```
 
@@ -316,15 +480,15 @@ dat_dep<-dat_dep%>%pivot_longer(-timepoint, names_to = "Model", values_to = "sco
 
 ```{r Depression Growth Curve Forms}
 
-ggplot() +
+growth_curves <- ggplot() +
   geom_line(data = dat_dep,
         aes(x = timepoint, y = score, colour = Model), size = 1) +
   geom_point(data = dat_dep,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette[c(4, 1:3)]) +
-  labs(x = "Therapy Session", y ="PHQ9 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0, 27, 3)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,10.5), breaks=seq(0, 10, by = 1)) +
+  labs(x = "Follow up time point", y ="PHQ9 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,10), breaks=seq(0, 10, 3)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,18.5), breaks=seq(0, 18, by = 1)) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
                                         colour = "gray"),
@@ -333,6 +497,8 @@ ggplot() +
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
         panel.background = element_blank()) 
+
+growth_curves
 
 ```
 
