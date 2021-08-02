@@ -184,6 +184,44 @@ Important note: all numbers correspond exactly with MPlus output numbers (n per 
 * quadratic
 * piecewise (with lockdown dates as variance points)
 
+#### Piecewise trajectory key dates
+
+##### trajectory 1
+1. Easing of restrictions after first lockdown (23 June 2020, first wave of data collected after this is wave 6, which began on June 30th) 
+
+  Thus piece one will be baseline - wave 5 
+  capturing mental health during the first lockdown, with easing of restrictions as a potential point of change
+  
+2. Christmas Lockdown and lockdown 3 in England (December 20, 2020 christmas lockdown, legal third lockdown began on the 6th of January. First wave of data after the christmas shut down and new national lockdown was wave 14, which began on 19 Jan. Wave 13 began on 15 December, and most responses likely recorded before short christmas lockdown was announced)
+
+  Thus piece two will be wave 6  - wave 13
+  capturing the summer period where restrictions were relaxed and heading toward the worsening situation of December. Decmeber and January restrictions a potnetil point for change
+
+3. Ease of restrictions begins (8 march 2021, slowly released over March. Follow up 16 began 16 March, thus captures period shortly after and into the easing)
+  Thus piece 3 will be wave 14 to wave 15   
+  Capturing the time during the third lockdown with stay at home orders and restrictions renewed
+  Easing of restrictions a potential inflection point. 
+  
+
+Piecewise therefore: 
+
+1. Baseline - 5
+2. 6 - 13
+3. 14 - 15
+4. 16 - 17
+
+##### trajectory 2
+
+Possible that this is too compacted and had too few measurement points in shorter lockdowns to be meaningful. Thus, will also test a smaller peicewise model capturing inflections for initial lockdown, easing of restrictions, renewed lockdown into April. Arguably gradual easing of restrictionsover the course of March - July does not qualify for a probably inflection point in MH trajectories. 
+
+
+Piecewise2 therefore: 
+
+1. Baseline - 5
+2. 6 - 13
+3. 14 - 17
+
+
 dont rerun models if there is already output for it (to save computational time), do show the output in the console
 ```{r run depression linear models}
 
@@ -195,7 +233,6 @@ runModels("./MPlus_input_lcga/PHQ",
 #add once scripts are working
 #
 ```
-reducsed testfinally flagged errors!! 1) integration option doesnt work for LCGA, so removing that as it will not speed anything up.
 
 
 ### Read model output into R
