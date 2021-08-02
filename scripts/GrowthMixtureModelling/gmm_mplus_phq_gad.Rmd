@@ -28,7 +28,15 @@ The analytic steps that will be followed for PHQ and GAD respectively are:
 
 # Setup
 
+
+```{r}
+# clear global environment
+remove(list = ls())
+```
+
+
 ***note: some of the install and update processes require command line verification in the console. If you are running this script for the first time and it does not proceed, pen and check the console***
+
 
 ```{r setup, include=FALSE}
 
@@ -99,6 +107,7 @@ if(!require(tidyverse)){
 }
 
 
+
 ## global workbook settings
 
 
@@ -138,14 +147,13 @@ prev.pres.palette<-c("#4590B8", "#4D68D1", "#D14D68", "#D1B74D", "#68D14D", "#B7
 
 Identify the best fitting latent growth curve form, i.e. that which fits all of the data best, on average, for each outcome
 
-## PHQ9: Current Depression Symptoms Latent Growth Curve Model
+## PHQ9: Current Depression Symptoms Latent Growth Curve Model {.tabset}
 
 ### check number of rows missing on all variables in the dataset
 
 ```{r read in phq and check missing all cases}
 
-print(getwd())
-phq_check <-  readRDS("../../../data_clean/phq/phq.clean_merged_items.rds")
+phq_check <-  readRDS("../../../data_clean/phq/phq.clean_merged_total_scores.rds")
 
 # get a list of the total score columns
 total_cols <- grep("total_Wave", names(phq_check))
@@ -156,26 +164,92 @@ n_cols <- length(total_cols)
 # create a list of how many NAs are missing across these 18 columns per row
 list_n_missing <- apply(phq_check[total_cols],1,function(x) sum(is.na(x)))
 
-# count how many of people are missing data for all columns (NA = total_cols)
+# count how many people are missing data for all columns (NA = total_cols)
 list_all_missing <-  sum(list_n_missing ==n_cols)
+
+print(dim(phq_check)[1])
+print(list_all_missing)
+
+```
+Data set contains a total of `r print(dim(phq_check)[1])` observations. 
+
+Number of cases missing on all variables, and thus excluded from the analyses: `r print(list_all_missing)`        
+
+### create a test dataset with massively reduced rows to get Mplus running 
+dataset is huge with many datapoints and MPlus doesnt give good feedback. Completely unsure if anything ia working, or if there is a problem with the script. So require a small dataset to troubleshoot mplus input scripts.
+
+```{r make small dataset for testing}
+
+phq_testing <- phq_check[1:40,1:6]%>%
+  select(!sample) 
+  
+names(phq_testing) <- NULL
+phq_testing[is.na(phq_testing)] <- -99
+
+write_csv(phq_testing, "../../../data_clean/phq/phq.clean_merged_total_scores_testdata.csv")
 
 
 ```
-Data set contains cases with missing on all variables. These cases were not included in the analysis. Number of cases with missing on all variables: 328
-  
-Initial checks in Mplus output file:  
+
+### Run all models (with and without pairwise correlations)
+
+* linear
+* quadratic
+* piecewise (with lockdown dates as variance points)
+
+dont rerun models if there is already output for it (to save computational time), do show the output in the console
+```{r run depression linear models}
+
+runModels("./MPlus_input_lcga/PHQ", 
+          recursive = TRUE,
+          showOutput=TRUE,
+          replaceOutfile="never")
+
+#add once scripts are working
+#
+```
+reducsed testfinally flagged errors!! 1) integration option doesnt work for LCGA, so removing that as it will not speed anything up.
+
+
+### Read model output into R
+
+```{r read depression model}
+
+dep.traj.all <- readModels("./MPlus_input_lcga/PHQ", 
+                           recursive=TRUE)
+
+#This also reads in the gh5 files which we use for plotting
+```
+
+### Initial checks in Mplus output files {.tabset}
+
 - warnings  
 - that none of the residual variances are negative and significant  
 - loadings of indicators and intercept should all be 1, and estimates should relate to the timepoints you specified (e.g. lin 0, 1, 2; quad 0, 1, 4) 
 - intercept 0 for all and correlations look sensible
 
-```{r Read in Depression Traj Data, include = FALSE}
+#### check warnings
 
-# runModels("/Users/megskelton/OneDrive - King's College London/ieso_GMM/ieso_scripts/ieso_Mplus/PHQ/traj_form", recursive = TRUE)
-dep.traj.all <- readModels("/Users/megskelton/OneDrive - King's College London/ieso_GMM/ieso_scripts/ieso_Mplus/PHQ/traj_form", recursive=TRUE)
+at the moment this doesnt say which model the warning is from, so any warning requires checking to identify its source. Though order in list will give some indication
+```{r check warnings}
 
-#This also reads in the gh5 files which we use for plotting
+justWarnings <- do.call("paste",
+  sapply(dep.traj.all ,"[", "warnings"))
+
+justWarnings
+
 ```
+
+
+#### check if any residual variances are negative and significant
+
+#### Check loadings of indicators and intercept sare 1, and estimates relate to specified timepoints
+
+
+#### intercept 0 for all and correlations look sensible
+
+
+### Summary table of all fit indices
 
 **To do** : The mplusautomation showsummarytable uses X11 and outputs in a separate window - if want to create one inside rmarkdown will have to do manually 
 
@@ -185,18 +259,23 @@ showSummaryTable(dep.traj.all, keepCols=c("Title", "Observations", "Parameters",
 
 ```
 
-### Format Data for Plots 
+#### Format Data for Plots 
 
 Plotting the estimated means for the trajectories with adjacent residuals correlated as these all had better fit than uncorrelated models
 
-Preference for labelling as 1 to 11 or 0 to 10? Latter looks 'neater' and is more accurate in a way as the scores are taken prior to the session
 ```{r Format Depression Growth Curve Data}
 
 dat_dep<-data.frame(matrix(nrow=11, ncol=4))
+
 colnames(dat_dep)<-c("Observed", "Linear", "Quadratic", "Log")
-dat_dep$Observed<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_linear.out$gh5$means_and_variances_data$y_observed_means$values
+
+dat_dep$Observed <-
+  dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_linear.out$gh5$means_and_variances_data$y_observed_means$values
+
 dat_dep$Linear<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_linear_corr.out$gh5$means_and_variances_data$y_estimated_means$values
+
 dat_dep$Quadratic<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_quadratic_corr.out$gh5$means_and_variances_data$y_estimated_means$values
+
 dat_dep$Log<-dep.traj.all$X.Users.megskelton.OneDrive...King.s.College.London.ieso_GMM.ieso_scripts.ieso_Mplus.PHQ.traj_form.ieso_phq_lgc_log_corr.out$gh5$means_and_variances_data$y_estimated_means$values
 dat_dep$timepoint<-c(0:10) 
 
@@ -204,7 +283,7 @@ dat_dep<-dat_dep%>%pivot_longer(-timepoint, names_to = "Model", values_to = "sco
 
 ```
 
-### Growth Curve Models Plot 
+#### Growth Curve Models Plot 
 
 ```{r Depression Growth Curve Forms}
 

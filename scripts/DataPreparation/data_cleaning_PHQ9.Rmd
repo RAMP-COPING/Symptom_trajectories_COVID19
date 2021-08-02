@@ -59,11 +59,6 @@ if(!require(kableExtra)){
   library(kableExtra)
 }
 
-if(!require(multiplex)){
-  install.packages("multiplex")
-  library(multiplex)
-}
-
 if(!require(modeest)){
   install.packages("modeest")
   library(modeest)
@@ -1132,6 +1127,7 @@ phq.COPING.reordered <- phq.COPING %>%
 colnames(phq.COPING.reordered)
 
 ```
+
   
 # RAMP data preprocessing {.tabset}
 ## RAMP baseline 
@@ -1861,6 +1857,7 @@ colnames(phq.RAMP.reordered)
 
 ```
 
+
 # merge COPING and RAMP all wave data
 
 Merge by all common columns so that we dont duplicate waves. This is effectively an rbind action (adding a row for every case but keeping columns standard across)
@@ -1884,6 +1881,7 @@ dim(phq.merged)
 names(phq.merged)
 ```
 
+
 ## drop data from waves after 6 April 2021 (see pre registration for re-agreed data boundaries)
 
 ```{r drop later waves}
@@ -1892,6 +1890,7 @@ phq.clean <- phq.merged %>%
 
 names(phq.clean)
 ```
+
 
 # create sum scores
 scoring variables to use in function below
@@ -1916,6 +1915,7 @@ phq.clean<- na_if(phq.clean, -77)
 ```
 
 
+
 ## add columns for sum scores for each wave. {.tabset}
 use functions that generate items for phq using wave number as a user input. This function is specific to my data naming conventions.
 
@@ -1938,6 +1938,9 @@ phq.clean <- phq.clean %>%
                                                 maxval = PHQ.max.value,
                                                 maxmissing = PHQ.maximum.missing.items))
 ```
+
+
+
 
 ### Follow up 01
 ```{r}
@@ -2194,6 +2197,7 @@ phq.clean <- phq.clean %>%
                                                 maxmissing = PHQ.maximum.missing.items))
 ```
 
+
 # select total scores per wave and save this dataset
 
 ```{r drop item data}
@@ -2204,26 +2208,6 @@ phq.totals.clean <-
          starts_with("phq.total_Wave_"))
 ```
 
-## drop duplicates introduced in the follow up merge.
-
-```{r drop follow u duplicate rows}
-
-phq.totals.clean <- phq.totals.clean %>%
-    group_by(ID) %>% 
-    filter(!duplicated(ID,
-                      fromLast = TRUE)
-           ) %>%
-  ungroup()
-
-phq.clean <- phq.clean %>%
-    group_by(ID) %>% 
-    filter(!duplicated(ID,
-                      fromLast = TRUE)
-           ) %>%
-  ungroup()
-  
-
-```
 
 ## save
 ```{r save final data}
@@ -2248,19 +2232,53 @@ phq.mplus.names <- data.frame(cbind(phq.mplus.names,phq.mplus.names.columns))
 
 names(phq.mplus.names) <- c("Variable","Column")
 
+phq.mplus[is.na(phq.mplus)] <- -99
+
 ```
+
+## make a new hased ID column with only numbers and save the linking file for later steps
+MPlus will only allow numeric variables. 
+
+hashed ID is already totally anonymised and disconnected from original dataset, so will save it with the other data as there is no additional risk of data linkage by doing so.
+
+```{r numeric hashed id}
+# create a random integer ID for each row, without duplication
+phq.mplus$hash_id <- sample(1:100000,dim(phq.mplus)[1],replace=FALSE)
+
+```
+
+
+### create a linked id file
+
+```{r linked ids}
+
+phq.id.lnk <- phq.mplus %>%
+  select(ID, hash_id)
+
+```
+
+### remove original ID and move hash id to the front
+```{r remove ID relocate hash id}
+
+phq.mplus <- phq.mplus %>%
+  relocate(hash_id, .before = ID) %>%
+  select(!ID)
+```
+
 ## remove column names
 ```{r remove col names}
 
 names(phq.mplus) <- NULL
 
 ```
+
 ##save .dat file for MPlus without headers, and corresponding orderd list of variables
 
 ```{r save plus dat files}
 
-write.dat(phq.mplus, "../../../data_clean/phq/phq.clean_merged_total_scores.dat")
-write_csv(phq.mplus.names, "../../../data_clean/phq/phq.clean_merged_total_scores.dat/phq.clean_merged_total_scores_codebook.csv")
+write.table(phq.mplus, "../../../data_clean/phq/phq.clean_merged_total_scores.csv",row.names = FALSE)
+write_csv(phq.id.lnk, "../../../data_clean/phq/phq.mplus_hash_id_link_file.csv")
+write_csv(phq.mplus.names, "../../../data_clean/phq/phq.clean_merged_total_scores_codebook.csv")
 
 ```
 

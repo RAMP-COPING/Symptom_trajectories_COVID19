@@ -1933,19 +1933,6 @@ masq.totals.clean <-
          starts_with("masq.total_Wave_"))
 ```
 
-## drop duplicates introduced in the follow up merge.
-
-```{r drop follow u duplicate rows}
-
-masq.totals.clean <- masq.totals.clean %>%
-    group_by(ID) %>% 
-    filter(!duplicated(ID,
-                      fromLast = TRUE)
-           ) %>%
-  ungroup()
-
-```
-
 
 ## save
 ```{r save final data}
@@ -1968,19 +1955,55 @@ masq.mplus.names <- data.frame(cbind(masq.mplus.names,masq.mplus.names.columns))
 
 names(masq.mplus.names) <- c("Variable","Column")
 
+
+
+masq.mplus[is.na(masq.mplus)] <- -99
+
 ```
+
+## make a new hased ID column with only numbers and save the linking file for later steps
+MPlus will only allow numeric variables. 
+
+hashed ID is already totally anonymised and disconnected from original dataset, so will save it with the other data as there is no additional risk of data linkage by doing so.
+
+```{r numeric hashed id}
+# create a random integer ID for each row, without duplication
+masq.mplus$hash_id <- sample(1:100000,dim(masq.mplus)[1],replace=FALSE)
+
+```
+
+
+### create a linked id file
+
+```{r linked ids}
+
+masq.id.lnk <- masq.mplus %>%
+  select(ID, hash_id)
+
+```
+
+### remove original ID and move hash id to the front
+```{r remove ID relocate hash id}
+
+masq.mplus <- masq.mplus %>%
+  relocate(hash_id, .before = ID) %>%
+  select(!ID)
+```
+
 ## remove column names
 ```{r remove col names}
 
 names(masq.mplus) <- NULL
 
 ```
+
 ##save .dat file for MPlus without headers, and corresponding orderd list of variables
 
 ```{r save plus dat files}
 
-write.dat(masq.mplus, "../../../data_clean/masq/masq.clean_merged_total_scores.dat")
-write_csv(masq.mplus.names, "../../../data_clean/masq/masq.clean_merged_total_scores.dat/masq.clean_merged_total_scores_codebook.csv")
+write.table(masq.mplus, "../../../data_clean/masq/masq.clean_merged_total_scores.csv",row.names=FALSE)
+write_csv(masq.id.lnk, "../../../data_clean/masq/masq.mplus_hash_id_link_file.csv")
+write_csv(masq.mplus.names, "../../../data_clean/masq/masq.clean_merged_total_scores_codebook.csv")
 
 ```
 

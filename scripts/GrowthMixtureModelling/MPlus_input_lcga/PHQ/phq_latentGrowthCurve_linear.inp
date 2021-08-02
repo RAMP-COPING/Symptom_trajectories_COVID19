@@ -4,7 +4,7 @@ No pairwise correlations
 
 DATA:
   	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
-  	data_clean/phq/"phq.clean_merged_total_scores.dat"/phq.mplus.dat";
+  	data_clean/phq/phq.clean_merged_total_scores.csv";
 
 VARIABLE:
 

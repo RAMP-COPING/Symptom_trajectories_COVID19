@@ -2051,41 +2051,19 @@ gad.totals.clean <-
          starts_with("gad.total_Wave_"))
 ```
 
-## drop duplicates introduced in the follow up merge.
-
-```{r drop follow u duplicate rows}
-
-gad.totals.clean <- gad.totals.clean %>%
-    group_by(ID) %>% 
-    filter(!duplicated(ID,
-                      fromLast = TRUE)
-           ) %>%
-  ungroup()
-
-gad.clean <- gad.clean %>%
-    group_by(ID) %>% 
-    filter(!duplicated(ID,
-                      fromLast = TRUE)
-           ) %>%
-  ungroup()
-  
-
-```
-
-
 ## save
 ```{r save final data}
 saveRDS(object = gad.totals.clean, file = paste0("../../../data_clean/gad/gad.clean_merged_total_scores",  ".rds"))
 ```
 
 
-## save as csv without any rown names for MPLUS
+## save as csv without any rown names for MPLUS and NA  as -99 
 
 create a list of column names in order to save alongside the data file
 ```{r mplus remove id make name codebook}
 
 gad.mplus <- gad.totals.clean %>%
-  select(-sample)
+  select(-sample) 
 
 gad.mplus.names <- names(gad.mplus)
 gad.mplus.names.columns <- seq(1,length(gad.mplus.names))
@@ -2094,19 +2072,54 @@ gad.mplus.names <- data.frame(cbind(gad.mplus.names,gad.mplus.names.columns))
 
 names(gad.mplus.names) <- c("Variable","Column")
 
+
+gad.mplus[is.na(gad.mplus)] <- -99
 ```
+
+
+## make a new hased ID column with only numbers and save the linking file for later steps
+MPlus will only allow numeric variables. 
+
+hashed ID is already totally anonymised and disconnected from original dataset, so will save it with the other data as there is no additional risk of data linkage by doing so.
+
+```{r numeric hashed id}
+# create a random integer ID for each row, without duplication
+gad.mplus$hash_id <- sample(1:100000,dim(gad.mplus)[1],replace=FALSE)
+
+```
+
+
+### create a linked id file
+
+```{r linked ids}
+
+gad.id.lnk <- gad.mplus %>%
+  select(ID, hash_id)
+
+```
+
+### remove original ID and move hash id to the front
+```{r remove ID relocate hash id}
+
+gad.mplus <- gad.mplus %>%
+  relocate(hash_id, .before = ID) %>%
+  select(!ID)
+```
+
 ## remove column names
 ```{r remove col names}
 
 names(gad.mplus) <- NULL
 
 ```
+
 ##save .dat file for MPlus without headers, and corresponding orderd list of variables
 
 ```{r save plus dat files}
 
-write.dat(gad.mplus, "../../../data_clean/gad/gad.clean_merged_total_scores.dat")
-write_csv(gad.mplus.names, "../../../data_clean/gad/gad.clean_merged_total_scores.dat/gad.clean_merged_total_scores_codebook.csv")
+write.table(gad.mplus, "../../../data_clean/gad/gad.clean_merged_total_scores.csv",row.names = FALSE)
+write_csv(gad.id.lnk, "../../../data_clean/gad/gad.mplus_hash_id_link_file.csv")
+write_csv(gad.mplus.names, "../../../data_clean/gad/gad.clean_merged_total_scores_codebook.csv")
 
 ```
 
