@@ -175,21 +175,8 @@ Data set contains a total of `r print(dim(phq_check)[1])` observations.
 
 Number of cases missing on all variables, and thus excluded from the analyses: `r print(list_all_missing)`        
 
-### create a test dataset with massively reduced rows to get Mplus running 
-dataset is huge with many datapoints and MPlus doesnt give good feedback. Completely unsure if anything ia working, or if there is a problem with the script. So require a small dataset to troubleshoot mplus input scripts.
+Important note: all numbers correspond exactly with MPlus output numbers (n per wave and n missing all observations etc).
 
-```{r make small dataset for testing}
-
-phq_testing <- phq_check[1:40,1:6]%>%
-  select(!sample) 
-  
-names(phq_testing) <- NULL
-phq_testing[is.na(phq_testing)] <- -99
-
-write_csv(phq_testing, "../../../data_clean/phq/phq.clean_merged_total_scores_testdata.csv")
-
-
-```
 
 ### Run all models (with and without pairwise correlations)
 
