@@ -182,7 +182,10 @@ Important note: all numbers correspond exactly with MPlus output numbers (n per 
 
 * linear
 * quadratic
-* piecewise (with lockdown dates as variance points)
+* piecewise version 1: four pieces, corresponding with locdowns and easing of restrictions between April 2020 and April 2021
+* piecewise version 2: three pieces, corresponding with lockdowns and easing of restrictions, but with no inflection for the March 2021 onward restriction easing as these were gradual and not as temporally well defined. 
+
+*all of the above, but with pairwise correlations between timepoints
 
 #### Piecewise trajectory key dates
 
@@ -221,8 +224,10 @@ Piecewise2 therefore:
 2. 6 - 13
 3. 14 - 17
 
+### run all models 
 
 dont rerun models if there is already output for it (to save computational time), do show the output in the console
+
 ```{r run depression linear models}
 
 runModels("./MPlus_input_lcga/PHQ", 
