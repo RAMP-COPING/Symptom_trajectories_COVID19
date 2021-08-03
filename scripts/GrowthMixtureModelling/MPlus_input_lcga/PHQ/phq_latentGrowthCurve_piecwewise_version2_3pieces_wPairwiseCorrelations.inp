@@ -29,12 +29,13 @@ ANALYSIS:
 	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors 
 	!as data is skew for PHQ at all time points
 	PROCESSORS = 2; !only 2 on Mac
-	COVERAGE=0.0017;
+	COVERAGE=0;
 	ITERATIONS=5000;
 	
 MODEL:
 !Note, a single trajectory, so we retain a single intercept 
 !and only introduce different slopes
+
 
 	int lin1 | phq_t0@0 phq_t3@3 phq_t4@4
     		 phq_t5@5 phq_t6@6 phq_t7@6 phq_t8@6 phq_t9@6 
@@ -44,15 +45,15 @@ MODEL:
     		 
     		 !pivot point needs to be zero as this is where growth starts, so tp6 = 0
     	int lin2 | phq_t0@0 phq_t3@0 phq_t4@0
-    		 phq_t5@0 phq_t6@0 phq_t7@7 phq_t8@8 phq_t9@9 
-    		 phq_t10@11 phq_t11@13 phq_t12@15 phq_t13@17
-    		 phq_t14@17 phq_t15@17 phq_t16@17;
+    		 phq_t5@0 phq_t6@0 phq_t7@1 phq_t8@2 phq_t9@3 
+    		 phq_t10@5 phq_t11@7 phq_t12@9 phq_t13@11
+    		 phq_t14@11 phq_t15@11 phq_t16@11;
 	
   	
     	int lin3 | phq_t0@0 phq_t3@0 phq_t4@0
     		 phq_t5@0 phq_t6@0 phq_t7@0 phq_t8@0 phq_t9@0 
     		 phq_t10@0 phq_t11@0 phq_t12@0 phq_t13@0
-    		 phq_t14@19 phq_t15@21 phq_t16@23;
+    		 phq_t14@2 phq_t15@4 phq_t16@6;
 	
     		 
 	

@@ -1,6 +1,6 @@
 Mplus VERSION 8.2 (Mac)
 MUTHEN & MUTHEN
-08/03/2021  12:29 PM
+08/03/2021  12:53 PM
 
 INPUT INSTRUCTIONS
 
@@ -33,7 +33,7 @@ INPUT INSTRUCTIONS
   	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors
   	!as data is skew for PHQ at all time points
   	PROCESSORS = 2; !only 2 on Mac
-  	COVERAGE=0.0017;
+  	COVERAGE=0;
   	
   MODEL:
   ! time intervals adjusted for when surveys moved from two weekly to monthly
@@ -119,7 +119,7 @@ SUMMARY OF DATA
 
 COVARIANCE COVERAGE OF DATA
 
-Minimum covariance coverage value   0.002
+Minimum covariance coverage value   0.000
 
 
      PROPORTION OF DATA PRESENT
@@ -169,10 +169,6 @@ Minimum covariance coverage value   0.002
  PHQ_T15        0.010         0.259         0.009         0.294
  PHQ_T16        0.254         0.007         0.256         0.008         0.283
 
-     THE COVARIANCE COVERAGE FALLS BELOW THE SPECIFIED LIMIT.
-     THE MISSING DATA EM ALGORITHM WILL NOT BE INITIATED.
-     CHECK YOUR DATA OR LOWER THE COVARIANCE COVERAGE LIMIT.
-
 
 
 UNIVARIATE SAMPLE STATISTICS
@@ -215,8 +211,6 @@ UNIVARIATE SAMPLE STATISTICS
            18395.000      43.554       0.550      27.000    0.53%       6.000     12.000
 
 
-     THE MINIMUM COVARIANCE COVERAGE WAS NOT FULFILLED.
-
 THE MODEL ESTIMATION TERMINATED NORMALLY
 
 
@@ -230,6 +224,9 @@ Loglikelihood
           H0 Value                     -849795.116
           H0 Scaling Correction Factor      2.6313
             for MLR
+          H1 Value                     -846800.847
+          H1 Scaling Correction Factor      1.9459
+            for MLR
 
 Information Criteria
 
@@ -238,7 +235,39 @@ Information Criteria
           Sample-Size Adjusted BIC     1699748.345
             (n* = (n + 2) / 24)
 
-Degrees of Freedom                             115
+Chi-Square Test of Model Fit
+
+          Value                           3278.314*
+          Degrees of Freedom                   115
+          P-Value                           0.0000
+          Scaling Correction Factor         1.8267
+            for MLR
+
+*   The chi-square value for MLM, MLMV, MLR, ULSMV, WLSM and WLSMV cannot be used
+    for chi-square difference testing in the regular way.  MLM, MLR and WLSM
+    chi-square difference testing is described on the Mplus website.  MLMV, WLSMV,
+    and ULSMV difference testing is done using the DIFFTEST option.
+
+RMSEA (Root Mean Square Error Of Approximation)
+
+          Estimate                           0.021
+          90 Percent C.I.                    0.020  0.021
+          Probability RMSEA <= .05           1.000
+
+CFI/TLI
+
+          CFI                                0.980
+          TLI                                0.982
+
+Chi-Square Test of Model Fit for the Baseline Model
+
+          Value                         159996.744
+          Degrees of Freedom                   105
+          P-Value                           0.0000
+
+SRMR (Standardized Root Mean Square Residual)
+
+          Value                              0.022
 
 
 
@@ -282,11 +311,11 @@ MODEL RESULTS
     PHQ_T16           23.000      0.000    999.000    999.000
 
  INT      WITH
-    SLOPE             -0.137      0.010    -14.167      0.000
+    SLOPE             -0.137      0.010    -14.169      0.000
 
  Means
     INT                7.072      0.026    268.053      0.000
-    SLOPE              0.006      0.001      4.952      0.000
+    SLOPE              0.006      0.001      4.951      0.000
 
  Intercepts
     PHQ_T0             0.000      0.000    999.000    999.000
@@ -306,20 +335,20 @@ MODEL RESULTS
     PHQ_T16            0.000      0.000    999.000    999.000
 
  Variances
-    INT               38.076      0.263    144.601      0.000
+    INT               38.076      0.263    144.600      0.000
     SLOPE              0.020      0.001     36.964      0.000
 
  Residual Variances
-    PHQ_T0             7.585      0.189     40.222      0.000
-    PHQ_T3             6.323      0.134     47.272      0.000
+    PHQ_T0             7.585      0.189     40.223      0.000
+    PHQ_T3             6.323      0.134     47.273      0.000
     PHQ_T4             6.386      0.140     45.565      0.000
     PHQ_T5             5.782      0.135     42.849      0.000
-    PHQ_T6             5.613      0.127     44.229      0.000
-    PHQ_T7             6.277      0.130     48.267      0.000
+    PHQ_T6             5.614      0.127     44.229      0.000
+    PHQ_T7             6.277      0.130     48.266      0.000
     PHQ_T8             6.205      0.143     43.484      0.000
-    PHQ_T9             7.034      0.146     48.125      0.000
-    PHQ_T10            7.311      0.164     44.494      0.000
-    PHQ_T11            7.149      0.147     48.566      0.000
+    PHQ_T9             7.034      0.146     48.124      0.000
+    PHQ_T10            7.312      0.164     44.494      0.000
+    PHQ_T11            7.150      0.147     48.565      0.000
     PHQ_T12            7.323      0.156     46.794      0.000
     PHQ_T13            6.534      0.154     42.369      0.000
     PHQ_T14            6.743      0.164     41.117      0.000
@@ -336,41 +365,41 @@ STDYX Standardization
                     Estimate       S.E.  Est./S.E.    P-Value
 
  INT      |
-    PHQ_T0             0.913      0.002    449.306      0.000
-    PHQ_T3             0.933      0.002    527.637      0.000
-    PHQ_T4             0.934      0.002    491.718      0.000
-    PHQ_T5             0.941      0.002    488.127      0.000
-    PHQ_T6             0.943      0.002    461.177      0.000
-    PHQ_T7             0.936      0.002    450.439      0.000
+    PHQ_T0             0.913      0.002    449.324      0.000
+    PHQ_T3             0.933      0.002    527.653      0.000
+    PHQ_T4             0.934      0.002    491.723      0.000
+    PHQ_T5             0.941      0.002    488.124      0.000
+    PHQ_T6             0.943      0.002    461.167      0.000
+    PHQ_T7             0.936      0.002    450.433      0.000
     PHQ_T8             0.937      0.002    408.516      0.000
-    PHQ_T9             0.927      0.002    396.163      0.000
-    PHQ_T10            0.921      0.003    347.943      0.000
-    PHQ_T11            0.919      0.003    333.418      0.000
-    PHQ_T12            0.911      0.003    304.016      0.000
-    PHQ_T13            0.911      0.003    285.146      0.000
-    PHQ_T14            0.900      0.003    266.686      0.000
-    PHQ_T15            0.894      0.004    247.743      0.000
-    PHQ_T16            0.886      0.004    235.104      0.000
+    PHQ_T9             0.927      0.002    396.157      0.000
+    PHQ_T10            0.921      0.003    347.941      0.000
+    PHQ_T11            0.919      0.003    333.412      0.000
+    PHQ_T12            0.911      0.003    304.014      0.000
+    PHQ_T13            0.911      0.003    285.144      0.000
+    PHQ_T14            0.900      0.003    266.684      0.000
+    PHQ_T15            0.894      0.004    247.742      0.000
+    PHQ_T16            0.886      0.004    235.103      0.000
 
  SLOPE    |
     PHQ_T0             0.000      0.000    999.000    999.000
-    PHQ_T3             0.065      0.001     72.750      0.000
-    PHQ_T4             0.086      0.001     72.455      0.000
-    PHQ_T5             0.109      0.002     72.542      0.000
-    PHQ_T6             0.131      0.002     71.876      0.000
-    PHQ_T7             0.152      0.002     72.243      0.000
+    PHQ_T3             0.065      0.001     72.751      0.000
+    PHQ_T4             0.086      0.001     72.456      0.000
+    PHQ_T5             0.109      0.002     72.543      0.000
+    PHQ_T6             0.131      0.002     71.877      0.000
+    PHQ_T7             0.152      0.002     72.244      0.000
     PHQ_T8             0.173      0.002     71.895      0.000
-    PHQ_T9             0.193      0.003     72.206      0.000
-    PHQ_T10            0.235      0.003     71.989      0.000
-    PHQ_T11            0.276      0.004     71.926      0.000
+    PHQ_T9             0.193      0.003     72.207      0.000
+    PHQ_T10            0.235      0.003     71.990      0.000
+    PHQ_T11            0.277      0.004     71.927      0.000
     PHQ_T12            0.316      0.004     71.990      0.000
-    PHQ_T13            0.359      0.005     71.796      0.000
-    PHQ_T14            0.396      0.005     72.465      0.000
+    PHQ_T13            0.359      0.005     71.797      0.000
+    PHQ_T14            0.396      0.005     72.466      0.000
     PHQ_T15            0.435      0.006     72.335      0.000
-    PHQ_T16            0.472      0.006     73.787      0.000
+    PHQ_T16            0.472      0.006     73.788      0.000
 
  INT      WITH
-    SLOPE             -0.155      0.010    -16.356      0.000
+    SLOPE             -0.156      0.010    -16.359      0.000
 
  Means
     INT                1.146      0.004    320.017      0.000
@@ -403,7 +432,7 @@ STDYX Standardization
     PHQ_T4             0.146      0.003     50.721      0.000
     PHQ_T5             0.134      0.003     47.651      0.000
     PHQ_T6             0.131      0.003     48.633      0.000
-    PHQ_T7             0.145      0.003     53.987      0.000
+    PHQ_T7             0.145      0.003     53.986      0.000
     PHQ_T8             0.143      0.003     48.889      0.000
     PHQ_T9             0.159      0.003     54.682      0.000
     PHQ_T10            0.163      0.003     51.158      0.000
@@ -420,21 +449,21 @@ R-SQUARE
     Observed                                        Two-Tailed
     Variable        Estimate       S.E.  Est./S.E.    P-Value
 
-    PHQ_T0             0.834      0.004    224.653      0.000
-    PHQ_T3             0.856      0.003    307.039      0.000
-    PHQ_T4             0.854      0.003    296.308      0.000
-    PHQ_T5             0.866      0.003    306.722      0.000
-    PHQ_T6             0.869      0.003    321.996      0.000
-    PHQ_T7             0.855      0.003    319.586      0.000
-    PHQ_T8             0.857      0.003    293.012      0.000
-    PHQ_T9             0.841      0.003    289.683      0.000
-    PHQ_T10            0.837      0.003    262.597      0.000
-    PHQ_T11            0.842      0.003    290.702      0.000
-    PHQ_T12            0.840      0.003    278.883      0.000
-    PHQ_T13            0.857      0.003    283.120      0.000
-    PHQ_T14            0.856      0.003    271.331      0.000
-    PHQ_T15            0.868      0.004    244.406      0.000
-    PHQ_T16            0.877      0.003    255.743      0.000
+    PHQ_T0             0.834      0.004    224.662      0.000
+    PHQ_T3             0.856      0.003    307.052      0.000
+    PHQ_T4             0.854      0.003    296.313      0.000
+    PHQ_T5             0.866      0.003    306.720      0.000
+    PHQ_T6             0.869      0.003    321.985      0.000
+    PHQ_T7             0.855      0.003    319.579      0.000
+    PHQ_T8             0.857      0.003    293.014      0.000
+    PHQ_T9             0.841      0.003    289.675      0.000
+    PHQ_T10            0.837      0.003    262.596      0.000
+    PHQ_T11            0.842      0.003    290.690      0.000
+    PHQ_T12            0.840      0.003    278.886      0.000
+    PHQ_T13            0.857      0.003    283.121      0.000
+    PHQ_T14            0.856      0.003    271.330      0.000
+    PHQ_T15            0.868      0.004    244.404      0.000
+    PHQ_T16            0.877      0.003    255.746      0.000
 
 
 QUALITY OF NUMERICAL RESULTS
@@ -467,6 +496,60 @@ RESIDUAL OUTPUT
                 7.156         7.167         7.179         7.190         7.201
 
 
+           Residuals for Means
+              PHQ_T0        PHQ_T3        PHQ_T4        PHQ_T5        PHQ_T6
+              ________      ________      ________      ________      ________
+                0.511         0.288        -0.142         0.063        -0.101
+
+
+           Residuals for Means
+              PHQ_T7        PHQ_T8        PHQ_T9        PHQ_T10       PHQ_T11
+              ________      ________      ________      ________      ________
+               -0.164        -0.486        -0.323        -0.543        -0.023
+
+
+           Residuals for Means
+              PHQ_T12       PHQ_T13       PHQ_T14       PHQ_T15       PHQ_T16
+              ________      ________      ________      ________      ________
+               -0.085         0.005         0.113         0.275        -0.095
+
+
+           Standardized Residuals (z-scores) for Means
+              PHQ_T0        PHQ_T3        PHQ_T4        PHQ_T5        PHQ_T6
+              ________      ________      ________      ________      ________
+               20.962        14.012        -6.498         2.534        -4.122
+
+
+           Standardized Residuals (z-scores) for Means
+              PHQ_T7        PHQ_T8        PHQ_T9        PHQ_T10       PHQ_T11
+              ________      ________      ________      ________      ________
+               -6.626       -18.423       -12.050       -19.926        -0.872
+
+
+           Standardized Residuals (z-scores) for Means
+              PHQ_T12       PHQ_T13       PHQ_T14       PHQ_T15       PHQ_T16
+              ________      ________      ________      ________      ________
+               -3.191         0.196         4.262        10.897        -3.702
+
+
+           Normalized Residuals for Means
+              PHQ_T0        PHQ_T3        PHQ_T4        PHQ_T5        PHQ_T6
+              ________      ________      ________      ________      ________
+               14.227         8.795        -4.246         1.786        -2.886
+
+
+           Normalized Residuals for Means
+              PHQ_T7        PHQ_T8        PHQ_T9        PHQ_T10       PHQ_T11
+              ________      ________      ________      ________      ________
+               -4.669       -13.396        -8.825       -14.639        -0.625
+
+
+           Normalized Residuals for Means
+              PHQ_T12       PHQ_T13       PHQ_T14       PHQ_T15       PHQ_T16
+              ________      ________      ________      ________      ________
+               -2.272         0.136         2.927         7.151        -2.395
+
+
            Model Estimated Covariances
               PHQ_T0        PHQ_T3        PHQ_T4        PHQ_T5        PHQ_T6
               ________      ________      ________      ________      ________
@@ -474,17 +557,17 @@ RESIDUAL OUTPUT
  PHQ_T3        37.665        43.761
  PHQ_T4        37.528        37.362        43.692
  PHQ_T5        37.391        37.286        37.251        42.998
- PHQ_T6        37.254        37.210        37.195        37.181        42.780
+ PHQ_T6        37.254        37.210        37.196        37.181        42.780
  PHQ_T7        37.117        37.134        37.140        37.146        37.152
  PHQ_T8        36.980        37.058        37.085        37.111        37.137
  PHQ_T9        36.843        36.983        37.029        37.076        37.122
  PHQ_T10       36.569        36.831        36.918        37.006        37.093
  PHQ_T11       36.295        36.679        36.807        36.936        37.064
  PHQ_T12       36.020        36.528        36.697        36.866        37.035
- PHQ_T13       35.746        36.376        36.586        36.796        37.006
- PHQ_T14       35.472        36.224        36.475        36.726        36.976
- PHQ_T15       35.198        36.073        36.364        36.656        36.947
- PHQ_T16       34.924        35.921        36.253        36.586        36.918
+ PHQ_T13       35.746        36.376        36.586        36.796        37.005
+ PHQ_T14       35.472        36.224        36.475        36.725        36.976
+ PHQ_T15       35.198        36.072        36.364        36.655        36.947
+ PHQ_T16       34.924        35.921        36.253        36.585        36.918
 
 
            Model Estimated Covariances
@@ -496,10 +579,10 @@ RESIDUAL OUTPUT
  PHQ_T10       37.181        37.268        37.355        44.842
  PHQ_T11       37.192        37.320        37.449        37.705        45.111
  PHQ_T12       37.204        37.373        37.542        37.880        38.218
- PHQ_T13       37.215        37.425        37.635        38.055        38.475
- PHQ_T14       37.227        37.478        37.728        38.230        38.731
- PHQ_T15       37.239        37.530        37.822        38.405        38.988
- PHQ_T16       37.250        37.583        37.915        38.579        39.244
+ PHQ_T13       37.215        37.425        37.635        38.055        38.474
+ PHQ_T14       37.227        37.477        37.728        38.229        38.731
+ PHQ_T15       37.238        37.530        37.821        38.404        38.987
+ PHQ_T16       37.250        37.582        37.915        38.579        39.244
 
 
            Model Estimated Covariances
@@ -507,9 +590,9 @@ RESIDUAL OUTPUT
               ________      ________      ________      ________      ________
  PHQ_T12       45.879
  PHQ_T13       38.894        45.848
- PHQ_T14       39.232        39.734        46.978
- PHQ_T15       39.571        40.154        40.737        47.592
- PHQ_T16       39.909        40.573        41.238        41.903        48.550
+ PHQ_T14       39.232        39.733        46.977
+ PHQ_T15       39.570        40.153        40.736        47.591
+ PHQ_T16       39.908        40.573        41.238        41.902        48.549
 
 
            Model Estimated Correlations
@@ -557,6 +640,186 @@ RESIDUAL OUTPUT
  PHQ_T16        0.846         0.860         0.863         0.872         1.000
 
 
+           Residuals for Covariances
+              PHQ_T0        PHQ_T3        PHQ_T4        PHQ_T5        PHQ_T6
+              ________      ________      ________      ________      ________
+ PHQ_T0         0.770
+ PHQ_T3         1.804        -0.317
+ PHQ_T4        -0.715        -1.010        -1.440
+ PHQ_T5         0.306         0.665         0.190         1.017
+ PHQ_T6        -1.170        -1.177         0.075         1.126         0.640
+ PHQ_T7        -0.560        -0.454        -1.681         1.304         1.402
+ PHQ_T8        -2.232        -2.701        -1.666        -0.532         0.420
+ PHQ_T9        -0.602        -1.344        -1.603         0.057        -0.143
+ PHQ_T10       -2.046        -2.740        -2.309        -1.403        -1.382
+ PHQ_T11        0.712        -0.678        -1.609         0.160        -0.031
+ PHQ_T12       -0.316        -1.965        -1.059        -0.876        -0.567
+ PHQ_T13        0.866        -0.620        -1.571        -0.035        -1.420
+ PHQ_T14       -0.349        -2.358        -0.589        -1.249        -0.180
+ PHQ_T15        2.111         0.275        -0.881         0.698        -0.586
+ PHQ_T16        0.747        -0.978        -0.313        -0.319        -0.003
+
+
+           Residuals for Covariances
+              PHQ_T7        PHQ_T8        PHQ_T9        PHQ_T10       PHQ_T11
+              ________      ________      ________      ________      ________
+ PHQ_T7         0.140
+ PHQ_T8         0.984        -0.900
+ PHQ_T9         0.597         0.147        -0.585
+ PHQ_T10       -0.914        -0.990         0.383        -2.143
+ PHQ_T11        0.398         0.007         0.987         0.591         0.840
+ PHQ_T12       -0.447        -0.936        -0.189        -0.450         1.343
+ PHQ_T13       -0.423        -1.301        -0.238        -1.240         0.911
+ PHQ_T14       -0.847        -0.789        -0.474        -0.963        -0.407
+ PHQ_T15        0.124        -1.524        -0.202        -0.788         0.618
+ PHQ_T16       -0.345        -0.645        -0.234        -1.366        -0.192
+
+
+           Residuals for Covariances
+              PHQ_T12       PHQ_T13       PHQ_T14       PHQ_T15       PHQ_T16
+              ________      ________      ________      ________      ________
+ PHQ_T12       -0.386
+ PHQ_T13        0.084        -0.041
+ PHQ_T14        0.310        -0.548        -0.242
+ PHQ_T15       -0.623         0.242        -0.347         0.184
+ PHQ_T16       -0.903        -2.073        -0.745        -1.225        -1.202
+
+
+           Residuals for Correlations
+              PHQ_T0        PHQ_T3        PHQ_T4        PHQ_T5        PHQ_T6
+              ________      ________      ________      ________      ________
+ PHQ_T0         0.000
+ PHQ_T3         0.036         0.000
+ PHQ_T4        -0.009        -0.006         0.000
+ PHQ_T5        -0.010         0.008         0.009         0.000
+ PHQ_T6        -0.039        -0.030         0.010         0.009         0.000
+ PHQ_T7        -0.021        -0.009        -0.026         0.018         0.024
+ PHQ_T8        -0.048        -0.051        -0.016        -0.013         0.012
+ PHQ_T9        -0.015        -0.022        -0.017        -0.003        -0.004
+ PHQ_T10       -0.033        -0.040        -0.019        -0.022        -0.018
+ PHQ_T11        0.001        -0.020        -0.030        -0.014        -0.015
+ PHQ_T12       -0.010        -0.038        -0.007        -0.026        -0.015
+ PHQ_T13        0.013        -0.011        -0.022        -0.010        -0.038
+ PHQ_T14       -0.012        -0.047         0.002        -0.035        -0.008
+ PHQ_T15        0.037         0.007        -0.008         0.004        -0.020
+ PHQ_T16        0.019        -0.009         0.016        -0.006         0.004
+
+
+           Residuals for Correlations
+              PHQ_T7        PHQ_T8        PHQ_T9        PHQ_T10       PHQ_T11
+              ________      ________      ________      ________      ________
+ PHQ_T7         0.000
+ PHQ_T8         0.030         0.000
+ PHQ_T9         0.018         0.018         0.000
+ PHQ_T10       -0.002         0.007         0.035         0.000
+ PHQ_T11        0.000         0.001         0.020         0.026         0.000
+ PHQ_T12       -0.008        -0.009         0.005         0.014         0.025
+ PHQ_T13       -0.010        -0.020         0.001        -0.007         0.012
+ PHQ_T14       -0.018        -0.007        -0.003         0.001        -0.014
+ PHQ_T15        0.000        -0.027        -0.001         0.002         0.004
+ PHQ_T16        0.001         0.005         0.011         0.001        -0.001
+
+
+           Residuals for Correlations
+              PHQ_T12       PHQ_T13       PHQ_T14       PHQ_T15       PHQ_T16
+              ________      ________      ________      ________      ________
+ PHQ_T12        0.000
+ PHQ_T13        0.006         0.000
+ PHQ_T14        0.012        -0.009         0.000
+ PHQ_T15       -0.011         0.004        -0.007         0.000
+ PHQ_T16       -0.005        -0.033        -0.003        -0.016         0.000
+
+
+           Standardized Residuals (z-scores) for Covariances
+              PHQ_T0        PHQ_T3        PHQ_T4        PHQ_T5        PHQ_T6
+              ________      ________      ________      ________      ________
+ PHQ_T0         3.127
+ PHQ_T3         9.171        -1.545
+ PHQ_T4        -2.353        -2.770        -6.324
+ PHQ_T5         1.295         2.956         0.484         3.507
+ PHQ_T6        -3.151        -0.320         0.317         3.190         2.273
+ PHQ_T7        -2.228        -2.032        -4.185         4.924         3.624
+ PHQ_T8        -5.492        -0.875        -6.737        -1.401         1.538
+ PHQ_T9        -2.104        -5.768        -3.834         0.212        -0.347
+ PHQ_T10       -5.148        -1.052        -9.041        -3.337        -5.093
+ PHQ_T11        2.548        -2.874        -4.047         0.608        -0.077
+ PHQ_T12       -0.725        -2.583        -4.261        -1.630        -2.191
+ PHQ_T13        3.008        -2.620        -3.534        -0.132        -3.118
+ PHQ_T14       -0.649        -2.284        -2.365        -2.078        -0.694
+ PHQ_T15        7.364         1.187        -1.810         2.665        -1.222
+ PHQ_T16        1.263        -0.257        -1.242        -0.473        -0.011
+
+
+           Standardized Residuals (z-scores) for Covariances
+              PHQ_T7        PHQ_T8        PHQ_T9        PHQ_T10       PHQ_T11
+              ________      ________      ________      ________      ________
+ PHQ_T7         0.477
+ PHQ_T8         2.538        -2.840
+ PHQ_T9         2.172         0.320        -1.843
+ PHQ_T10       -2.408        -3.410         0.944        -6.529
+ PHQ_T11        1.497         0.018         3.530         1.367         2.760
+ PHQ_T12       -0.997        -3.418        -0.359        -1.569         3.028
+ PHQ_T13       -1.616        -2.841        -0.865        -3.056         3.331
+ PHQ_T14       -1.681        -2.870        -0.875        -3.442        -0.838
+ PHQ_T15        0.486        -3.060        -0.769        -1.442         2.397
+ PHQ_T16       -0.624        -2.271        -0.425        -4.784        -0.426
+
+
+           Standardized Residuals (z-scores) for Covariances
+              PHQ_T12       PHQ_T13       PHQ_T14       PHQ_T15       PHQ_T16
+              ________      ________      ________      ________      ________
+ PHQ_T12       -1.281
+ PHQ_T13        0.163        -0.138
+ PHQ_T14        1.154        -1.232        -0.845
+ PHQ_T15       -1.370         0.951        -0.732         0.703
+ PHQ_T16       -3.365        -3.786        -2.895        -2.080        -4.149
+
+
+           Normalized Residuals for Covariances
+              PHQ_T0        PHQ_T3        PHQ_T4        PHQ_T5        PHQ_T6
+              ________      ________      ________      ________      ________
+ PHQ_T0         1.985
+ PHQ_T3         5.671        -0.943
+ PHQ_T4        -1.828        -2.322        -4.094
+ PHQ_T5         0.903         2.045         0.416         2.588
+ PHQ_T6        -2.648        -0.320         0.227         2.676         1.682
+ PHQ_T7        -1.622        -1.415        -3.635         3.733         3.126
+ PHQ_T8        -4.758        -0.873        -4.956        -1.203         1.185
+ PHQ_T9        -1.633        -4.124        -3.370         0.162        -0.304
+ PHQ_T10       -4.459        -1.048        -6.774        -2.941        -3.917
+ PHQ_T11        1.974        -2.075        -3.519         0.461        -0.067
+ PHQ_T12       -0.642        -2.475        -3.143        -1.501        -1.642
+ PHQ_T13        2.350        -1.880        -3.139        -0.100        -2.779
+ PHQ_T14       -0.595        -2.228        -1.724        -1.935        -0.513
+ PHQ_T15        5.659         0.827        -1.625         1.964        -1.092
+ PHQ_T16        1.167        -0.256        -0.891        -0.444        -0.008
+
+
+           Normalized Residuals for Covariances
+              PHQ_T7        PHQ_T8        PHQ_T9        PHQ_T10       PHQ_T11
+              ________      ________      ________      ________      ________
+ PHQ_T7         0.357
+ PHQ_T8         2.194        -2.179
+ PHQ_T9         1.679         0.288        -1.411
+ PHQ_T10       -2.070        -2.690         0.824        -4.965
+ PHQ_T11        1.139         0.016         2.730         1.205         2.051
+ PHQ_T12       -0.887        -2.614        -0.329        -1.211         2.661
+ PHQ_T13       -1.207        -2.529        -0.657        -2.627         2.475
+ PHQ_T14       -1.521        -2.164        -0.799        -2.582        -0.743
+ PHQ_T15        0.352        -2.746        -0.560        -1.308         1.688
+ PHQ_T16       -0.569        -1.700        -0.386        -3.537        -0.366
+
+
+           Normalized Residuals for Covariances
+              PHQ_T12       PHQ_T13       PHQ_T14       PHQ_T15       PHQ_T16
+              ________      ________      ________      ________      ________
+ PHQ_T12       -0.925
+ PHQ_T13        0.146        -0.098
+ PHQ_T14        0.830        -1.056        -0.570
+ PHQ_T15       -1.180         0.643        -0.626         0.435
+ PHQ_T16       -2.345        -3.355        -1.897        -1.843        -2.615
+
+
 MODEL MODIFICATION INDICES
 
 NOTE:  Modification indices for direct effects of observed dependent variables
@@ -569,83 +832,66 @@ Minimum M.I. value for printing the modification index    30.000
 
 BY Statements
 
-INT      BY PHQ_T0               207.121     0.037      0.226        0.033
-INT      BY PHQ_T3                74.135     0.018      0.109        0.016
-INT      BY PHQ_T6                70.496     0.018      0.109        0.017
-INT      BY PHQ_T7                55.210    -0.016     -0.097       -0.015
-INT      BY PHQ_T8               131.036    -0.025     -0.157       -0.024
-INT      BY PHQ_T9               193.397    -0.031     -0.193       -0.029
-INT      BY PHQ_T10              265.326    -0.038     -0.233       -0.035
-INT      BY PHQ_T14               95.775     0.023      0.144        0.021
-INT      BY PHQ_T15              127.556     0.030      0.185        0.027
-SLOPE    BY PHQ_T3               115.425    -2.548     -0.364       -0.055
-SLOPE    BY PHQ_T5                37.830    -1.401     -0.200       -0.031
-SLOPE    BY PHQ_T6                85.021    -2.153     -0.307       -0.047
-SLOPE    BY PHQ_T9                36.331     1.322      0.189        0.028
-SLOPE    BY PHQ_T10               52.279     1.646      0.235        0.035
-SLOPE    BY PHQ_T11              107.442     2.314      0.331        0.049
-SLOPE    BY PHQ_T12               45.977     1.562      0.223        0.033
-SLOPE    BY PHQ_T13               30.872     1.466      0.209        0.031
-SLOPE    BY PHQ_T15              122.141    -3.712     -0.530       -0.077
-SLOPE    BY PHQ_T16              256.290    -5.647     -0.807       -0.116
-
-ON/BY Statements
-
-SLOPE    ON INT      /
-INT      BY SLOPE                999.000     0.000      0.000        0.000
+INT      BY PHQ_T0               113.382     0.037      0.226        0.033
+INT      BY PHQ_T3                40.583     0.018      0.109        0.016
+INT      BY PHQ_T6                38.585     0.018      0.109        0.017
+INT      BY PHQ_T7                30.227    -0.016     -0.097       -0.015
+INT      BY PHQ_T8                71.734    -0.025     -0.157       -0.024
+INT      BY PHQ_T9               105.874    -0.031     -0.193       -0.029
+INT      BY PHQ_T10              145.247    -0.038     -0.233       -0.035
+INT      BY PHQ_T14               52.434     0.023      0.144        0.021
+INT      BY PHQ_T15               69.837     0.030      0.185        0.027
+SLOPE    BY PHQ_T3                63.195    -2.548     -0.364       -0.055
+SLOPE    BY PHQ_T6                46.527    -2.152     -0.307       -0.047
+SLOPE    BY PHQ_T11               58.810     2.314      0.331        0.049
+SLOPE    BY PHQ_T15               66.871    -3.712     -0.530       -0.077
+SLOPE    BY PHQ_T16              140.292    -5.646     -0.807       -0.116
 
 WITH Statements
 
-PHQ_T3   WITH PHQ_T0             648.076     2.079      2.079        0.300
-PHQ_T5   WITH PHQ_T0              77.995    -0.712     -0.712       -0.107
-PHQ_T5   WITH PHQ_T3              70.724     0.551      0.551        0.091
-PHQ_T6   WITH PHQ_T0              86.348    -2.347     -2.347       -0.360
-PHQ_T6   WITH PHQ_T4             192.513     0.975      0.975        0.163
-PHQ_T7   WITH PHQ_T0             203.042    -1.118     -1.118       -0.162
-PHQ_T7   WITH PHQ_T3              72.225    -0.533     -0.533       -0.085
-PHQ_T7   WITH PHQ_T4              64.358    -2.215     -2.215       -0.350
-PHQ_T7   WITH PHQ_T5             232.059     0.968      0.968        0.161
-PHQ_T7   WITH PHQ_T6              47.108     1.759      1.759        0.296
-PHQ_T8   WITH PHQ_T0             140.368    -3.364     -3.364       -0.490
-PHQ_T8   WITH PHQ_T4             193.249    -0.966     -0.966       -0.153
-PHQ_T8   WITH PHQ_T6             173.973     0.850      0.850        0.144
-PHQ_T8   WITH PHQ_T7              93.064     2.668      2.668        0.427
-PHQ_T9   WITH PHQ_T0              57.051    -0.633     -0.633       -0.087
-PHQ_T9   WITH PHQ_T3             285.807    -1.101     -1.101       -0.165
-PHQ_T9   WITH PHQ_T7             258.240     1.024      1.024        0.154
-PHQ_T10  WITH PHQ_T0              54.969    -2.317     -2.317       -0.311
-PHQ_T10  WITH PHQ_T4             106.613    -0.722     -0.722       -0.106
-PHQ_T10  WITH PHQ_T6             152.442    -0.805     -0.805       -0.126
-PHQ_T10  WITH PHQ_T8             144.937     0.802      0.802        0.119
-PHQ_T10  WITH PHQ_T9              50.235     2.526      2.526        0.352
-PHQ_T11  WITH PHQ_T3             139.302    -0.755     -0.755       -0.112
-PHQ_T11  WITH PHQ_T4              31.671    -1.722     -1.722       -0.255
-PHQ_T11  WITH PHQ_T5              83.674    -0.609     -0.609       -0.095
-PHQ_T11  WITH PHQ_T9             261.208     1.064      1.064        0.150
-PHQ_T11  WITH PHQ_T10             30.737     1.750      1.750        0.242
-PHQ_T12  WITH PHQ_T6              99.997    -0.639     -0.639       -0.100
-PHQ_T12  WITH PHQ_T10            169.482     0.889      0.889        0.122
-PHQ_T13  WITH PHQ_T7              48.506    -0.449     -0.449       -0.070
-PHQ_T13  WITH PHQ_T11            107.073     0.706      0.706        0.103
-PHQ_T14  WITH PHQ_T8              36.466    -0.408     -0.408       -0.063
-PHQ_T14  WITH PHQ_T12            152.407     0.877      0.877        0.125
-PHQ_T15  WITH PHQ_T0              79.256     0.819      0.819        0.119
-PHQ_T15  WITH PHQ_T3             101.275     0.709      0.709        0.113
-PHQ_T15  WITH PHQ_T9              87.355    -0.678     -0.678       -0.102
-PHQ_T16  WITH PHQ_T4              81.697     0.676      0.676        0.109
-PHQ_T16  WITH PHQ_T12             71.254    -0.661     -0.661       -0.100
+PHQ_T3   WITH PHQ_T0             354.740     2.079      2.079        0.300
+PHQ_T5   WITH PHQ_T0              42.706    -0.712     -0.712       -0.107
+PHQ_T5   WITH PHQ_T3              38.706     0.551      0.551        0.091
+PHQ_T6   WITH PHQ_T0              47.271    -2.347     -2.347       -0.360
+PHQ_T6   WITH PHQ_T4             105.389     0.975      0.975        0.163
+PHQ_T7   WITH PHQ_T0             111.157    -1.118     -1.118       -0.162
+PHQ_T7   WITH PHQ_T3              39.544    -0.533     -0.533       -0.085
+PHQ_T7   WITH PHQ_T4              35.232    -2.215     -2.215       -0.350
+PHQ_T7   WITH PHQ_T5             127.046     0.968      0.968        0.161
+PHQ_T8   WITH PHQ_T0              76.848    -3.364     -3.364       -0.490
+PHQ_T8   WITH PHQ_T4             105.806    -0.966     -0.966       -0.153
+PHQ_T8   WITH PHQ_T6              95.245     0.850      0.850        0.144
+PHQ_T8   WITH PHQ_T7              50.947     2.668      2.668        0.427
+PHQ_T9   WITH PHQ_T0              31.232    -0.633     -0.633       -0.087
+PHQ_T9   WITH PHQ_T3             156.466    -1.101     -1.101       -0.165
+PHQ_T9   WITH PHQ_T7             141.381     1.024      1.024        0.154
+PHQ_T10  WITH PHQ_T0              30.093    -2.317     -2.317       -0.311
+PHQ_T10  WITH PHQ_T4              58.368    -0.722     -0.722       -0.106
+PHQ_T10  WITH PHQ_T6              83.440    -0.805     -0.805       -0.126
+PHQ_T10  WITH PHQ_T8              79.343     0.802      0.802        0.119
+PHQ_T11  WITH PHQ_T3              76.259    -0.755     -0.755       -0.112
+PHQ_T11  WITH PHQ_T5              45.797    -0.609     -0.609       -0.095
+PHQ_T11  WITH PHQ_T9             143.005     1.064      1.064        0.150
+PHQ_T12  WITH PHQ_T6              54.736    -0.639     -0.639       -0.100
+PHQ_T12  WITH PHQ_T10             92.779     0.889      0.889        0.122
+PHQ_T13  WITH PHQ_T11             58.620     0.706      0.706        0.103
+PHQ_T14  WITH PHQ_T12             83.432     0.877      0.877        0.125
+PHQ_T15  WITH PHQ_T0              43.389     0.819      0.819        0.119
+PHQ_T15  WITH PHQ_T3              55.441     0.709      0.709        0.113
+PHQ_T15  WITH PHQ_T9              47.818    -0.678     -0.678       -0.102
+PHQ_T16  WITH PHQ_T4              44.727     0.676      0.676        0.109
+PHQ_T16  WITH PHQ_T12             39.016    -0.661     -0.661       -0.100
 
 Means/Intercepts/Thresholds
 
-[ PHQ_T0   ]                     450.457     0.501      0.501        0.074
-[ PHQ_T3   ]                     197.512     0.266      0.266        0.040
-[ PHQ_T6   ]                      33.122     0.111      0.111        0.017
-[ PHQ_T7   ]                     156.579    -0.244     -0.244       -0.037
-[ PHQ_T8   ]                     284.408    -0.344     -0.344       -0.052
-[ PHQ_T9   ]                     355.590    -0.394     -0.394       -0.059
-[ PHQ_T10  ]                     335.990    -0.392     -0.392       -0.058
-[ PHQ_T14  ]                     199.480     0.311      0.311        0.045
-[ PHQ_T15  ]                     223.015     0.367      0.367        0.053
+[ PHQ_T0   ]                     246.597     0.501      0.501        0.074
+[ PHQ_T3   ]                     108.123     0.266      0.266        0.040
+[ PHQ_T7   ]                      85.717    -0.244     -0.244       -0.037
+[ PHQ_T8   ]                     155.694    -0.344     -0.344       -0.052
+[ PHQ_T9   ]                     194.661    -0.394     -0.394       -0.059
+[ PHQ_T10  ]                     183.930    -0.392     -0.392       -0.058
+[ PHQ_T14  ]                     109.200     0.311      0.311        0.045
+[ PHQ_T15  ]                     122.084     0.367      0.367        0.053
 
 
 SAMPLE STATISTICS FOR ESTIMATED FACTOR SCORES
@@ -684,14 +930,16 @@ The following plots are available:
 
   Histograms (sample values, estimated factor scores, estimated values, residuals)
   Scatterplots (sample values, estimated factor scores, estimated values, residuals)
+  Sample means
   Estimated means
+  Sample and estimated means
   Latent variable distribution plots
   Observed individual values
   Estimated individual values
 
-     Beginning Time:  12:29:13
-        Ending Time:  12:29:28
-       Elapsed Time:  00:00:15
+     Beginning Time:  12:53:29
+        Ending Time:  12:54:42
+       Elapsed Time:  00:01:13
 
 
 

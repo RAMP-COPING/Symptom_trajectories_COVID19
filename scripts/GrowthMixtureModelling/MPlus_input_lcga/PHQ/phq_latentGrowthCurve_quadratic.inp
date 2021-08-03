@@ -27,8 +27,9 @@ ANALYSIS:
 	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors 
 	!as data is skew for PHQ at all time points
 	PROCESSORS = 2; !only 2 on Mac
-	COVERAGE=0.0017;
+	COVERAGE=0;
 	ITERATIONS=5000;
+	STARTS=500;
 
 	
 MODEL:
@@ -37,6 +38,8 @@ MODEL:
     		 phq_t5@5 phq_t6@6 phq_t7@7 phq_t8@8 phq_t9@9 
     		 phq_t10@11 phq_t11@13 phq_t12@15 phq_t13@17
     		 phq_t14@19 phq_t15@21 phq_t16@23;
+    		 
+	int*7;
 	
 	int WITH lin;
 	int WITH quad;

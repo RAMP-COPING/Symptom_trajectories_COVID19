@@ -27,7 +27,7 @@ ANALYSIS:
 	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors 
 	!as data is skew for PHQ at all time points
 	PROCESSORS = 2; !only 2 on Mac
-	COVERAGE=0.0017;
+	COVERAGE=0;
 	
 MODEL:
 ! time intervals adjusted for when surveys moved from two weekly to monthly

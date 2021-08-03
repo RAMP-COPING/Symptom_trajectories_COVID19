@@ -1,15 +1,14 @@
-------Begin Mplus Model Run: 03Aug2021 12:29:01------
+------Begin Mplus Model Run: 03Aug2021 17:40:57------
 Run options:
 	Recursive (run models in subdirectories): FALSE
 	Show output on console: TRUE
 	Replace existing outfile: never
 ------
-Currently running model: phq_latentGrowthCurve_linear_withpairwiseCorrelations.inp
-Currently running model: phq_latentGrowthCurve_linear.inp
-Currently running model: phq_latentGrowthCurve_piecwewise_version1_4pieces.inp
-Currently running model: phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.inp
-Currently running model: phq_latentGrowthCurve_piecwewise_version2_3pieces.inp
-Currently running model: phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.inp
-Currently running model: phq_latentGrowthCurve_quadratic.inp
+Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/PHQ/phq_latentGrowthCurve_linear_withpairwiseCorrelations.inp
+Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/PHQ/phq_latentGrowthCurve_linear.inp
+Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/PHQ/phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.inp
+Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/PHQ/phq_latentGrowthCurve_piecwewise_version2_3pieces.inp
+Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/PHQ/phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.inp
+Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/PHQ/phq_latentGrowthCurve_quadratic.inp
 
-------End Mplus Model Run: 03Aug2021 12:31:16------
+------End Mplus Model Run: 03Aug2021 17:40:58------
