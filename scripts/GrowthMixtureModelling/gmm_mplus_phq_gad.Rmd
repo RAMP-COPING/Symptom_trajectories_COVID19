@@ -208,7 +208,7 @@ print(list_all_missing)
 Important note: all numbers correspond exactly with MPlus output numbers (n per wave and n missing all observations etc).
   
    
-### Summary of models run
+### Overview of of models
 
 * linear
 * quadratic
@@ -434,9 +434,6 @@ model <- dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwis
 model[model$paramHeader == "Residual.Variances",]
 
 ```
-##### summary
-
-All models meet this check criteria
 
 #### Detailed output for each model {.tabset}
 
@@ -600,9 +597,7 @@ dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelat
 
 dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$output[811:854]
 ```
-##### Summary
 
-All meet these criteria
 
 ### Summary table of all fit indices
 
@@ -616,7 +611,7 @@ showSummaryTable(dep.traj.all, keepCols=c("Title", "Observations", "Parameters",
 ```
 
 
-### Plot {.tabset}
+### Plots {.tabset}
 
 I show the plots for all runs that worked. Output for all runs is available in the GMM folder on GitHub to review input and output data that generated these plots. The main analytic sections above will only refer to the final model run. 
 

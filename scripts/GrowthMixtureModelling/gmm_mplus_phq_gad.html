@@ -2925,8 +2925,8 @@ div.tocify {
 <p>[1] 7866</p>
 <p>Important note: all numbers correspond exactly with MPlus output numbers (n per wave and n missing all observations etc).</p>
 </div>
-<div id="summary-of-models-run" class="section level3">
-<h3>Summary of models run</h3>
+<div id="overview-of-of-models" class="section level3">
+<h3>Overview of of models</h3>
 <ul>
 <li>linear</li>
 <li>quadratic</li>
@@ -3133,10 +3133,6 @@ Capturing the time during the third lockdown with stay at home orders and restri
   </script>
 </div>
 </div>
-</div>
-<div id="summary" class="section level5">
-<h5>summary</h5>
-<p>All models meet this check criteria</p>
 </div>
 </div>
 <div id="detailed-output-for-each-model" class="section level4 tabset">
@@ -3427,8 +3423,7 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [41] &quot; PHQ_T13 0.861 1.000&quot;<br />
 [42] &quot; PHQ_T14 0.860 0.859 1.000&quot;<br />
 [43] &quot; PHQ_T15 0.850 0.862 0.867 1.000&quot;<br />
-[44] &quot; PHQ_T16 0.842 0.851 0.860 0.864 1.000&quot; ##### Summary</p>
-<p>All meet these criteria</p>
+[44] &quot; PHQ_T16 0.842 0.851 0.860 0.864 1.000&quot;</p>
 </div>
 </div>
 </div>
@@ -3438,8 +3433,8 @@ Capturing the time during the third lockdown with stay at home orders and restri
 <p>throws error but does print (in console, not in markdown. Need to format a version that will display in Markdown)</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a><span class="kw">showSummaryTable</span>(dep.traj.all, <span class="dt">keepCols=</span><span class="kw">c</span>(<span class="st">&quot;Title&quot;</span>, <span class="st">&quot;Observations&quot;</span>, <span class="st">&quot;Parameters&quot;</span>, <span class="st">&quot;AIC&quot;</span>, <span class="st">&quot;BIC&quot;</span>, <span class="st">&quot;CFI&quot;</span>, <span class="st">&quot;TLI&quot;</span>, <span class="st">&quot;SRMR&quot;</span>, <span class="st">&quot;RMSEA_Estimate&quot;</span>), <span class="dt">sortBy=</span><span class="st">&quot;BIC&quot;</span>,)</span></code></pre></div>
 </div>
-<div id="plot" class="section level3 tabset">
-<h3 class="tabset">Plot</h3>
+<div id="plots" class="section level3 tabset">
+<h3 class="tabset">Plots</h3>
 <p>I show the plots for all runs that worked. Output for all runs is available in the GMM folder on GitHub to review input and output data that generated these plots. The main analytic sections above will only refer to the final model run.</p>
 <div id="timepoints-where-both-studies-have-data" class="section level4">
 <h4>Timepoints where both studies have data</h4>
@@ -3640,6 +3635,13 @@ Capturing the time during the third lockdown with stay at home orders and restri
 </div>
 </div>
 </div>
+</div>
+<div id="to-do-tomorrow-on-train" class="section level1">
+<h1>to do tomorrow on train</h1>
+<ol style="list-style-type: decimal">
+<li>test original 4 peice model that corresponds better to lockdown. May need to fix ntercepts to make it run with fewer timepoints.</li>
+<li>test seasonal piecewise maybe? (Discuss with Katie)</li>
+</ol>
 </div>
 
 
