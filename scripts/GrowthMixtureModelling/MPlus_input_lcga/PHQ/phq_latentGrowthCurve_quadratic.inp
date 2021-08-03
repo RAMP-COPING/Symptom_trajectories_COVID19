@@ -29,17 +29,20 @@ ANALYSIS:
 	PROCESSORS = 2; !only 2 on Mac
 	COVERAGE=0;
 	ITERATIONS=5000;
-	STARTS=500;
+
 
 	
 MODEL:
+!trying smaller groth factors
+!sometimes large time specifiers can cause 
+!Mplus not to converge
+!reating 0.5 as a 2 week unit instead of 1
 
-	int lin quad | phq_t0@0 phq_t3@3 phq_t4@4
-    		 phq_t5@5 phq_t6@6 phq_t7@7 phq_t8@8 phq_t9@9 
-    		 phq_t10@11 phq_t11@13 phq_t12@15 phq_t13@17
-    		 phq_t14@19 phq_t15@21 phq_t16@23;
+	int lin quad | phq_t0@0 phq_t3@1.5 phq_t4@2
+    		 phq_t5@2.5 phq_t6@3 phq_t7@3.5 phq_t8@4 phq_t9@4.5 
+    		 phq_t10@5.5 phq_t11@6.5 phq_t12@7.5 phq_t13@8.5
+    		 phq_t14@9.5 phq_t15@10.5 phq_t16@11.5;
     		 
-	int*7;
 	
 	int WITH lin;
 	int WITH quad;

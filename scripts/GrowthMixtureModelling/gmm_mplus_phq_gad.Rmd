@@ -309,7 +309,9 @@ Note that there are more people missing on all observations having dropped time 
 
 ##### errors
 
-Check any errors with running any of the models. Oytput here will not say whicu model it belongs to, so will need to manually examine if errors occur,
+All resolved. See below sections for descriptions.
+
+Check any errors with running any of the models. Output here will not say which model it belongs to, so will need to manually examine if errors occur,
 
 ```{r check errors}
 
@@ -356,16 +358,14 @@ Options are either dropping time point 3, or dropping coverage requirement.
 
 * tried dropping coverage requirement to see if there remained problems with parameter 3 that would indicate instability.
 
-###### Issue 4: Quadratic models misspecifed
+###### Issue 4: Quadratic models misspecifed (resolved)
 
 The two quadratic models are not converging. Without pairwise correlations the parameter MPlus flags is the intercept. With pairwise correlation it flags the correlations between time points 15 and 16
 
 * Checked the quadratic output for intercept and noticed some very high variances. I thus specified the model allowing the intercept variance to be freed instead of constrained
 * Increasing the number of start value attempts from default 10 2 to 50 5 (50 initial stage starts, 5 final stage optimisations), then 500 initial starts **did not work**
 * Fixing the intercept to 0,40 (variance) 7 (mean) **did not work**
-
-
-
+* made time interval references smaller: MPlus course taught us that models can fail to specify if the numbers that identify relative time intervals are too large. I made it so that 0.5 represented an interval of 2 weeks, instead of 1 ***THIS WORKED***    
 
 
 ##### check if any residual variances are negative and significant
@@ -503,51 +503,51 @@ dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[68
 ##### Quadratic
 
 1. loadings of indicators and intercepts are 1   
-***WAS NOT SPECIFIED**
+***YES**
 2. Estimates relate to specified timepoints  
-***WAS NOT SPECIFIED***
+***YES***
 ```{r check full output negative quad}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[277:311]
+dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[286:339]
 
 ```
 3. intercept 0 for all  
-***WAS NOT SPECIFIED***
+***YES***
 
 ```{r check intercepts are zero quad}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[319:337]
+dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[463:484]
 ```
 4. correlations look sensible  
-***WAS NOT SPECIFIED***
+***YES***
 ```{r check correlations quad}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[598:642]
+dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[654:697]
 ```
 
 ##### Quadratic with pairwise correlations
 
 1. loadings of indicators and intercepts are 1  
-***WAS NOT SPECIFIED***
+***YES***
 2. Estimates relate to specified timepoints  
-***WAS NOT SPECIFIED***
+***YES***
 ```{r check full output negative quad pairwise}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[277:311]
+dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[283:337]
 
 ```
 3. intercept 0 for all  
-***WAS NOT SPECIFIED***
+***YES***
 
 ```{r check intercepts are zero quad pairwise}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[319:337]
+dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[545:556]
 ```
 4. correlations look sensible  
-***WAS NOT SPECIFIED***
+***YES***
 ```{r check correlations quad pairwise}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[598:642]
+dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[736:779]
 ```
 
 
@@ -608,7 +608,7 @@ All meet these criteria
 
 Sorted by BIC, as this is the most informative criteria (as per Muthens)
 
-throws error but does print
+throws error but does print (in console, not in markdown. Need to format a version that will display in Markdown)
 ```{r Fit Indices for Depression LGC, warnings = FALSE}
 
 showSummaryTable(dep.traj.all, keepCols=c("Title", "Observations", "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate"), sortBy="BIC",)
@@ -628,22 +628,25 @@ Plotting the estimated means for the trajectories with adjacent residuals correl
 
 ```{r Format Depression Growth Curve Data run 2}
 
-dat_dep_run_2<-data.frame(matrix(nrow=15, ncol=4))
+dat_dep_run_2<-data.frame(matrix(nrow=15, ncol=6))
 
-colnames(dat_dep_run_2)<-c("Linear", "LinearWithCorrelations",  "Piecewise", "PiecewiseWithCorrelations")
+colnames(dat_dep_run_2)<-c("Linear", "LinearWithCorrelations",  "Quadratic", "QuadraticWithCorrelations",  "Piecewise", "PiecewiseWithCorrelations")
 
 
 dat_dep_run_2$Linear <-dep.traj.all$phq_latentGrowthCurve_linear.out$gh5$means_and_variances_data$y_estimated_means$values
 dat_dep_run_2$LinearWithCorrelations <- dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 
-dat_dep_run_2$Piecewise <- dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2$Quadratic <-dep.traj.all$phq_latentGrowthCurve_quadratic.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2$QuadraticWithCorrelations <- dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 
+
+dat_dep_run_2$Piecewise <- dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces.out$gh5$means_and_variances_data$y_estimated_means$values
 dat_dep_run_2$PiecewiseWithCorrelations <- dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 
 
 dat_dep_run_2$timepoint<-c(0:14) 
 
-dat_dep_run_2<-dat_dep_run_2%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear", "LinearWithCorrelations",  "Piecewise", "PiecewiseWithCorrelations")))
+dat_dep_run_2<-dat_dep_run_2%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear", "LinearWithCorrelations", "Quadratic", "QuadraticWithCorrelations", "Piecewise", "PiecewiseWithCorrelations")))
 
 ```
 
@@ -656,7 +659,7 @@ growth_curves_run2 <- ggplot() +
         aes(x = timepoint, y = score, colour = Model), size = 1) +
   geom_point(data = dat_dep_run_2,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
-  scale_color_manual(values = pres.palette[c(4, 1:3)]) +
+  scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="PHQ9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 3)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
@@ -680,18 +683,19 @@ As these make most theoretical sense and show better mode fit, show the trajecto
 
 ```{r Format Depression Growth Curve Data run 2b}
 
-dat_dep_run_2b<-data.frame(matrix(nrow=15, ncol=2))
+dat_dep_run_2b<-data.frame(matrix(nrow=15, ncol=3))
 
-colnames(dat_dep_run_2b)<-c("Linear",  "Piecewise")
+colnames(dat_dep_run_2b)<-c("Linear", "Quadratic",  "Piecewise")
 
 
 dat_dep_run_2b$Linear <- dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 dat_dep_run_2b$Piecewise <- dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2b$Quadratic <- dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 
 
 dat_dep_run_2b$timepoint<-c(0:14) 
 
-dat_dep_run_2b<-dat_dep_run_2b%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear", "Piecewise")))
+dat_dep_run_2b<-dat_dep_run_2b%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic", "Piecewise")))
 ```
 
 
@@ -707,7 +711,7 @@ growth_curves_run2b <- ggplot() +
         aes(x = timepoint, y = score, colour = Model), size = 1) +
   geom_point(data = dat_dep_run_2b,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
-  scale_color_manual(values = prev.pres.palette[c(4, 1:3)]) +
+  scale_color_manual(values = pres.palette[c(4, 1:3)]) +
   labs(x = "Follow up time point", y ="PHQ9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 3)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
@@ -729,22 +733,23 @@ growth_curves_run2b
 #### Observed and estimated means
 lot pairwise correlation versions only. Plot estimated means from model alongside the observed means from the data.
 
-
-
 ```{r Format Depression Growth Curve Data run 2 obs est}
 
-dat_dep_run_2c<-data.frame(matrix(nrow=15, ncol=3))
+dat_dep_run_2c<-data.frame(matrix(nrow=15, ncol=4))
 
-colnames(dat_dep_run_2c)<-c("Linear","Piecewise", "Observed")
+colnames(dat_dep_run_2c)<-c("Linear","Quadratic", "Piecewise", "Observed")
 
 
 dat_dep_run_2c$Linear <- dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 dat_dep_run_2c$Piecewise <- dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2c$Quadratic <- dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+
 dat_dep_run_2c$Observed <- dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_observed_means$values
 
 dat_dep_run_2c$timepoint<-c(0:14) 
 
-dat_dep_run_2c<-dat_dep_run_2c%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear", "Piecewise", "Observed")))
+dat_dep_run_2c<-dat_dep_run_2c%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic", "Piecewise", "Observed")))
 
 
 dat_dep_run_2c <- dat_dep_run_2c %>%
@@ -854,5 +859,9 @@ growth_curves_run1
 
 ```
 
+# to do tomorrow on train
+
+1. test original 4 peice model that corresponds better to lockdown. May need to fix ntercepts to make it run with fewer timepoints.
+2. test seasonal piecewise maybe? (Discuss with Katie)
 
 
