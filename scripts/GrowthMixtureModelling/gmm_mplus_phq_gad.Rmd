@@ -446,9 +446,11 @@ model[model$paramHeader == "Residual.Variances",]
 Print output file for each correlation for examination of these details and any other relevant information
 
 ##### Linear 
-1. loadings of indicators and intercepts are 1   
+
+######  1. loadings of indicators and intercepts are 1    
 ***YES***
-2. Estimates relate to specified timepoints  
+
+###### 2. Estimates relate to specified timepoints  
 ***YES***
 
 
@@ -457,25 +459,29 @@ Print output file for each correlation for examination of these details and any 
 dep.traj.all$phq_latentGrowthCurve_linear.out$output[277:311]
 
 ```
-3. intercept 0 for all  
+
+######  3. intercept 0 for all  
 ***YES***
 
 ```{r check intercepts are zero lin}
 
 dep.traj.all$phq_latentGrowthCurve_linear.out$output[319:337]
 ```
-4. correlations look sensible  
+
+###### 4. correlations look sensible   
 ***yes***
 ```{r check correlations lin}
 
 dep.traj.all$phq_latentGrowthCurve_linear.out$output[598:642]
 ```
 
+
 ##### Linear (with pairwise correlations between time points)
 
-1. loadings of indicators and intercepts are 1   
+###### 1. loadings of indicators and intercepts are 1   
 ***YES***
-2. Estimates relate to specified timepoints  
+
+###### 2. Estimates relate to specified timepoints  
 ***YES***
 
 ```{r check full output negative lin pairwise}
@@ -483,90 +489,102 @@ dep.traj.all$phq_latentGrowthCurve_linear.out$output[598:642]
 dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[277:311]
 
 ```
-3. intercept 0 for all  
+
+###### 3. intercept 0 for all  
 ***YES***
 
 ```{r check intercepts are zero lin pairwise}
 
 dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[365:380]
 ```
-4. correlations look sensible  
+
+###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations lin pairwise}
 
 dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[685:727]
 ```
 
+
 ##### Quadratic
 
-1. loadings of indicators and intercepts are 1   
-***YES**
-2. Estimates relate to specified timepoints  
+###### 1. loadings of indicators and intercepts are 1   
+***YES***
+
+###### 2. Estimates relate to specified timepoints  
 ***YES***
 ```{r check full output negative quad}
 
 dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[286:339]
 
 ```
-3. intercept 0 for all  
+
+###### 3. intercept 0 for all  
 ***YES***
 
 ```{r check intercepts are zero quad}
 
 dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[463:484]
 ```
-4. correlations look sensible  
+
+###### 4. correlations look sensible  
 ***YES***
 ```{r check correlations quad}
 
 dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[654:697]
 ```
 
+
 ##### Quadratic with pairwise correlations
 
-1. loadings of indicators and intercepts are 1  
+###### 1. loadings of indicators and intercepts are 1  
 ***YES***
-2. Estimates relate to specified timepoints  
+
+###### 2. Estimates relate to specified timepoints  
 ***YES***
 ```{r check full output negative quad pairwise}
 
 dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[283:337]
 
 ```
-3. intercept 0 for all  
+
+###### 3. intercept 0 for all  
 ***YES***
 
 ```{r check intercepts are zero quad pairwise}
 
 dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[545:556]
 ```
-4. correlations look sensible  
+
+###### 4. correlations look sensible  
 ***YES***
 ```{r check correlations quad pairwise}
 
 dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[736:779]
 ```
 
-
 ##### Piecewise (3 pieces)
 
-1. loadings of indicators and intercepts are 1  
+###### 1. loadings of indicators and intercepts are 1  
 ***YES***
-2. Estimates relate to specified timepoints  
+
+###### 2. Estimates relate to specified timepoints  
 **YES**
 ```{r check full output negative 3piece}
 
 dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces.out$output[308:377]
 
 ```
-3. intercept 0 for all  
+
+###### 3. intercept 0 for all  
 ***YES***
 
 ```{r check intercepts are zero 3piece}
 
 dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces.out$output[532:552]
 ```
-4. correlations look sensible  
+
+###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations 3piece}
 
@@ -574,29 +592,36 @@ dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces.out$output[723:76
 ```
 
 
+
 ##### Piecewise (3 pieces) with pairwise correlations
-1. loadings of indicators and intercepts are 1  
+
+###### 1. loadings of indicators and intercepts are 1  
 ***YES***
-2. Estimates relate to specified timepoints  
+
+###### 2. Estimates relate to specified timepoints  
 ***YES***
 ```{r check full output negative 3piece pairwise}
 
 dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$output[312:380]
 
 ```
-3. intercept 0 for all  
+
+###### 3. intercept 0 for all  
 ***YES***
 
 ```{r check intercepts are zero 3piece pairwise}
 
 dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$output[442:464]
 ```
-4. correlations look sensible  
-***yes***
+###### 4. correlations look sensible     
+
+***yes***   
+
 ```{r check correlations 3piece pairwise}
 
 dep.traj.all$phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$output[811:854]
 ```
+
 
 
 ### Summary table of all fit indices
@@ -609,6 +634,7 @@ throws error but does print (in console, not in markdown. Need to format a versi
 showSummaryTable(dep.traj.all, keepCols=c("Title", "Observations", "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate"), sortBy="BIC",)
 
 ```
+
 
 
 ### Plots {.tabset}
@@ -858,5 +884,5 @@ growth_curves_run1
 
 1. test original 4 peice model that corresponds better to lockdown. May need to fix ntercepts to make it run with fewer timepoints.
 2. test seasonal piecewise maybe? (Discuss with Katie)
-
+3. format outputs so they are less unreadable in markdown
 

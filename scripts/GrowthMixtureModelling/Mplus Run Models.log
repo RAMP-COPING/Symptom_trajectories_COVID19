@@ -1,4 +1,4 @@
-------Begin Mplus Model Run: 03Aug2021 18:13:17------
+------Begin Mplus Model Run: 03Aug2021 18:20:58------
 Run options:
 	Recursive (run models in subdirectories): FALSE
 	Show output on console: TRUE
@@ -11,4 +11,4 @@ Skipping model because output file already exists for: /Users/kirstin/Dropbox/SG
 Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/PHQ/phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.inp
 Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/PHQ/phq_latentGrowthCurve_quadratic.inp
 
-------End Mplus Model Run: 03Aug2021 18:13:18------
+------End Mplus Model Run: 03Aug2021 18:20:59------

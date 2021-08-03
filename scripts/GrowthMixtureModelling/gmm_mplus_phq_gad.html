@@ -3145,26 +3145,32 @@ Capturing the time during the third lockdown with stay at home orders and restri
 <p>Print output file for each correlation for examination of these details and any other relevant information</p>
 <div id="linear-1" class="section level5">
 <h5>Linear</h5>
-<ol style="list-style-type: decimal">
-<li>loadings of indicators and intercepts are 1<br />
-<strong><em>YES</em></strong></li>
-<li>Estimates relate to specified timepoints<br />
-<strong><em>YES</em></strong></li>
-</ol>
+<div id="loadings-of-indicators-and-intercepts-are-1" class="section level6">
+<h6>1. loadings of indicators and intercepts are 1</h6>
+<p><strong><em>YES</em></strong></p>
+</div>
+<div id="estimates-relate-to-specified-timepoints" class="section level6">
+<h6>2. Estimates relate to specified timepoints</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_linear.out<span class="op">$</span>output[<span class="dv">277</span><span class="op">:</span><span class="dv">311</span>]</span></code></pre></div>
 <p>[1] &quot; Estimate S.E. Est./S.E. P-Value&quot; [2] &quot;&quot;<br />
 [3] &quot; INT |&quot;<br />
 [4] &quot; PHQ_T0 1.000 0.000 999.000 999.000&quot; [5] &quot; PHQ_T3 1.000 0.000 999.000 999.000&quot; [6] &quot; PHQ_T4 1.000 0.000 999.000 999.000&quot; [7] &quot; PHQ_T5 1.000 0.000 999.000 999.000&quot; [8] &quot; PHQ_T6 1.000 0.000 999.000 999.000&quot; [9] &quot; PHQ_T7 1.000 0.000 999.000 999.000&quot; [10] &quot; PHQ_T8 1.000 0.000 999.000 999.000&quot; [11] &quot; PHQ_T9 1.000 0.000 999.000 999.000&quot; [12] &quot; PHQ_T10 1.000 0.000 999.000 999.000&quot; [13] &quot; PHQ_T11 1.000 0.000 999.000 999.000&quot; [14] &quot; PHQ_T12 1.000 0.000 999.000 999.000&quot; [15] &quot; PHQ_T13 1.000 0.000 999.000 999.000&quot; [16] &quot; PHQ_T14 1.000 0.000 999.000 999.000&quot; [17] &quot; PHQ_T15 1.000 0.000 999.000 999.000&quot; [18] &quot; PHQ_T16 1.000 0.000 999.000 999.000&quot; [19] &quot;&quot;<br />
 [20] &quot; SLOPE |&quot;<br />
-[21] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [22] &quot; PHQ_T3 3.000 0.000 999.000 999.000&quot; [23] &quot; PHQ_T4 4.000 0.000 999.000 999.000&quot; [24] &quot; PHQ_T5 5.000 0.000 999.000 999.000&quot; [25] &quot; PHQ_T6 6.000 0.000 999.000 999.000&quot; [26] &quot; PHQ_T7 7.000 0.000 999.000 999.000&quot; [27] &quot; PHQ_T8 8.000 0.000 999.000 999.000&quot; [28] &quot; PHQ_T9 9.000 0.000 999.000 999.000&quot; [29] &quot; PHQ_T10 11.000 0.000 999.000 999.000&quot; [30] &quot; PHQ_T11 13.000 0.000 999.000 999.000&quot; [31] &quot; PHQ_T12 15.000 0.000 999.000 999.000&quot; [32] &quot; PHQ_T13 17.000 0.000 999.000 999.000&quot; [33] &quot; PHQ_T14 19.000 0.000 999.000 999.000&quot; [34] &quot; PHQ_T15 21.000 0.000 999.000 999.000&quot; [35] &quot; PHQ_T16 23.000 0.000 999.000 999.000&quot; 3. intercept 0 for all<br />
-<strong><em>YES</em></strong></p>
+[21] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [22] &quot; PHQ_T3 3.000 0.000 999.000 999.000&quot; [23] &quot; PHQ_T4 4.000 0.000 999.000 999.000&quot; [24] &quot; PHQ_T5 5.000 0.000 999.000 999.000&quot; [25] &quot; PHQ_T6 6.000 0.000 999.000 999.000&quot; [26] &quot; PHQ_T7 7.000 0.000 999.000 999.000&quot; [27] &quot; PHQ_T8 8.000 0.000 999.000 999.000&quot; [28] &quot; PHQ_T9 9.000 0.000 999.000 999.000&quot; [29] &quot; PHQ_T10 11.000 0.000 999.000 999.000&quot; [30] &quot; PHQ_T11 13.000 0.000 999.000 999.000&quot; [31] &quot; PHQ_T12 15.000 0.000 999.000 999.000&quot; [32] &quot; PHQ_T13 17.000 0.000 999.000 999.000&quot; [33] &quot; PHQ_T14 19.000 0.000 999.000 999.000&quot; [34] &quot; PHQ_T15 21.000 0.000 999.000 999.000&quot; [35] &quot; PHQ_T16 23.000 0.000 999.000 999.000&quot;</p>
+</div>
+<div id="intercept-0-for-all" class="section level6">
+<h6>3. intercept 0 for all</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_linear.out<span class="op">$</span>output[<span class="dv">319</span><span class="op">:</span><span class="dv">337</span>]</span></code></pre></div>
 <p>[1] &quot;&quot;<br />
 [2] &quot; Intercepts&quot;<br />
 [3] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [4] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [5] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [6] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [7] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [8] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [9] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [10] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [11] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [12] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [13] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; [14] &quot; PHQ_T13 0.000 0.000 999.000 999.000&quot; [15] &quot; PHQ_T14 0.000 0.000 999.000 999.000&quot; [16] &quot; PHQ_T15 0.000 0.000 999.000 999.000&quot; [17] &quot; PHQ_T16 0.000 0.000 999.000 999.000&quot; [18] &quot;&quot;<br />
-[19] &quot; Variances&quot;<br />
-4. correlations look sensible<br />
-<strong><em>yes</em></strong></p>
+[19] &quot; Variances&quot;</p>
+</div>
+<div id="correlations-look-sensible" class="section level6">
+<h6>4. correlations look sensible</h6>
+<p><strong><em>yes</em></strong></p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_linear.out<span class="op">$</span>output[<span class="dv">598</span><span class="op">:</span><span class="dv">642</span>]</span></code></pre></div>
 <p>[1] &quot; Model Estimated Correlations&quot;<br />
 [2] &quot; PHQ_T0 PHQ_T3 PHQ_T4 PHQ_T5 PHQ_T6&quot;<br />
@@ -3189,14 +3195,16 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [43] &quot; PHQ_T16 0.846 0.860 0.863 0.872 1.000&quot; [44] &quot;&quot;<br />
 [45] &quot;&quot;</p>
 </div>
+</div>
 <div id="linear-with-pairwise-correlations-between-time-points" class="section level5">
 <h5>Linear (with pairwise correlations between time points)</h5>
-<ol style="list-style-type: decimal">
-<li>loadings of indicators and intercepts are 1<br />
-<strong><em>YES</em></strong></li>
-<li>Estimates relate to specified timepoints<br />
-<strong><em>YES</em></strong></li>
-</ol>
+<div id="loadings-of-indicators-and-intercepts-are-1-1" class="section level6">
+<h6>1. loadings of indicators and intercepts are 1</h6>
+<p><strong><em>YES</em></strong></p>
+</div>
+<div id="estimates-relate-to-specified-timepoints-1" class="section level6">
+<h6>2. Estimates relate to specified timepoints</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_linear_withpairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">277</span><span class="op">:</span><span class="dv">311</span>]</span></code></pre></div>
 <p>[1] “MODEL RESULTS”<br />
 [2] &quot;&quot;<br />
@@ -3204,12 +3212,18 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [6] &quot; INT |&quot;<br />
 [7] &quot; PHQ_T0 1.000 0.000 999.000 999.000&quot; [8] &quot; PHQ_T3 1.000 0.000 999.000 999.000&quot; [9] &quot; PHQ_T4 1.000 0.000 999.000 999.000&quot; [10] &quot; PHQ_T5 1.000 0.000 999.000 999.000&quot; [11] &quot; PHQ_T6 1.000 0.000 999.000 999.000&quot; [12] &quot; PHQ_T7 1.000 0.000 999.000 999.000&quot; [13] &quot; PHQ_T8 1.000 0.000 999.000 999.000&quot; [14] &quot; PHQ_T9 1.000 0.000 999.000 999.000&quot; [15] &quot; PHQ_T10 1.000 0.000 999.000 999.000&quot; [16] &quot; PHQ_T11 1.000 0.000 999.000 999.000&quot; [17] &quot; PHQ_T12 1.000 0.000 999.000 999.000&quot; [18] &quot; PHQ_T13 1.000 0.000 999.000 999.000&quot; [19] &quot; PHQ_T14 1.000 0.000 999.000 999.000&quot; [20] &quot; PHQ_T15 1.000 0.000 999.000 999.000&quot; [21] &quot; PHQ_T16 1.000 0.000 999.000 999.000&quot; [22] &quot;&quot;<br />
 [23] &quot; SLOPE |&quot;<br />
-[24] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [25] &quot; PHQ_T3 3.000 0.000 999.000 999.000&quot; [26] &quot; PHQ_T4 4.000 0.000 999.000 999.000&quot; [27] &quot; PHQ_T5 5.000 0.000 999.000 999.000&quot; [28] &quot; PHQ_T6 6.000 0.000 999.000 999.000&quot; [29] &quot; PHQ_T7 7.000 0.000 999.000 999.000&quot; [30] &quot; PHQ_T8 8.000 0.000 999.000 999.000&quot; [31] &quot; PHQ_T9 9.000 0.000 999.000 999.000&quot; [32] &quot; PHQ_T10 11.000 0.000 999.000 999.000&quot; [33] &quot; PHQ_T11 13.000 0.000 999.000 999.000&quot; [34] &quot; PHQ_T12 15.000 0.000 999.000 999.000&quot; [35] &quot; PHQ_T13 17.000 0.000 999.000 999.000&quot; 3. intercept 0 for all<br />
-<strong><em>YES</em></strong></p>
+[24] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [25] &quot; PHQ_T3 3.000 0.000 999.000 999.000&quot; [26] &quot; PHQ_T4 4.000 0.000 999.000 999.000&quot; [27] &quot; PHQ_T5 5.000 0.000 999.000 999.000&quot; [28] &quot; PHQ_T6 6.000 0.000 999.000 999.000&quot; [29] &quot; PHQ_T7 7.000 0.000 999.000 999.000&quot; [30] &quot; PHQ_T8 8.000 0.000 999.000 999.000&quot; [31] &quot; PHQ_T9 9.000 0.000 999.000 999.000&quot; [32] &quot; PHQ_T10 11.000 0.000 999.000 999.000&quot; [33] &quot; PHQ_T11 13.000 0.000 999.000 999.000&quot; [34] &quot; PHQ_T12 15.000 0.000 999.000 999.000&quot; [35] &quot; PHQ_T13 17.000 0.000 999.000 999.000&quot;</p>
+</div>
+<div id="intercept-0-for-all-1" class="section level6">
+<h6>3. intercept 0 for all</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_linear_withpairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">365</span><span class="op">:</span><span class="dv">380</span>]</span></code></pre></div>
 <p>[1] &quot; Intercepts&quot;<br />
-[2] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [3] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [4] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [5] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [6] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [7] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [8] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [9] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [10] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [11] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [12] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; [13] &quot; PHQ_T13 0.000 0.000 999.000 999.000&quot; [14] &quot; PHQ_T14 0.000 0.000 999.000 999.000&quot; [15] &quot; PHQ_T15 0.000 0.000 999.000 999.000&quot; [16] &quot; PHQ_T16 0.000 0.000 999.000 999.000&quot; 4. correlations look sensible<br />
-<strong><em>yes</em></strong></p>
+[2] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [3] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [4] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [5] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [6] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [7] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [8] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [9] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [10] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [11] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [12] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; [13] &quot; PHQ_T13 0.000 0.000 999.000 999.000&quot; [14] &quot; PHQ_T14 0.000 0.000 999.000 999.000&quot; [15] &quot; PHQ_T15 0.000 0.000 999.000 999.000&quot; [16] &quot; PHQ_T16 0.000 0.000 999.000 999.000&quot;</p>
+</div>
+<div id="correlations-look-sensible-1" class="section level6">
+<h6>4. correlations look sensible</h6>
+<p><strong><em>yes</em></strong></p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_linear_withpairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">685</span><span class="op">:</span><span class="dv">727</span>]</span></code></pre></div>
 <p>[1] &quot; Model Estimated Correlations&quot;<br />
 [2] &quot; PHQ_T0 PHQ_T3 PHQ_T4 PHQ_T5 PHQ_T6&quot;<br />
@@ -3233,14 +3247,16 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [42] &quot; PHQ_T15 0.846 0.858 0.866 1.000&quot;<br />
 [43] &quot; PHQ_T16 0.845 0.859 0.863 0.865 1.000&quot;</p>
 </div>
+</div>
 <div id="quadratic-1" class="section level5">
 <h5>Quadratic</h5>
-<ol style="list-style-type: decimal">
-<li>loadings of indicators and intercepts are 1<br />
-*<strong>YES</strong></li>
-<li>Estimates relate to specified timepoints<br />
-<strong><em>YES</em></strong></li>
-</ol>
+<div id="loadings-of-indicators-and-intercepts-are-1-2" class="section level6">
+<h6>1. loadings of indicators and intercepts are 1</h6>
+<p><strong><em>YES</em></strong></p>
+</div>
+<div id="estimates-relate-to-specified-timepoints-2" class="section level6">
+<h6>2. Estimates relate to specified timepoints</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_quadratic.out<span class="op">$</span>output[<span class="dv">286</span><span class="op">:</span><span class="dv">339</span>]</span></code></pre></div>
 <p>[1] &quot; Two-Tailed&quot; [2] &quot; Estimate S.E. Est./S.E. P-Value&quot; [3] &quot;&quot;<br />
 [4] &quot; INT |&quot;<br />
@@ -3248,16 +3264,20 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [21] &quot; LIN |&quot;<br />
 [22] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [23] &quot; PHQ_T3 1.500 0.000 999.000 999.000&quot; [24] &quot; PHQ_T4 2.000 0.000 999.000 999.000&quot; [25] &quot; PHQ_T5 2.500 0.000 999.000 999.000&quot; [26] &quot; PHQ_T6 3.000 0.000 999.000 999.000&quot; [27] &quot; PHQ_T7 3.500 0.000 999.000 999.000&quot; [28] &quot; PHQ_T8 4.000 0.000 999.000 999.000&quot; [29] &quot; PHQ_T9 4.500 0.000 999.000 999.000&quot; [30] &quot; PHQ_T10 5.500 0.000 999.000 999.000&quot; [31] &quot; PHQ_T11 6.500 0.000 999.000 999.000&quot; [32] &quot; PHQ_T12 7.500 0.000 999.000 999.000&quot; [33] &quot; PHQ_T13 8.500 0.000 999.000 999.000&quot; [34] &quot; PHQ_T14 9.500 0.000 999.000 999.000&quot; [35] &quot; PHQ_T15 10.500 0.000 999.000 999.000&quot; [36] &quot; PHQ_T16 11.500 0.000 999.000 999.000&quot; [37] &quot;&quot;<br />
 [38] &quot; QUAD |&quot;<br />
-[39] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [40] &quot; PHQ_T3 2.250 0.000 999.000 999.000&quot; [41] &quot; PHQ_T4 4.000 0.000 999.000 999.000&quot; [42] &quot; PHQ_T5 6.250 0.000 999.000 999.000&quot; [43] &quot; PHQ_T6 9.000 0.000 999.000 999.000&quot; [44] &quot; PHQ_T7 12.250 0.000 999.000 999.000&quot; [45] &quot; PHQ_T8 16.000 0.000 999.000 999.000&quot; [46] &quot; PHQ_T9 20.250 0.000 999.000 999.000&quot; [47] &quot; PHQ_T10 30.250 0.000 999.000 999.000&quot; [48] &quot; PHQ_T11 42.250 0.000 999.000 999.000&quot; [49] &quot; PHQ_T12 56.250 0.000 999.000 999.000&quot; [50] &quot; PHQ_T13 72.250 0.000 999.000 999.000&quot; [51] &quot; PHQ_T14 90.250 0.000 999.000 999.000&quot; [52] &quot; PHQ_T15 110.250 0.000 999.000 999.000&quot; [53] &quot; PHQ_T16 132.250 0.000 999.000 999.000&quot; [54] &quot;&quot;<br />
-3. intercept 0 for all<br />
-<strong><em>YES</em></strong></p>
+[39] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [40] &quot; PHQ_T3 2.250 0.000 999.000 999.000&quot; [41] &quot; PHQ_T4 4.000 0.000 999.000 999.000&quot; [42] &quot; PHQ_T5 6.250 0.000 999.000 999.000&quot; [43] &quot; PHQ_T6 9.000 0.000 999.000 999.000&quot; [44] &quot; PHQ_T7 12.250 0.000 999.000 999.000&quot; [45] &quot; PHQ_T8 16.000 0.000 999.000 999.000&quot; [46] &quot; PHQ_T9 20.250 0.000 999.000 999.000&quot; [47] &quot; PHQ_T10 30.250 0.000 999.000 999.000&quot; [48] &quot; PHQ_T11 42.250 0.000 999.000 999.000&quot; [49] &quot; PHQ_T12 56.250 0.000 999.000 999.000&quot; [50] &quot; PHQ_T13 72.250 0.000 999.000 999.000&quot; [51] &quot; PHQ_T14 90.250 0.000 999.000 999.000&quot; [52] &quot; PHQ_T15 110.250 0.000 999.000 999.000&quot; [53] &quot; PHQ_T16 132.250 0.000 999.000 999.000&quot; [54] &quot;&quot;</p>
+</div>
+<div id="intercept-0-for-all-2" class="section level6">
+<h6>3. intercept 0 for all</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_quadratic.out<span class="op">$</span>output[<span class="dv">463</span><span class="op">:</span><span class="dv">484</span>]</span></code></pre></div>
 <p>[1] &quot; Intercepts&quot;<br />
 [2] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [3] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [4] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [5] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [6] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [7] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [8] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [9] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [10] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [11] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [12] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; [13] &quot; PHQ_T13 0.000 0.000 999.000 999.000&quot; [14] &quot; PHQ_T14 0.000 0.000 999.000 999.000&quot; [15] &quot; PHQ_T15 0.000 0.000 999.000 999.000&quot; [16] &quot; PHQ_T16 0.000 0.000 999.000 999.000&quot; [17] &quot;&quot;<br />
 [18] &quot; Variances&quot;<br />
-[19] &quot; INT 1.000 0.000 999.000 999.000&quot; [20] &quot; LIN 1.000 0.000 999.000 999.000&quot; [21] &quot; QUAD 1.000 0.000 999.000 999.000&quot; [22] &quot;&quot;<br />
-4. correlations look sensible<br />
-<strong><em>YES</em></strong></p>
+[19] &quot; INT 1.000 0.000 999.000 999.000&quot; [20] &quot; LIN 1.000 0.000 999.000 999.000&quot; [21] &quot; QUAD 1.000 0.000 999.000 999.000&quot; [22] &quot;&quot;</p>
+</div>
+<div id="correlations-look-sensible-2" class="section level6">
+<h6>4. correlations look sensible</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_quadratic.out<span class="op">$</span>output[<span class="dv">654</span><span class="op">:</span><span class="dv">697</span>]</span></code></pre></div>
 <p>[1] &quot; Model Estimated Correlations&quot;<br />
 [2] &quot; PHQ_T0 PHQ_T3 PHQ_T4 PHQ_T5 PHQ_T6&quot;<br />
@@ -3281,14 +3301,16 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [42] &quot; PHQ_T15 0.846 0.859 0.863 1.000&quot;<br />
 [43] &quot; PHQ_T16 0.838 0.854 0.863 0.884 1.000&quot; [44] &quot;&quot;</p>
 </div>
+</div>
 <div id="quadratic-with-pairwise-correlations-1" class="section level5">
 <h5>Quadratic with pairwise correlations</h5>
-<ol style="list-style-type: decimal">
-<li>loadings of indicators and intercepts are 1<br />
-<strong><em>YES</em></strong></li>
-<li>Estimates relate to specified timepoints<br />
-<strong><em>YES</em></strong></li>
-</ol>
+<div id="loadings-of-indicators-and-intercepts-are-1-3" class="section level6">
+<h6>1. loadings of indicators and intercepts are 1</h6>
+<p><strong><em>YES</em></strong></p>
+</div>
+<div id="estimates-relate-to-specified-timepoints-3" class="section level6">
+<h6>2. Estimates relate to specified timepoints</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">283</span><span class="op">:</span><span class="dv">337</span>]</span></code></pre></div>
 <p>[1] &quot;&quot;<br />
 [2] &quot; Two-Tailed&quot; [3] &quot; Estimate S.E. Est./S.E. P-Value&quot; [4] &quot;&quot;<br />
@@ -3297,13 +3319,18 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [22] &quot; LIN |&quot;<br />
 [23] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [24] &quot; PHQ_T3 1.500 0.000 999.000 999.000&quot; [25] &quot; PHQ_T4 2.000 0.000 999.000 999.000&quot; [26] &quot; PHQ_T5 2.500 0.000 999.000 999.000&quot; [27] &quot; PHQ_T6 3.000 0.000 999.000 999.000&quot; [28] &quot; PHQ_T7 3.500 0.000 999.000 999.000&quot; [29] &quot; PHQ_T8 4.000 0.000 999.000 999.000&quot; [30] &quot; PHQ_T9 4.500 0.000 999.000 999.000&quot; [31] &quot; PHQ_T10 5.500 0.000 999.000 999.000&quot; [32] &quot; PHQ_T11 6.500 0.000 999.000 999.000&quot; [33] &quot; PHQ_T12 7.500 0.000 999.000 999.000&quot; [34] &quot; PHQ_T13 8.500 0.000 999.000 999.000&quot; [35] &quot; PHQ_T14 9.500 0.000 999.000 999.000&quot; [36] &quot; PHQ_T15 10.500 0.000 999.000 999.000&quot; [37] &quot; PHQ_T16 11.500 0.000 999.000 999.000&quot; [38] &quot;&quot;<br />
 [39] &quot; QUAD |&quot;<br />
-[40] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [41] &quot; PHQ_T3 2.250 0.000 999.000 999.000&quot; [42] &quot; PHQ_T4 4.000 0.000 999.000 999.000&quot; [43] &quot; PHQ_T5 6.250 0.000 999.000 999.000&quot; [44] &quot; PHQ_T6 9.000 0.000 999.000 999.000&quot; [45] &quot; PHQ_T7 12.250 0.000 999.000 999.000&quot; [46] &quot; PHQ_T8 16.000 0.000 999.000 999.000&quot; [47] &quot; PHQ_T9 20.250 0.000 999.000 999.000&quot; [48] &quot; PHQ_T10 30.250 0.000 999.000 999.000&quot; [49] &quot; PHQ_T11 42.250 0.000 999.000 999.000&quot; [50] &quot; PHQ_T12 56.250 0.000 999.000 999.000&quot; [51] &quot; PHQ_T13 72.250 0.000 999.000 999.000&quot; [52] &quot; PHQ_T14 90.250 0.000 999.000 999.000&quot; [53] &quot; PHQ_T15 110.250 0.000 999.000 999.000&quot; [54] &quot; PHQ_T16 132.250 0.000 999.000 999.000&quot; [55] &quot;&quot;<br />
-3. intercept 0 for all<br />
-<strong><em>YES</em></strong></p>
+[40] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [41] &quot; PHQ_T3 2.250 0.000 999.000 999.000&quot; [42] &quot; PHQ_T4 4.000 0.000 999.000 999.000&quot; [43] &quot; PHQ_T5 6.250 0.000 999.000 999.000&quot; [44] &quot; PHQ_T6 9.000 0.000 999.000 999.000&quot; [45] &quot; PHQ_T7 12.250 0.000 999.000 999.000&quot; [46] &quot; PHQ_T8 16.000 0.000 999.000 999.000&quot; [47] &quot; PHQ_T9 20.250 0.000 999.000 999.000&quot; [48] &quot; PHQ_T10 30.250 0.000 999.000 999.000&quot; [49] &quot; PHQ_T11 42.250 0.000 999.000 999.000&quot; [50] &quot; PHQ_T12 56.250 0.000 999.000 999.000&quot; [51] &quot; PHQ_T13 72.250 0.000 999.000 999.000&quot; [52] &quot; PHQ_T14 90.250 0.000 999.000 999.000&quot; [53] &quot; PHQ_T15 110.250 0.000 999.000 999.000&quot; [54] &quot; PHQ_T16 132.250 0.000 999.000 999.000&quot; [55] &quot;&quot;</p>
+</div>
+<div id="intercept-0-for-all-3" class="section level6">
+<h6>3. intercept 0 for all</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">545</span><span class="op">:</span><span class="dv">556</span>]</span></code></pre></div>
 <p>[1] &quot; Intercepts&quot;<br />
-[2] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [3] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [4] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [5] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [6] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [7] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [8] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [9] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [10] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [11] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [12] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; 4. correlations look sensible<br />
-<strong><em>YES</em></strong></p>
+[2] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [3] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [4] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [5] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [6] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [7] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [8] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [9] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [10] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [11] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [12] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot;</p>
+</div>
+<div id="correlations-look-sensible-3" class="section level6">
+<h6>4. correlations look sensible</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">736</span><span class="op">:</span><span class="dv">779</span>]</span></code></pre></div>
 <p>[1] &quot; Model Estimated Correlations&quot;<br />
 [2] &quot; PHQ_T0 PHQ_T3 PHQ_T4 PHQ_T5 PHQ_T6&quot;<br />
@@ -3327,14 +3354,16 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [42] &quot; PHQ_T15 0.847 0.859 0.865 1.000&quot;<br />
 [43] &quot; PHQ_T16 0.839 0.855 0.864 0.862 1.000&quot; [44] &quot;&quot;</p>
 </div>
+</div>
 <div id="piecewise-3-pieces" class="section level5">
 <h5>Piecewise (3 pieces)</h5>
-<ol style="list-style-type: decimal">
-<li>loadings of indicators and intercepts are 1<br />
-<strong><em>YES</em></strong></li>
-<li>Estimates relate to specified timepoints<br />
-<strong>YES</strong></li>
-</ol>
+<div id="loadings-of-indicators-and-intercepts-are-1-4" class="section level6">
+<h6>1. loadings of indicators and intercepts are 1</h6>
+<p><strong><em>YES</em></strong></p>
+</div>
+<div id="estimates-relate-to-specified-timepoints-4" class="section level6">
+<h6>2. Estimates relate to specified timepoints</h6>
+<p><strong>YES</strong></p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_piecwewise_version2_3pieces.out<span class="op">$</span>output[<span class="dv">308</span><span class="op">:</span><span class="dv">377</span>]</span></code></pre></div>
 <p>[1] &quot; Estimate S.E. Est./S.E. P-Value&quot; [2] &quot;&quot;<br />
 [3] &quot; INT |&quot;<br />
@@ -3344,14 +3373,19 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [37] &quot; LIN2 |&quot;<br />
 [38] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [39] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [40] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [41] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [42] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [43] &quot; PHQ_T7 1.000 0.000 999.000 999.000&quot; [44] &quot; PHQ_T8 2.000 0.000 999.000 999.000&quot; [45] &quot; PHQ_T9 3.000 0.000 999.000 999.000&quot; [46] &quot; PHQ_T10 5.000 0.000 999.000 999.000&quot; [47] &quot; PHQ_T11 7.000 0.000 999.000 999.000&quot; [48] &quot; PHQ_T12 9.000 0.000 999.000 999.000&quot; [49] &quot; PHQ_T13 11.000 0.000 999.000 999.000&quot; [50] &quot; PHQ_T14 11.000 0.000 999.000 999.000&quot; [51] &quot; PHQ_T15 11.000 0.000 999.000 999.000&quot; [52] &quot; PHQ_T16 11.000 0.000 999.000 999.000&quot; [53] &quot;&quot;<br />
 [54] &quot; LIN3 |&quot;<br />
-[55] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [56] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [57] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [58] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [59] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [60] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [61] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [62] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [63] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [64] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [65] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; [66] &quot; PHQ_T13 0.000 0.000 999.000 999.000&quot; [67] &quot; PHQ_T14 2.000 0.000 999.000 999.000&quot; [68] &quot; PHQ_T15 4.000 0.000 999.000 999.000&quot; [69] &quot; PHQ_T16 6.000 0.000 999.000 999.000&quot; [70] &quot;&quot;<br />
-3. intercept 0 for all<br />
-<strong><em>YES</em></strong></p>
+[55] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [56] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [57] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [58] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [59] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [60] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [61] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [62] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [63] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [64] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [65] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; [66] &quot; PHQ_T13 0.000 0.000 999.000 999.000&quot; [67] &quot; PHQ_T14 2.000 0.000 999.000 999.000&quot; [68] &quot; PHQ_T15 4.000 0.000 999.000 999.000&quot; [69] &quot; PHQ_T16 6.000 0.000 999.000 999.000&quot; [70] &quot;&quot;</p>
+</div>
+<div id="intercept-0-for-all-4" class="section level6">
+<h6>3. intercept 0 for all</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_piecwewise_version2_3pieces.out<span class="op">$</span>output[<span class="dv">532</span><span class="op">:</span><span class="dv">552</span>]</span></code></pre></div>
 <p>[1] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [2] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [3] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [4] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [5] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [6] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [7] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [8] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [9] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [10] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [11] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; [12] &quot; PHQ_T13 0.000 0.000 999.000 999.000&quot; [13] &quot; PHQ_T14 0.000 0.000 999.000 999.000&quot; [14] &quot; PHQ_T15 0.000 0.000 999.000 999.000&quot; [15] &quot; PHQ_T16 0.000 0.000 999.000 999.000&quot; [16] &quot;&quot;<br />
 [17] &quot; Variances&quot;<br />
-[18] &quot; INT 1.000 0.000 999.000 999.000&quot; [19] &quot; LIN1 1.000 0.000 999.000 999.000&quot; [20] &quot; LIN2 1.000 0.000 999.000 999.000&quot; [21] &quot; LIN3 1.000 0.000 999.000 999.000&quot; 4. correlations look sensible<br />
-<strong><em>yes</em></strong></p>
+[18] &quot; INT 1.000 0.000 999.000 999.000&quot; [19] &quot; LIN1 1.000 0.000 999.000 999.000&quot; [20] &quot; LIN2 1.000 0.000 999.000 999.000&quot; [21] &quot; LIN3 1.000 0.000 999.000 999.000&quot;</p>
+</div>
+<div id="correlations-look-sensible-4" class="section level6">
+<h6>4. correlations look sensible</h6>
+<p><strong><em>yes</em></strong></p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_piecwewise_version2_3pieces.out<span class="op">$</span>output[<span class="dv">723</span><span class="op">:</span><span class="dv">766</span>]</span></code></pre></div>
 <p>[1] &quot; Model Estimated Correlations&quot;<br />
 [2] &quot; PHQ_T0 PHQ_T3 PHQ_T4 PHQ_T5 PHQ_T6&quot;<br />
@@ -3375,14 +3409,16 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [42] &quot; PHQ_T15 0.850 0.862 0.862 1.000&quot;<br />
 [43] &quot; PHQ_T16 0.842 0.851 0.859 0.872 1.000&quot; [44] &quot;&quot;</p>
 </div>
+</div>
 <div id="piecewise-3-pieces-with-pairwise-correlations" class="section level5">
 <h5>Piecewise (3 pieces) with pairwise correlations</h5>
-<ol style="list-style-type: decimal">
-<li>loadings of indicators and intercepts are 1<br />
-<strong><em>YES</em></strong></li>
-<li>Estimates relate to specified timepoints<br />
-<strong><em>YES</em></strong></li>
-</ol>
+<div id="loadings-of-indicators-and-intercepts-are-1-5" class="section level6">
+<h6>1. loadings of indicators and intercepts are 1</h6>
+<p><strong><em>YES</em></strong></p>
+</div>
+<div id="estimates-relate-to-specified-timepoints-5" class="section level6">
+<h6>2. Estimates relate to specified timepoints</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">312</span><span class="op">:</span><span class="dv">380</span>]</span></code></pre></div>
 <p>[1] &quot; Two-Tailed&quot; [2] &quot; Estimate S.E. Est./S.E. P-Value&quot; [3] &quot;&quot;<br />
 [4] &quot; INT |&quot;<br />
@@ -3392,15 +3428,18 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [38] &quot; LIN2 |&quot;<br />
 [39] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [40] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [41] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [42] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [43] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [44] &quot; PHQ_T7 1.000 0.000 999.000 999.000&quot; [45] &quot; PHQ_T8 2.000 0.000 999.000 999.000&quot; [46] &quot; PHQ_T9 3.000 0.000 999.000 999.000&quot; [47] &quot; PHQ_T10 5.000 0.000 999.000 999.000&quot; [48] &quot; PHQ_T11 7.000 0.000 999.000 999.000&quot; [49] &quot; PHQ_T12 9.000 0.000 999.000 999.000&quot; [50] &quot; PHQ_T13 11.000 0.000 999.000 999.000&quot; [51] &quot; PHQ_T14 11.000 0.000 999.000 999.000&quot; [52] &quot; PHQ_T15 11.000 0.000 999.000 999.000&quot; [53] &quot; PHQ_T16 11.000 0.000 999.000 999.000&quot; [54] &quot;&quot;<br />
 [55] &quot; LIN3 |&quot;<br />
-[56] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [57] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [58] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [59] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [60] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [61] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [62] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [63] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [64] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [65] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [66] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; [67] &quot; PHQ_T13 0.000 0.000 999.000 999.000&quot; [68] &quot; PHQ_T14 2.000 0.000 999.000 999.000&quot; [69] &quot; PHQ_T15 4.000 0.000 999.000 999.000&quot; 3. intercept 0 for all<br />
-<strong><em>YES</em></strong></p>
+[56] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [57] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [58] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [59] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [60] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [61] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [62] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [63] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [64] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [65] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [66] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; [67] &quot; PHQ_T13 0.000 0.000 999.000 999.000&quot; [68] &quot; PHQ_T14 2.000 0.000 999.000 999.000&quot; [69] &quot; PHQ_T15 4.000 0.000 999.000 999.000&quot;</p>
+</div>
+<div id="intercept-0-for-all-5" class="section level6">
+<h6>3. intercept 0 for all</h6>
+<p><strong><em>YES</em></strong></p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">442</span><span class="op">:</span><span class="dv">464</span>]</span></code></pre></div>
 <p>[1] &quot;&quot;<br />
 [2] &quot; Intercepts&quot;<br />
 [3] &quot; PHQ_T0 0.000 0.000 999.000 999.000&quot; [4] &quot; PHQ_T3 0.000 0.000 999.000 999.000&quot; [5] &quot; PHQ_T4 0.000 0.000 999.000 999.000&quot; [6] &quot; PHQ_T5 0.000 0.000 999.000 999.000&quot; [7] &quot; PHQ_T6 0.000 0.000 999.000 999.000&quot; [8] &quot; PHQ_T7 0.000 0.000 999.000 999.000&quot; [9] &quot; PHQ_T8 0.000 0.000 999.000 999.000&quot; [10] &quot; PHQ_T9 0.000 0.000 999.000 999.000&quot; [11] &quot; PHQ_T10 0.000 0.000 999.000 999.000&quot; [12] &quot; PHQ_T11 0.000 0.000 999.000 999.000&quot; [13] &quot; PHQ_T12 0.000 0.000 999.000 999.000&quot; [14] &quot; PHQ_T13 0.000 0.000 999.000 999.000&quot; [15] &quot; PHQ_T14 0.000 0.000 999.000 999.000&quot; [16] &quot; PHQ_T15 0.000 0.000 999.000 999.000&quot; [17] &quot; PHQ_T16 0.000 0.000 999.000 999.000&quot; [18] &quot;&quot;<br />
 [19] &quot; Variances&quot;<br />
-[20] &quot; INT 42.415 0.656 64.682 0.000&quot; [21] &quot; LIN1 0.251 0.020 12.731 0.000&quot; [22] &quot; LIN2 0.056 0.002 29.103 0.000&quot; [23] &quot; LIN3 0.104 0.015 7.067 0.000&quot; 4. correlations look sensible<br />
-<strong><em>yes</em></strong></p>
+[20] &quot; INT 42.415 0.656 64.682 0.000&quot; [21] &quot; LIN1 0.251 0.020 12.731 0.000&quot; [22] &quot; LIN2 0.056 0.002 29.103 0.000&quot; [23] &quot; LIN3 0.104 0.015 7.067 0.000&quot; ###### 4. correlations look sensible</p>
+<p><strong><em>yes</em></strong></p>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>dep.traj.all<span class="op">$</span>phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">811</span><span class="op">:</span><span class="dv">854</span>]</span></code></pre></div>
 <p>[1] &quot;&quot;<br />
 [2] &quot; Model Estimated Correlations&quot;<br />
@@ -3424,6 +3463,7 @@ Capturing the time during the third lockdown with stay at home orders and restri
 [42] &quot; PHQ_T14 0.860 0.859 1.000&quot;<br />
 [43] &quot; PHQ_T15 0.850 0.862 0.867 1.000&quot;<br />
 [44] &quot; PHQ_T16 0.842 0.851 0.860 0.864 1.000&quot;</p>
+</div>
 </div>
 </div>
 </div>
@@ -3641,6 +3681,7 @@ Capturing the time during the third lockdown with stay at home orders and restri
 <ol style="list-style-type: decimal">
 <li>test original 4 peice model that corresponds better to lockdown. May need to fix ntercepts to make it run with fewer timepoints.</li>
 <li>test seasonal piecewise maybe? (Discuss with Katie)</li>
+<li>format outputs so they are less unreadable in markdown</li>
 </ol>
 </div>
 
