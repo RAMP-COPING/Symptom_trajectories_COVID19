@@ -1,5 +1,6 @@
 TITLE:
-Depression symptoms in RAMP and COPING April 2020 - April 2021: piecwise trajectories based on lockdowns
+Depression symptoms in RAMP and COPING April 2020 - April 2021: 
+piecwise trajectories based on lockdowns
 v1, trying to capture initial easing in March 2021
 No pairwise correlations
 
@@ -12,7 +13,7 @@ VARIABLE:
 	NAMES ARE
 		id phq_t0 phq_t1 phq_t2 phq_t3 phq_t4 phq_t5
 		phq_t6 phq_t7 phq_t8 phq_t9 phq_t10 phq_t11
-		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16 phq_t17;
+		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16;
 				
 	USEVARIABLES ARE
 		phq_t0 phq_t1 phq_t2 phq_t3 phq_t4 phq_t5
@@ -28,6 +29,7 @@ ANALYSIS:
 	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors 
 	!as data is skew for PHQ at all time points
 	PROCESSORS = 2; !only 2 on Mac
+	COVERAGE=0.0017;
 	
 MODEL:
 !Note, a single trajectory, so we retain a single intercept and only introduce different slopes

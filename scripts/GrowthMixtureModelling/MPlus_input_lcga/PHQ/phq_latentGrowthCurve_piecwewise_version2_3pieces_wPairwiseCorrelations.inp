@@ -1,23 +1,24 @@
 TITLE:
-Depression symptoms in RAMP and COPING April 2020 - April 2021: piecwise trajectories based on lockdowns
+Depression symptoms in RAMP and COPING April 2020 - April 2021: 
+piecwise trajectories based on lockdowns
 v2, Not capturing Eary 2021 easing as it is too dsitributed
 With pairwise correlations
 
 DATA:
   	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
-  	data_clean/phq/phq.clean_merged_total_scores.csv";
+  	data_clean/phq/phq.clean_merged_total_scores_reduced.csv";
 
 VARIABLE:
 
 	NAMES ARE
-		id phq_t0 phq_t1 phq_t2 phq_t3 phq_t4 phq_t5
+		id phq_t0 phq_t3 phq_t4 phq_t5
 		phq_t6 phq_t7 phq_t8 phq_t9 phq_t10 phq_t11
-		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16 phq_t17;
+		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16;
 				
 	USEVARIABLES ARE
-		phq_t0 phq_t1 phq_t2 phq_t3 phq_t4 phq_t5
+		phq_t0 phq_t3 phq_t4 phq_t5
 		phq_t6 phq_t7 phq_t8 phq_t9 phq_t10 phq_t11
-		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16 phq_t17;
+		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16;
 		
 	MISSING ARE ALL (-99);
 	IDVARIABLE IS id;
@@ -28,25 +29,31 @@ ANALYSIS:
 	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors 
 	!as data is skew for PHQ at all time points
 	PROCESSORS = 2; !only 2 on Mac
+	COVERAGE=0.0017;
+	ITERATIONS=5000;
 	
 MODEL:
-!Note, a single trajectory, so we retain a single intercept and only introduce different slopes
+!Note, a single trajectory, so we retain a single intercept 
+!and only introduce different slopes
 
-	int lin1 | phq_t0@0 phq_t1@1 phq_t2@2 phq_t3@3 phq_t4@4
+	int lin1 | phq_t0@0 phq_t3@3 phq_t4@4
     		 phq_t5@5 phq_t6@6 phq_t7@6 phq_t8@6 phq_t9@6 
     		 phq_t10@6 phq_t11@6 phq_t12@6 phq_t13@6
-    		 phq_t14@6 phq_t15@6 phq_t16@6 phq_t17@6;
+    		 phq_t14@6 phq_t15@6 phq_t16@6;
+	
     		 
     		 !pivot point needs to be zero as this is where growth starts, so tp6 = 0
-    	int lin2 | phq_t0@0 phq_t1@0 phq_t2@0 phq_t3@0 phq_t4@0
+    	int lin2 | phq_t0@0 phq_t3@0 phq_t4@0
     		 phq_t5@0 phq_t6@0 phq_t7@7 phq_t8@8 phq_t9@9 
-    		 phq_t10@10 phq_t11@11 phq_t12@12 phq_t13@13
-    		 phq_t14@14 phq_t15@14 phq_t16@14 phq_t17@14;
-    	
-    	int lin3 | phq_t0@0 phq_t1@0 phq_t2@0 phq_t3@0 phq_t4@0
+    		 phq_t10@11 phq_t11@13 phq_t12@15 phq_t13@17
+    		 phq_t14@17 phq_t15@17 phq_t16@17;
+	
+  	
+    	int lin3 | phq_t0@0 phq_t3@0 phq_t4@0
     		 phq_t5@0 phq_t6@0 phq_t7@0 phq_t8@0 phq_t9@0 
     		 phq_t10@0 phq_t11@0 phq_t12@0 phq_t13@0
-    		 phq_t14@0 phq_t15@15 phq_t16@16 phq_t17@17;
+    		 phq_t14@19 phq_t15@21 phq_t16@23;
+	
     		 
 	
 	int WITH lin1;
@@ -60,16 +67,17 @@ MODEL:
 	
 	lin2 WITH lin3;
 	
-	phq_t0 - phq_t16 PWITH phq_t1 - phq_t17;
+	phq_t0 - phq_t15 PWITH phq_t3 - phq_t16;
 	
 	
 PLOT:
 	TYPE = PLOT3; !do not get plots on Mac but we use the gh5 file in R
 	
-	SERIES = phq_t0(0) phq_t1(1) phq_t2(2) phq_t3(3) phq_t4(4)
-    	phq_t5(5) phq_t6(6) phq_t7(13) phq_t8(14) phq_t9(15) phq_t10(16)
-    	phq_t11(17) phq_t12(18) phq_t13(19) phq_t14(20) phq_t15(35) 
-    	phq_t16(36) phq_t17(37);
+	SERIES = phq_t0(0) phq_t3(3) phq_t4(4)
+    	phq_t5(5) phq_t6(6) phq_t7(7) phq_t8(8) phq_t9(9) phq_t10(11)
+    	phq_t11(13) phq_t12(15) phq_t13(17) phq_t14(19) phq_t15(21) 
+    	phq_t16(23);
+    
     
 	
 OUTPUT:

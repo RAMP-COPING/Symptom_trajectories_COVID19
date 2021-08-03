@@ -63,6 +63,11 @@ if(!require(modeest)){
   install.packages("modeest")
   library(modeest)
 }
+
+if(!require(dplyr)){
+  install.packages("dplyr")
+  library(dplyr)
+}
 ```
 
 ```{r}
@@ -609,27 +614,27 @@ COPING_followupB.id %>%
 ##Identify dup IDs in a single wave (follow up A)
 COPING_followupA.id %>%
    group_by(waveA, ID) %>%
-   summarize(N = n()) %>%
+   dplyr::summarize(N = n()) %>%
    filter(N > 1)
 
 
 ##Identify dup IDs in a single wave (follow up A ongoing)
 COPING_followupA_ong.id %>%
    group_by(waveA, ID) %>%
-   summarize(N = n()) %>%
+   dplyr::summarize(N = n()) %>%
    filter(N > 1)
 
 
 ##Identify dup IDs in a single wave (B) 
 COPING_followupB.id %>%
    group_by(waveB, ID) %>%
-   summarize(N = n()) %>%
+   dplyr::summarize(N = n()) %>%
    filter(N > 1)
 
 ##Identify dup IDs in baseline 
 COPING_baseline.id %>%
    group_by(ID) %>%
-   summarize(N = n()) %>%
+   dplyr::summarize(N = n()) %>%
    filter(N > 1)
 
 
@@ -1454,19 +1459,19 @@ RAMP_followupB.id %>%
 ##Identify dup IDs in a single wave (baseline)
 RAMP_baseline.id %>%
    group_by(ID) %>%
-   summarize(N = n()) %>%
+   dplyr::summarize(N = n()) %>%
    filter(N > 1)
 
 ##Identify dup IDs in a single wave (follow up A)
 RAMP_followupA.id %>%
    group_by(waveA, ID) %>%
-   summarize(N = n()) %>%
+   dplyr::summarize(N = n()) %>%
    filter(N > 1)
 
 ##Identify dup IDs in a single wave (B) 
 RAMP_followupB.id %>%
    group_by(waveB, ID) %>%
-   summarize(N = n()) %>%
+   dplyr::summarize(N = n()) %>%
    filter(N > 1)
 
 
@@ -2247,7 +2252,6 @@ phq.mplus$hash_id <- sample(1:100000,dim(phq.mplus)[1],replace=FALSE)
 
 ```
 
-
 ### create a linked id file
 
 ```{r linked ids}
@@ -2265,10 +2269,31 @@ phq.mplus <- phq.mplus %>%
   select(!ID)
 ```
 
+
+## Drop timepoints with zero covariance covarage (no overlap between time points)
+
+due to RAMP or COPING not having data 
+
+Also create a keyed name dictionary
+
+```{r mplus revised data}
+
+phq.mplus.reduced <- phq.mplus %>%
+  select(-phq.total_Wave_01,
+         -phq.total_Wave_02,
+         -phq.total_Wave_17)
+
+phq.mplus.reduced.names <- names(phq.mplus.reduced)
+phq.mplus.reduced.names.columns <- seq(1,length(phq.mplus.reduced.names))
+phq.mplus.reduced.names <- data.frame(cbind(phq.mplus.reduced.names,phq.mplus.reduced.names.columns))
+
+```
+
 ## remove column names
 ```{r remove col names}
 
 names(phq.mplus) <- NULL
+names(phq.mplus.reduced) <- NULL
 
 ```
 
@@ -2277,8 +2302,10 @@ names(phq.mplus) <- NULL
 ```{r save plus dat files}
 
 write.table(phq.mplus, "../../../data_clean/phq/phq.clean_merged_total_scores.csv",row.names = FALSE)
+write.table(phq.mplus.reduced, "../../../data_clean/phq/phq.clean_merged_total_scores_reduced.csv",row.names = FALSE)
 write_csv(phq.id.lnk, "../../../data_clean/phq/phq.mplus_hash_id_link_file.csv")
 write_csv(phq.mplus.names, "../../../data_clean/phq/phq.clean_merged_total_scores_codebook.csv")
+write_csv(phq.mplus.reduced.names, "../../../data_clean/phq/phq.clean_merged_total_scores_reduced_codebook.csv")
 
 ```
 

@@ -6,13 +6,13 @@ output:
   html_document:
     df_print: paged
     toc: yes
-    toc_depth: 2
+    toc_depth: 3
     toc_float:
       collapsed: false
     number_sections: false
     highlight: monochrome
     theme: cerulean
-code_folding: show
+code_folding: hide
 
 html_notebook:
   theme: cerulean
@@ -26,7 +26,7 @@ The analytic steps that will be followed for PHQ and GAD respectively are:
 1. perform latent growth curve analysis of total scores across all time points to identify the best fitting trajectory for the whole sample     
 2. perform growth mixture modelling to identify latent classes in trajectory that may correspond with distinct subgroups in our data
 
-# Setup
+***Setup***
 
 
 ```{r}
@@ -131,7 +131,7 @@ options(scipen = 999)
 ```
 
 
-# Colour palette
+***Colour palette***
 
 RAMP colours (first) from website and second is a generated left tetradic (rectangular) colour complement of the RAMP logo green for contrast and complement. 
 ```{r ieso colour palette, include=FALSE}
@@ -143,13 +143,45 @@ prev.pres.palette<-c("#4590B8", "#4D68D1", "#D14D68", "#D1B74D", "#68D14D", "#B7
 ```
 
 
-# Latent Growth Curves {.tabset}
+# Latent Growth Curves 
 
-Identify the best fitting latent growth curve form, i.e. that which fits all of the data best, on average, for each outcome
+Identify the best fitting latent growth curve form, i.e. that which fits all of the data best, on average, for each outcome.
+
+Note that the MPlus inout time interval specifications go from increasing by 1 for the first  waves (we measured with two week itnervals) to increasing by 2 when we moved to monthly. The choice of interval is arbitrary, but the relative difference should be retained. 
 
 ## PHQ9: Current Depression Symptoms Latent Growth Curve Model {.tabset}
 
-### check number of rows missing on all variables in the dataset
+### overview of model alterations and adaptations
+
+After manual checks of each stage, a number of alterations were needed. These are detailed here.
+
+**low covatiance coverage**
+The covariance coverage between some time points is lower than MPlus default. This prevents algortihm for missing data being applied (MLR) and standard errors cannot be computed, even when setting the coverage expectations to zero. 
+
+Looking at our data structure and MPlus output, I suspect this is due to missing data from COPING survey for waves 2 & 3, and from the RAMP survey at wave 17 at present (due to data extraction issues which mean we do not have a recent RAMP extraction)    
+
+Will try the following to resolve this:   
+
+* Run without timepoints 2,3 and 17   
+* This will require dropping the 4 piece trajectory model (which would only have one timepoint in the final piece) and only running the three piece version.    
+
+
+In addition, I adapted the minimum coverage requirement. Default in MPlus is 0.1 Covariance coverage in MPlus refers to the amount of people who have non missing values on the pair of values. Thus, sensible minimum is sample size dependent, as there may still be a significant proportion of people who have non missing data even if that represents less than 10% of the sample in a large data set.
+
+Our lowest remaining value is 0.002 between time point 3 and timepoint 13. The lowest sample size between these is 19298 at timepoint 13. 
+
+```{r calculate number of people with non missing}
+
+19298*0.002
+
+```
+
+~40 people have data on both time points. This is low, but given LCGA (with class division) can be performed on models with as few as 30 subjects [See MPlus message board, discussion with Linda Muthen](http://www.statmodel.com/discussion/messages/23/12750.html?1592615934), this seems acceptable.
+
+* Will drop coverage requirement to 0.0017 as this correspinds to ~30 people from our time point with the least data (18314).   
+
+
+### Data summary
 
 ```{r read in phq and check missing all cases}
 
@@ -171,14 +203,12 @@ print(dim(phq_check)[1])
 print(list_all_missing)
 
 ```
-Data set contains a total of `r print(dim(phq_check)[1])` observations. 
 
-Number of cases missing on all variables, and thus excluded from the analyses: `r print(list_all_missing)`        
 
 Important note: all numbers correspond exactly with MPlus output numbers (n per wave and n missing all observations etc).
-
-
-### Run all models (with and without pairwise correlations)
+  
+   
+### Summary of models run
 
 * linear
 * quadratic
@@ -224,40 +254,37 @@ Piecewise2 therefore:
 2. 6 - 13
 3. 14 - 17
 
-### run all models 
+#### run all models 
 
 dont rerun models if there is already output for it (to save computational time), do show the output in the console
 
 ```{r run depression linear models}
 
 runModels("./MPlus_input_lcga/PHQ", 
-          recursive = TRUE,
+          recursive = FALSE,
           showOutput=TRUE,
           replaceOutfile="never")
 
 ```
 
-
-### Read model output into R
-
+### Examine model output {.tabset}
+this reads in all output, including the gh5 plot files
 ```{r read depression model}
 
 dep.traj.all <- readModels("./MPlus_input_lcga/PHQ", 
-                           recursive=TRUE)
+                           recursive=FALSE)
 
-#This also reads in the gh5 files which we use for plotting
 ```
 
 
-
-### Initial checks in Mplus output files {.tabset}
+#### Check key indicators of model stability {.tabset}
 
 - warnings  
 - that none of the residual variances are negative and significant  
-- loadings of indicators and intercept should all be 1, and estimates should relate to the timepoints you specified (e.g. lin 0, 1, 2; quad 0, 1, 4) 
+- loadings of indicators and intercept should all be 1, and estimates should relate to the time points you specified (e.g. lin 0, 1, 2; quad 0, 1, 4) 
 - intercept 0 for all and correlations look sensible
 
-#### check warnings
+##### warnings
 
 at the moment this doesnt say which model the warning is from, so any warning requires checking to identify its source. Though order in list will give some indication
 ```{r check warnings}
@@ -273,7 +300,11 @@ Warnings are all about missing data (missing on all obs, this number lines up wi
 
 
 Otherwise, no warnings. Check one complete.
-#### check errors
+
+Note that there are more people missing on all observations having dropped timepoints 2,3, and 17. Was 7866, but this version is 8217 .
+
+
+##### errors
 
 Check any errors with running any of the models. Oytput here will not say whicu model it belongs to, so will need to manually examine if errors occu,
 
@@ -286,15 +317,41 @@ justErrors
 
 ```
 
+###### Issue 1: Models fail to finish running and converge (resolved)
 
-One of the models has failed to converge. (Linear trajectory with pairwise correlations). 
+Some of the models have failed to converge:    
 
-Tried to increase the number of iterations to 5000 (did not work) and 10000 (also did not work). Tried to specify random start value (STARTS = 40), also didnt help, although it dramatically increased run time.
+* Piecwise with pairwise residual correlations    
+* Quadratic   
+* Quadratic with pariwise residual correlations
 
 
-#### check if any residual variances are negative and significant {.tabset}
+Steps:    
+* Increased number of iterations to 5000 (Mplus default is 1000).    
+* This worked somwhat for the piecewise and quadratic (without pairwise correlations) which now have more informative errors    
+* This did not work at all for quadratic (with pairwise residual correlation). Increased iterations to 10000 for this one.    
+* This worked.    
 
-##### Linear 
+
+###### Issue 2: Models are no specified due to time point 3 parameter (resolved)
+
+Now all three run, but could not compute standard errors as the models were misidentified or did not converge.
+
+Issues are all with specified parameters now:
+
+***quadratic***: Problem involving parameter 2 (T_3)
+*   examining the data, I have made an error with the dataset. There are 4325 in this time point. This corresponds to the second follow up that is meant to be dropped from this datafile. Interestingly, T4 onwards is correct. T3 should have 2662 observations. Appears I have  wrongly dropped this wave instead of follow up 2. *Note: this is exactly what I had done. Corrected and rerun all models*
+
+###### Issue 3: Models are no specified due to low coverage covariacne between t 3 and timepoint 6,8,16
+
+Checked this manually, and there are only 4 people who did both timepoint 3 and timepoint 6, 4 who did timepoint 3 and tomepoint 8, and only 3 who did time point 3 and timepoint 16
+
+
+
+
+##### check if any residual variances are negative and significant
+
+###### Linear 
 ```{r check if residual variances negative lin}
 
 model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear.out$parameters$unstandardized
@@ -302,7 +359,7 @@ model[model$paramHeader == "Residual.Variances",]
 
 ```
 
-##### Linear with pairwise correlations
+###### Linear with pairwise correlations
 ```{r check if residual variances negative lin pairwise}
 
 model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$parameters$unstandardized
@@ -310,7 +367,7 @@ model[model$paramHeader == "Residual.Variances",]
 
 ```
 
-##### Quadratic 
+###### Quadratic 
 ```{r check if residual variances negative quad}
 
 model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic.out$parameters$unstandardized
@@ -318,7 +375,7 @@ model[model$paramHeader == "Residual.Variances",]
 
 ```
 
-##### Quadratic with pairwise correlations
+###### Quadratic with pairwise correlations
 ```{r check if residual variances negative quad pairwise}
 
 model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$parameters$unstandardized
@@ -326,24 +383,24 @@ model[model$paramHeader == "Residual.Variances",]
 
 ```
 
-##### Piecewise 1
-```{r check if residual variances negative piece 1}
+###### Piecewise 1 (IGNORE)
+```{r check if residual variances negative piece 1, eval=FALSE}
 
-model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces.out$parameters$unstandardized
-model[model$paramHeader == "Residual.Variances",]
-
-```
-
-##### Piecewise 1 with pairwise correlations
-```{r check if residual variances negative piece 1 pairwise}
-
-model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces_wPairwise_correlations.out$parameters$unstandardized
-model[model$paramHeader == "Residual.Variances",]
+# model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces.out$parameters$unstandardized
+# model[model$paramHeader == "Residual.Variances",]
 
 ```
 
+###### Piecewise 1 with pairwise correlations (IGNORE)
+```{r check if residual variances negative piece 1 pairwise, eval=FALSE}
 
-##### Piecewise 2
+# model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces_wPairwise_correlations.out$parameters$unstandardized
+# model[model$paramHeader == "Residual.Variances",]
+
+```
+
+
+###### Piecewise 2
 ```{r check if residual variances negative piece 2}
 
 model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces.out$parameters$unstandardized
@@ -351,7 +408,7 @@ model[model$paramHeader == "Residual.Variances",]
 
 ```
 
-##### Piecewise 2 with pairwise correlations
+###### Piecewise 2 with pairwise correlations
 ```{r check if residual variances negative piece 2 pairwise}
 
 model <- dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$parameters$unstandardized
@@ -359,9 +416,15 @@ model[model$paramHeader == "Residual.Variances",]
 
 ```
 
-#### Check loadings of indicators and intercepts are 1, and estimates relate to specified timepoints, intercept 0 for all and correlations look sensible {.tabset}
+#### Detailed output for each model {.tabset}
 
-Print output file for each correlation for examination of these details and any other relavant information
+***Check:***    
+1. loadings of indicators and intercepts are 1    
+2. Estimates relate to specified timepoints   
+3. intercept 0 for all     
+4. correlations look sensible      
+
+Print output file for each correlation for examination of these details and any other relevant information
 
 ##### Linear 
 ```{r check full output negative lin}
@@ -439,55 +502,63 @@ dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3p
 showSummaryTable(dep.traj.all, keepCols=c("Title", "Observations", "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate"), sortBy="BIC") #throws error but does print!
 
 ```
+### Plot {.tabset}
 
-#### Format Data for Plots 
+I show the plots for all runs that worked. Output for all runs is available in the GMM folder on GitHub to review input and output data that generated these plots. The main analytic sections above will only refer to the final model run. 
+
+#### Run 1: all time points
+##### Format Data for Plots 
 
 Plotting the estimated means for the trajectories with adjacent residuals correlated as these all had better fit than uncorrelated models
 
 ```{r Format Depression Growth Curve Data}
 
-dat_dep<-data.frame(matrix(nrow=18, ncol=3))
+dep.traj.run.1 <- readModels("./MPlus_input_lcga/PHQ/Output_Run1_alltimepoints", 
+                           recursive=TRUE)
 
-colnames(dat_dep)<-c("Linear", "Quadratic",  "Piecewise3")
+
+dat_dep_run_1<-data.frame(matrix(nrow=18, ncol=3))
+
+colnames(dat_dep_run_1)<-c("Linear", "Quadratic",  "Piecewise3")
 
 #  "LinearCor", "QuadraticCor","Piecewise4", "Piecewise4Cor",, "Piecewise3Cor"
 
-dat_dep$Linear <-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_1$Linear <-dep.traj.run.1$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear.out$gh5$means_and_variances_data$y_estimated_means$values
 
-#dat_dep$LinearCor<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+#dat_dep_run_1$LinearCor<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 
-dat_dep$Quadratic<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_1$Quadratic<-dep.traj.run.1$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic.out$gh5$means_and_variances_data$y_estimated_means$values
 
-#dat_dep$QuadraticCor<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+#dat_dep_run_1$QuadraticCor<-dep.traj.run.1$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 
-#dat_dep$Piecewise4<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces.out$gh5$means_and_variances_data$y_estimated_means$values
+#dat_dep_run_1$Piecewise4<-dep.traj.run.1$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces.out$gh5$means_and_variances_data$y_estimated_means$values
 
-#dat_dep$Piecewise4Cor<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
-
-
-dat_dep$Piecewise3<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces.out$gh5$means_and_variances_data$y_estimated_means$values
-
-#dat_dep$Piecewise3Cor<-dep.traj.all$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+#dat_dep_run_1$Piecewise4Cor<-dep.traj.run.1$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version1_4pieces_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
 
 
-dat_dep$timepoint<-c(0:17) 
+dat_dep_run_1$Piecewise3<-dep.traj.run.1$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces.out$gh5$means_and_variances_data$y_estimated_means$values
 
-dat_dep<-dat_dep%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic","Piecewise3")))
+#dat_dep_run_1$Piecewise3Cor<-dep.traj.run.1$..MPlus_input_lcga.PHQ.phq_latentGrowthCurve_piecwewise_version2_3pieces_wPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+
+dat_dep_run_1$timepoint<-c(0:17) 
+
+dat_dep_run_1<-dat_dep_run_1%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic","Piecewise3")))
 
 ```
 
-#### Growth Curve Models Plot 
+##### Growth Curve Plot 
 
 ```{r Depression Growth Curve Forms}
 
-growth_curves <- ggplot() +
-  geom_line(data = dat_dep,
+growth_curves_run1 <- ggplot() +
+  geom_line(data = dat_dep_run_1,
         aes(x = timepoint, y = score, colour = Model), size = 1) +
   geom_point(data = dat_dep,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette[c(4, 1:3)]) +
   labs(x = "Follow up time point", y ="PHQ9 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,10), breaks=seq(0, 10, 3)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 3)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,18.5), breaks=seq(0, 18, by = 1)) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
@@ -498,7 +569,7 @@ growth_curves <- ggplot() +
         legend.text = element_text(colour = "black", size = 11),
         panel.background = element_blank()) 
 
-growth_curves
+growth_curves_run1
 
 ```
 

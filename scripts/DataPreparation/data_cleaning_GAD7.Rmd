@@ -2106,10 +2106,30 @@ gad.mplus <- gad.mplus %>%
   select(!ID)
 ```
 
+## Drop timepoints with zero covariance covarage (no overlap between time points)
+
+due to RAMP or COPING not having data 
+
+Also create a keyed name dictionary
+
+```{r mplus revised data}
+
+gad.mplus.reduced <-gad.mplus %>%
+  select(-gad.total_Wave_01,
+         -gad.total_Wave_02,
+         -gad.total_Wave_17)
+
+gad.mplus.reduced.names <- names(gad.mplus.reduced)
+gad.mplus.reduced.names.columns <- seq(1,length(gad.mplus.reduced.names))
+gad.mplus.reduced.names <- data.frame(cbind(gad.mplus.reduced.names,gad.mplus.reduced.names.columns))
+
+```
+
 ## remove column names
 ```{r remove col names}
 
 names(gad.mplus) <- NULL
+names(gad.mplus.reduced) <- NULL
 
 ```
 
@@ -2118,8 +2138,10 @@ names(gad.mplus) <- NULL
 ```{r save plus dat files}
 
 write.table(gad.mplus, "../../../data_clean/gad/gad.clean_merged_total_scores.csv",row.names = FALSE)
+write.table(gad.mplus.reduced, "../../../data_clean/gad/gad.clean_merged_total_scores_reduced.csv",row.names = FALSE)
 write_csv(gad.id.lnk, "../../../data_clean/gad/gad.mplus_hash_id_link_file.csv")
 write_csv(gad.mplus.names, "../../../data_clean/gad/gad.clean_merged_total_scores_codebook.csv")
+write_csv(gad.mplus.reduced.names, "../../../data_clean/gad/gad.clean_merged_total_scores_reduced_codebook.csv")
 
 ```
 

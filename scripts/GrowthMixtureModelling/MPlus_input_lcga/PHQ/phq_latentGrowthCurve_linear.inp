@@ -4,19 +4,19 @@ No pairwise correlations
 
 DATA:
   	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
-  	data_clean/phq/phq.clean_merged_total_scores.csv";
+  	data_clean/phq/phq.clean_merged_total_scores_reduced.csv";
 
 VARIABLE:
 
 	NAMES ARE
-		id phq_t0 phq_t1 phq_t2 phq_t3 phq_t4 phq_t5
+		id phq_t0 phq_t3 phq_t4 phq_t5
 		phq_t6 phq_t7 phq_t8 phq_t9 phq_t10 phq_t11
-		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16 phq_t17;
+		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16;
 				
 	USEVARIABLES ARE
-		phq_t0 phq_t1 phq_t2 phq_t3 phq_t4 phq_t5
+		phq_t0 phq_t3 phq_t4 phq_t5
 		phq_t6 phq_t7 phq_t8 phq_t9 phq_t10 phq_t11
-		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16 phq_t17;
+		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16;
 		
 	MISSING ARE ALL (-99);
 	IDVARIABLE IS id;
@@ -27,24 +27,25 @@ ANALYSIS:
 	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors 
 	!as data is skew for PHQ at all time points
 	PROCESSORS = 2; !only 2 on Mac
+	COVERAGE=0.0017;
 	
 MODEL:
+! time intervals adjusted for when surveys moved from two weekly to monthly
 
-	int slope| phq_t0@0 phq_t1@1 phq_t2@2 phq_t3@3 phq_t4@4
+	int slope| phq_t0@0 phq_t3@3 phq_t4@4
     		 phq_t5@5 phq_t6@6 phq_t7@7 phq_t8@8 phq_t9@9 
-    		 phq_t10@10 phq_t11@11 phq_t12@12 phq_t13@13
-    		 phq_t14@14 phq_t15@15 phq_t16@16 phq_t17@17;
+    		 phq_t10@11 phq_t11@13 phq_t12@15 phq_t13@17
+    		 phq_t14@19 phq_t15@21 phq_t16@23;
 	
 	int WITH slope;
 	
 PLOT:
 	TYPE = PLOT3; !do not get plots on Mac but we use the gh5 file in R
 	
-	SERIES = phq_t0(0) phq_t1(1) phq_t2(2) phq_t3(3) phq_t4(4)
-    	phq_t5(5) phq_t6(6) phq_t7(7) phq_t8(8) phq_t9(9) phq_t10(10)
-    	phq_t11(11) phq_t12(12) phq_t13(13) phq_t14(14) phq_t15(15) 
-    	phq_t16(16) phq_t17(17);
-    
+	SERIES = phq_t0(0) phq_t3(3) phq_t4(4)
+    	phq_t5(5) phq_t6(6) phq_t7(7) phq_t8(8) phq_t9(9) phq_t10(11)
+    	phq_t11(13) phq_t12(15) phq_t13(17) phq_t14(19) phq_t15(21) 
+    	phq_t16(23);
 	
 OUTPUT:
 	STDYX MODINDICES(30) RESIDUAL;
@@ -52,4 +53,4 @@ OUTPUT:
 SAVEDATA:
 
    ! SAVE=FS;		
-   ! FILE IS lgc-phq9-linear.dat;	
+   ! FILE IS lgca-phq9-linear.dat;	
