@@ -2241,7 +2241,7 @@ phq.mplus[is.na(phq.mplus)] <- -99
 
 ```
 
-## make a new hased ID column with only numbers and save the linking file for later steps
+## make a new hashed ID column with only numbers and save the linking file for later steps
 MPlus will only allow numeric variables. 
 
 hashed ID is already totally anonymised and disconnected from original dataset, so will save it with the other data as there is no additional risk of data linkage by doing so.
