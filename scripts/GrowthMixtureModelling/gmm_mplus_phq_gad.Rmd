@@ -164,20 +164,20 @@ Identify the best fitting latent growth curve form, i.e. that which fits all of 
 
 ### Piecewise trajectory key dates
 
-#### Trajectory 1
+#### Trajectory 1 - DELETE HEADING
 Four pieces **These dates are based on guidelines in England - TO CHECK no major discrepancies across Scotland; NI; Wales**:
 
-1. Lockdown 1 (23 Mar 2020) until first easing of restructions (23 June 2020) 
-Slope includes data points: Baseline (7th April 2020) - Follow-up 5 (16 June 2020)
+1. Lockdown 1 (23 Mar 2020) until first easing of restrictions (23 Jun 2020) 
+Slope includes data points: Baseline (7 Apr 2020) - Follow-up 5 (16 Jun 2020)
 
-2. Summer easing of restrictions (23 June 2020) until beginning of Lockdown 2.0 (31 Oct 2020)
-Slope includes data points: Follow-up 6 (30 June 2020) - Follow-up 11 (20 Oct 2020)
+2. Summer easing of restrictions (23 Jun 2020) until beginning of Lockdown 2.0 (31 Oct 2020)
+Slope includes data points: Follow-up 6 (30 Jun 2020) - Follow-up 11 (20 Oct 2020)
 
-3. Winter lockdowns (31 Oct 2020 - 8 Mar 2021)
+3. Winter lockdowns (31 Oct 2020) until Spring 2021 easing of restrictions (8 Mar 2021)
 Slope includes data points: Follow-up 12 (17 Nov 2020) - Follow-up 14 (12 Jan 2021)
 **WE WILL CHANGE THIS TO NOV-FEB FOR FINAL MODEL ONCE EXTRACTION ISSUE RESOLVED**
 
-4. Spring 2021 easing of restrictions (8 Mar 2021 - )
+4. Spring 2021 easing of restrictions (8 Mar 2021) until end of study period (6 Apr 2021)
 Slope includes data points: Follow-up 15 (9 Feb 2021) - Follow-up 16 (9 Mar 2021)
 **WE WILL CHANGE THIS TO MAR-APR FOR FINAL MODEL ONCE EXTRACTION ISSUE RESOLVED**
 
@@ -194,9 +194,9 @@ Wales:
 
 Northern Ireland: 
 
-#### trajectory 2
+#### trajectory 2 - TO DELETE
 
-Possible that this is too compacted and had too few measurement points in shorter lockdowns to be meaningful. Thus, will also test a smaller peicewise model capturing inflections for initial lockdown, easing of restrictions, renewed lockdown into April. Arguably gradual easing of restrictions over the course of March - July does not qualify for a probably inflection point in MH trajectories. 
+Possible that this is too compacted and had too few measurement points in shorter lockdowns to be meaningful. Thus, will also test a smaller piecewise model capturing inflections for initial lockdown, easing of restrictions, renewed lockdown into April. Arguably gradual easing of restrictions over the course of March - July does not qualify for a probably inflection point in MH trajectories. 
 
 
 Piecewise2 therefore: 
@@ -206,26 +206,24 @@ Piecewise2 therefore:
 3. 13 - 16
 
 
-## PHQ9: Current Depression Symptoms Latent Growth Curve Model {.tabset}
+## PHQ-9: Current Depression Symptoms Latent Growth Curve Model {.tabset}
 
 ### overview of model alterations and adaptations
 
 After manual checks of each stage, a number of alterations were needed. These are detailed here.
 
-**low covatiance coverage**
-The covariance coverage between some time points is lower than MPlus default. This prevents algortihm for missing data being applied (MLR) and standard errors cannot be computed, even when setting the coverage expectations to zero. 
+**Low covariance coverage:**
+The covariance coverage (% of participants common to any two time points) between some time points is lower than MPlus default (0.1; 10%). This prevents algorithm for missing data being applied (MLR; maximum likelihood with robust standard errors) and standard errors cannot be computed, even when setting the coverage expectations to zero. 
 
-Looking at our data structure and MPlus output, I suspect this is due to missing data from COPING survey for waves 2 & 3, and from the RAMP survey at wave 17 at present (due to data extraction issues which mean we do not have a recent RAMP extraction)    
+Looking at our data structure and MPlus output, I suspect this is due to missing data from COPING survey for waves 2 & 3, and from the RAMP survey at wave 17 at present (due to data extraction issue)    
 
-Will try the following to resolve this:   
+The 10% (0.1) minimum covariance coverage default in MPlus may not be appropriate for large datasets when there may be a sufficiently large sample of individuals wit hon-missing data, even if that represents less than 10% of the sample. 
 
-* Run without timepoints 2,3 and 17   
-* This will require dropping the 4 piece trajectory model (which would only have one timepoint in the final piece) and only running the three piece version.    
+Will try the following to resolve this by: 
+* running without timepoints 2, 3 and 17   
+* adapting the minimum coverage requirement 
 
-
-In addition, I adapted the minimum coverage requirement. Default in MPlus is 0.1 Covariance coverage in MPlus refers to the amount of people who have non missing values on the pair of values. Thus, sensible minimum is sample size dependent, as there may still be a significant proportion of people who have non missing data even if that represents less than 10% of the sample in a large data set.
-
-**update** Our lowest remaining value is 0.007 between time point 3 and timepoint 13. The lowest sample size between these is 19298 at timepoint 13. 
+**update** After removing timepoins 2, 3 and 17, the lowest remaining covariance coverage value is 0.007 between time point 3 and timepoint 13. The lowest sample size between these is 19298 at timepoint 13. 
 
 ```{r calculate number of people with non missing}
 
@@ -268,7 +266,7 @@ Important note: all numbers correspond exactly with MPlus output numbers (n per 
 
 #### run all models 
 
-dont rerun models if there is already output for it (to save computational time), do show the output in the console
+Don't rerun models if there is already output for it (to save computational time), do show the output in the console
 
 ```{r run depression linear models}
 
@@ -280,7 +278,7 @@ runModels("./MPlus_input_lcga/PHQ",
 ```
 
 ### Examine model output {.tabset}
-this reads in all output, including the gh5 plot files
+This reads in all output, including the gh5 plot files
 ```{r read depression model}
 
 dep.traj.all <- readModels("./MPlus_input_lcga/PHQ", 
@@ -289,10 +287,11 @@ dep.traj.all <- readModels("./MPlus_input_lcga/PHQ",
 ```
 
 
-#### Check key indicators of model stability {.tabset}
+#### Check warnings, error messages and residuals {.tabset}
 
-- warnings  
-- that none of the residual variances are negative and significant  
+- Warnings: check through warnings from console  
+- Errors: error messages when running models and how each was resolved
+- Residuals: check if any residual variances are negative and significant (would indicate model error)
 - loadings of indicators and intercept should all be 1, and estimates should relate to the time points you specified (e.g. lin 0, 1, 2; quad 0, 1, 4) 
 - intercept 0 for all and correlations look sensible
 
@@ -380,7 +379,7 @@ The two quadratic models are not converging. Without pairwise correlations the p
 
 * likely due to the 4th piece relying only on two time points, fixed variance for this slope to 0 to only estimate means [(e.g. Muthen response to this thread)](http://www.statmodel.com/discussion/messages/14/217.html?1563568933).    
 
-##### check if any residual variances are negative and significant
+##### Residuals
 
 ###### Linear 
 ```{r check if residual variances negative lin}
@@ -447,15 +446,17 @@ model[model$paramHeader == "Residual.Variances",]
 
 ```
 
-#### Detailed output for each model {.tabset}
+#### Check indicators, intercepts, timepoints and correlations {.tabset}
 
 ***Check:***    
-1. loadings of indicators and intercepts are 1    
-2. Estimates relate to specified timepoints   
-3. intercept 0 for all     
-4. correlations look sensible      
+1. Loadings: check loadings of indicators and intercepts are 1    
+2. Estimates: check estimates relate to specified timepoints   
+3. Intercept: check intercept 0 for all     
+4. Correlations: check correlations look sensible      
 
 Print output file for each correlation for examination of these details and any other relevant information
+
+##### Linear 
 
 ##### Linear 
 
