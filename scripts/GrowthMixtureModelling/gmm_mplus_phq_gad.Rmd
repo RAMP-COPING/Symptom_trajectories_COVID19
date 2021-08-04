@@ -136,9 +136,14 @@ options(scipen = 999)
 RAMP colours (first) from website and second is a generated left tetradic (rectangular) colour complement of the RAMP logo green for contrast and complement. 
 ```{r ieso colour palette, include=FALSE}
 
-pres.palette <- c("#4ED1B7", "#F6C66A", "#6A6680", "#1A3E72",  "#D1754D","#FFED04","#3F9D8A","#B74DD1") 
+pres.palette <- c("#4ED1B7", "#F6C66A", "#D14D68", "#1A3E72",  "#D1754D","#FFED04","#3F9D8A","#B74DD1") 
 
 prev.pres.palette<-c("#4590B8", "#4D68D1", "#D14D68", "#D1B74D", "#68D14D", "#B74DD1", "#D1754D")
+
+timepoint_list <- c("7th April 2020","19th May 2020","2nd June 2020","16th June 2020","30th June 2020",
+                    "14th July 2020", "28th July 2020","25th August 2020","22nd September 2020","20th October 2020",
+                    "17th November 2020","15th December 2020","12th January 2021","9th February 2021",
+                    "9th March 2021")
 
 ```
 
@@ -266,7 +271,7 @@ Important note: all numbers correspond exactly with MPlus output numbers (n per 
 
 dont rerun models if there is already output for it (to save computational time), do show the output in the console
 
-```{r run depression linear models}
+```{r run depression linear models, eval=FALSE}
 
 runModels("./MPlus_input_lcga/PHQ", 
           recursive = FALSE,
@@ -839,7 +844,8 @@ Note: this corresponds to the dataset with all time points, thus, different miss
 
 dont rerun models if there is already output for it (to save computational time), do show the output in the console
 
-```{r run anxiety linear models}
+Note:
+```{r run anxiety linear models, eval=FALSE}
 
 runModels("./MPlus_input_lcga/gad", 
           recursive = FALSE,
@@ -982,7 +988,7 @@ anx.traj.all$gad_latentGrowthCurve_linear.out$output[280:313] %>%
 
 ```{r check intercepts are zero linanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear.out$output[319:337]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear.out$output[321:337]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible   
@@ -1003,7 +1009,7 @@ anx.traj.all$gad_latentGrowthCurve_linear.out$output[598:642]  %>%   str_split("
 
 ```{r check full output negative lin pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[277:311]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[284:316]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1012,14 +1018,14 @@ anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[27
 
 ```{r check intercepts are zero lin pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[365:380]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[367:383]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations lin pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[685:727]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[685:729]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 
@@ -1032,7 +1038,7 @@ anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[68
 ***YES***
 ```{r check full output negative quadanx}
 
-anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[286:339]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[289:339]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1061,7 +1067,7 @@ anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[654:697]  %>%   str_spli
 ***YES***
 ```{r check full output negative quad pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[285:339]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[289:339]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1070,7 +1076,10 @@ anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output
 
 ```{r check intercepts are zero quad pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[547:563]
+anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[547:563]  %>%
+  str_split("/t") %>%
+  kbl() %>%
+  kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
@@ -1079,7 +1088,7 @@ anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output
 
 anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[738:781]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
-##### Piecewise (4 pieces)
+##### Piecewise
 
 ###### 1. loadings of indicators and intercepts are 1  
 ***YES***
@@ -1088,7 +1097,7 @@ anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output
 **YES**
 ```{r check full output negative 4pieceanx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[322:409]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[332:416]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1097,14 +1106,14 @@ anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[322:409]  %>%   str_spli
 
 ```{r check intercepts are zero 4pieceanx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[433:449]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[442:458]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations 4pieceanx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[788:830]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[794:840]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ##### Piecewise (4 pieces) with correlations
@@ -1116,7 +1125,7 @@ anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[788:830]  %>%   str_spli
 **YES**
 ```{r check full output negative 4piece coranx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[328:414]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[336:420]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1125,14 +1134,14 @@ anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[3
 
 ```{r check intercepts are zero 4piece coranx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[682:700]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[690:706]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations 4piece coranx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[877:920]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[882:926]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ### Summary table of all fit indices
@@ -1194,8 +1203,8 @@ growth_curves_run2 <- ggplot() +
   geom_point(data = dat_dep_run_2,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
-  labs(x = "Follow up time point", y ="gad9 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 3)) + 
+  labs(x = "Follow up time point", y ="GAD7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(4.5,6.5), breaks=seq(4.5, 6.5, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
@@ -1247,8 +1256,8 @@ growth_curves_run2b <- ggplot() +
   geom_point(data = dat_dep_run_2b,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette[c(4, 1:3)]) +
-  labs(x = "Follow up time point", y ="gad9 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 3)) + 
+  labs(x = "Follow up time point", y ="GAD7 Score") +
+ scale_y_continuous(expand = c(0,0), limits = c(4.5,6.5), breaks=seq(4.5, 6.5, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
@@ -1303,8 +1312,8 @@ growth_curves_run2c <- ggplot() +
   geom_point(data = dat_dep_run_2c,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
-  labs(x = "Follow up time point", y ="gad9 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 3)) + 
+  labs(x = "Follow up time point", y ="GAD7 Score") +
+ scale_y_continuous(expand = c(0,0), limits = c(4.5,6.5), breaks=seq(4.5, 6.5, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
@@ -1322,6 +1331,6 @@ growth_curves_run2c
 ```
 
 # to do 
-* format outputs so they are less unreadable in markdown
+
 * format plot to show dates rather than timepoint references
 
