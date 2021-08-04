@@ -1,0 +1,57 @@
+TITLE:
+Anxiety symptoms in RAMP and COPING
+Linear Growth Curve
+No pairwise correlations
+
+DATA:
+  	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
+  	data_clean/gad/gad.clean_merged_total_scores_reduced.csv";
+
+VARIABLE:
+
+	NAMES ARE
+		id gad_t0 gad_t3 gad_t4 gad_t5
+		gad_t6 gad_t7 gad_t8 gad_t9 gad_t10 gad_t11
+		gad_t12 gad_t13 gad_t14 gad_t15 gad_t16;
+				
+	USEVARIABLES ARE
+		gad_t0 gad_t3 gad_t4 gad_t5
+		gad_t6 gad_t7 gad_t8 gad_t9 gad_t10 gad_t11
+		gad_t12 gad_t13 gad_t14 gad_t15 gad_t16;
+		
+	MISSING ARE ALL (-99);
+	IDVARIABLE IS id;
+	
+	
+ANALYSIS:
+	
+	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors 
+	!as data is skew for GAD at all time points
+	PROCESSORS = 2; !only 2 on Mac
+	COVERAGE=0;
+	
+MODEL:
+! time intervals adjusted for when surveys moved from two weekly to monthly
+
+	int slope| gad_t0@0 gad_t3@3 gad_t4@4
+    		 gad_t5@5 gad_t6@6 gad_t7@7 gad_t8@8 gad_t9@9 
+    		 gad_t10@11 gad_t11@13 gad_t12@15 gad_t13@17
+    		 gad_t14@19 gad_t15@21 gad_t16@23;
+	
+	int WITH slope;
+	
+PLOT:
+	TYPE = PLOT3; !do not get plots on Mac but we use the gh5 file in R
+	
+	SERIES = gad_t0(0) gad_t3(3) gad_t4(4)
+    	gad_t5(5) gad_t6(6) gad_t7(7) gad_t8(8) gad_t9(9) gad_t10(11)
+    	gad_t11(13) gad_t12(15) gad_t13(17) gad_t14(19) gad_t15(21) 
+    	gad_t16(23);
+	
+OUTPUT:
+	STDYX MODINDICES(30) RESIDUAL;
+
+SAVEDATA:
+
+   ! SAVE=FS;		
+   ! FILE IS lgca-phq9-linear.dat;	

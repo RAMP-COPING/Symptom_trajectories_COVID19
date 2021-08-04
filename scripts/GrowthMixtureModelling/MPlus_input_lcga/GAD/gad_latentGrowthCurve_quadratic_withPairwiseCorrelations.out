@@ -1,0 +1,1105 @@
+Mplus VERSION 8.2 (Mac)
+MUTHEN & MUTHEN
+08/04/2021   5:10 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE:
+  Anxiety symptoms in RAMP and COPING
+  Quadratic Growth Curve
+  With pairwise correlations
+
+  DATA:
+    	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
+    	data_clean/gad/gad.clean_merged_total_scores_reduced.csv";
+
+  VARIABLE:
+
+  	NAMES ARE
+  		id gad_t0 gad_t3 gad_t4 gad_t5
+  		gad_t6 gad_t7 gad_t8 gad_t9 gad_t10 gad_t11
+  		gad_t12 gad_t13 gad_t14 gad_t15 gad_t16;
+  				
+  	USEVARIABLES ARE
+  		gad_t0 gad_t3 gad_t4 gad_t5
+  		gad_t6 gad_t7 gad_t8 gad_t9 gad_t10 gad_t11
+  		gad_t12 gad_t13 gad_t14 gad_t15 gad_t16;
+  		
+  	MISSING ARE ALL (-99);
+  	IDVARIABLE IS id;
+  	
+  	
+  	
+  ANALYSIS:
+  	
+  	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors
+  	!as data is skew for GAD at all time points
+  	PROCESSORS = 2; !only 2 on Mac
+  	COVERAGE=0;
+  	ITERATIONS=10000;
+
+
+  	
+  MODEL:
+
+
+  	int lin quad | gad_t0@0 gad_t3@1.5 gad_t4@2
+      		 gad_t5@2.5 gad_t6@3 gad_t7@3.5 gad_t8@4 gad_t9@4.5
+      		 gad_t10@5.5 gad_t11@6.5 gad_t12@7.5 gad_t13@8.5
+      		 gad_t14@9.5 gad_t15@10.5 gad_t16@11.5;
+  	
+  	int WITH lin;
+  	int WITH quad;
+  	lin WITH quad;
+  	
+  	gad_t0 - gad_t15 PWITH gad_t3 - gad_t16;
+  PLOT:
+  	TYPE = PLOT3; !do not get plots on Mac but we use the gh5 file in R
+  	
+  	SERIES = gad_t0(0) gad_t3(3) gad_t4(4)
+      	gad_t5(5) gad_t6(6) gad_t7(7) gad_t8(8) gad_t9(9) gad_t10(11)
+      	gad_t11(13) gad_t12(15) gad_t13(17) gad_t14(19) gad_t15(21)
+      	gad_t16(23)
+
+  	
+  OUTPUT:
+  	STDYX MODINDICES(30) RESIDUAL;
+
+  SAVEDATA:
+
+     ! SAVE=FS;		
+     ! FILE IS lgc-phq9-linear.dat;	
+
+
+
+*** WARNING
+  Data set contains cases with missing on all variables.
+  These cases were not included in the analysis.
+  Number of cases with missing on all variables:  8678
+   1 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+
+Anxiety symptoms in RAMP and COPING
+Quadratic Growth Curve
+With pairwise correlations
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                       64633
+
+Number of dependent variables                                   15
+Number of independent variables                                  0
+Number of continuous latent variables                            3
+
+Observed dependent variables
+
+  Continuous
+   GAD_T0      GAD_T3      GAD_T4      GAD_T5      GAD_T6      GAD_T7
+   GAD_T8      GAD_T9      GAD_T10     GAD_T11     GAD_T12     GAD_T13
+   GAD_T14     GAD_T15     GAD_T16
+
+Continuous latent variables
+   INT         LIN         QUAD
+
+Variables with special functions
+
+  ID variable           ID
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Maximum number of iterations                                 10000
+Convergence criterion                                    0.500D-04
+Maximum number of steepest descent iterations                   20
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+
+Input data file(s)
+  /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/data_clean/gad/ga
+
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns          1179
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.000
+
+
+     PROPORTION OF DATA PRESENT
+
+
+           Covariance Coverage
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+ GAD_T0         0.385
+ GAD_T3         0.250         0.411
+ GAD_T4         0.031         0.017         0.383
+ GAD_T5         0.193         0.266         0.018         0.283
+ GAD_T6         0.016         0.000         0.298         0.012         0.344
+ GAD_T7         0.204         0.287         0.011         0.229         0.011
+ GAD_T8         0.013         0.000         0.259         0.010         0.261
+ GAD_T9         0.185         0.269         0.008         0.212         0.007
+ GAD_T10        0.013         0.000         0.257         0.009         0.256
+ GAD_T11        0.194         0.277         0.010         0.218         0.009
+ GAD_T12        0.014         0.002         0.264         0.009         0.261
+ GAD_T13        0.187         0.266         0.009         0.209         0.008
+ GAD_T14        0.011         0.002         0.251         0.007         0.248
+ GAD_T15        0.182         0.259         0.008         0.204         0.008
+ GAD_T16        0.009         0.000         0.239         0.006         0.237
+
+
+           Covariance Coverage
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+ GAD_T7         0.317
+ GAD_T8         0.010         0.295
+ GAD_T9         0.251         0.007         0.295
+ GAD_T10        0.009         0.247         0.007         0.295
+ GAD_T11        0.257         0.009         0.261         0.010         0.312
+ GAD_T12        0.009         0.246         0.008         0.261         0.012
+ GAD_T13        0.246         0.008         0.251         0.009         0.270
+ GAD_T14        0.007         0.234         0.006         0.248         0.009
+ GAD_T15        0.240         0.007         0.244         0.008         0.261
+ GAD_T16        0.007         0.224         0.005         0.238         0.007
+
+
+           Covariance Coverage
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+ GAD_T12        0.310
+ GAD_T13        0.011         0.299
+ GAD_T14        0.267         0.009         0.297
+ GAD_T15        0.010         0.261         0.009         0.296
+ GAD_T16        0.255         0.007         0.258         0.008         0.285
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     GAD_T0                5.017       1.194       0.000   27.94%       0.000      2.000      3.000
+           24912.000      32.164       0.466      21.000    1.77%       5.000     10.000
+     GAD_T3                5.113       1.100       0.000   25.14%       0.000      2.000      4.000
+           26570.000      28.808       0.388      21.000    1.08%       5.000      9.000
+     GAD_T4                4.902       1.172       0.000   26.52%       0.000      2.000      3.000
+           24762.000      27.994       0.613      21.000    1.17%       5.000      9.000
+     GAD_T5                4.613       1.249       0.000   28.91%       0.000      2.000      3.000
+           18302.000      26.804       0.830      21.000    0.93%       4.000      8.000
+     GAD_T6                4.663       1.245       0.000   28.92%       0.000      2.000      3.000
+           22246.000      27.305       0.825      21.000    1.11%       5.000      8.000
+     GAD_T7                4.469       1.311       0.000   30.95%       0.000      1.000      3.000
+           20484.000      26.934       1.005      21.000    1.05%       4.000      8.000
+     GAD_T8                4.320       1.351       0.000   32.61%       0.000      1.000      2.000
+           19064.000      26.275       1.140      21.000    1.02%       4.000      8.000
+     GAD_T9                4.199       1.397       0.000   33.49%       0.000      1.000      2.000
+           19099.000      26.128       1.248      21.000    0.96%       4.000      8.000
+     GAD_T10               4.364       1.351       0.000   32.07%       0.000      1.000      3.000
+           19065.000      26.440       1.152      21.000    1.08%       4.000      8.000
+     GAD_T11               4.609       1.246       0.000   30.49%       0.000      1.000      3.000
+           20184.000      27.968       0.743      21.000    1.08%       4.000      8.809
+     GAD_T12               4.595       1.265       0.000   30.66%       0.000      1.000      3.000
+           20043.000      27.641       0.861      21.000    1.21%       4.000      8.000
+     GAD_T13               4.508       1.286       0.000   30.99%       0.000      1.000      3.000
+           19295.000      27.194       0.907      21.000    1.00%       4.000      8.000
+     GAD_T14               4.669       1.242       0.000   30.01%       0.000      2.000      3.000
+           19187.000      27.988       0.766      21.000    1.19%       4.000      8.000
+     GAD_T15               4.540       1.289       0.000   30.95%       0.000      1.000      3.000
+           19153.000      28.072       0.866      21.000    1.23%       4.000      8.000
+     GAD_T16               4.383       1.351       0.000   32.74%       0.000      1.000      2.000
+           18393.000      27.434       1.096      21.000    1.22%       4.000      8.000
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       38
+
+Loglikelihood
+
+          H0 Value                     -794939.894
+          H0 Scaling Correction Factor      2.4685
+            for MLR
+          H1 Value                     -793402.399
+          H1 Scaling Correction Factor      2.0003
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                 1589955.788
+          Bayesian (BIC)               1590300.694
+          Sample-Size Adjusted BIC     1590179.929
+            (n* = (n + 2) / 24)
+
+Chi-Square Test of Model Fit
+
+          Value                           1692.497*
+          Degrees of Freedom                    97
+          P-Value                           0.0000
+          Scaling Correction Factor         1.8168
+            for MLR
+
+*   The chi-square value for MLM, MLMV, MLR, ULSMV, WLSM and WLSMV cannot be used
+    for chi-square difference testing in the regular way.  MLM, MLR and WLSM
+    chi-square difference testing is described on the Mplus website.  MLMV, WLSMV,
+    and ULSMV difference testing is done using the DIFFTEST option.
+
+RMSEA (Root Mean Square Error Of Approximation)
+
+          Estimate                           0.016
+          90 Percent C.I.                    0.015  0.017
+          Probability RMSEA <= .05           1.000
+
+CFI/TLI
+
+          CFI                                0.989
+          TLI                                0.988
+
+Chi-Square Test of Model Fit for the Baseline Model
+
+          Value                         147374.610
+          Degrees of Freedom                   105
+          P-Value                           0.0000
+
+SRMR (Standardized Root Mean Square Residual)
+
+          Value                              0.019
+
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ INT      |
+    GAD_T0             1.000      0.000    999.000    999.000
+    GAD_T3             1.000      0.000    999.000    999.000
+    GAD_T4             1.000      0.000    999.000    999.000
+    GAD_T5             1.000      0.000    999.000    999.000
+    GAD_T6             1.000      0.000    999.000    999.000
+    GAD_T7             1.000      0.000    999.000    999.000
+    GAD_T8             1.000      0.000    999.000    999.000
+    GAD_T9             1.000      0.000    999.000    999.000
+    GAD_T10            1.000      0.000    999.000    999.000
+    GAD_T11            1.000      0.000    999.000    999.000
+    GAD_T12            1.000      0.000    999.000    999.000
+    GAD_T13            1.000      0.000    999.000    999.000
+    GAD_T14            1.000      0.000    999.000    999.000
+    GAD_T15            1.000      0.000    999.000    999.000
+    GAD_T16            1.000      0.000    999.000    999.000
+
+ LIN      |
+    GAD_T0             0.000      0.000    999.000    999.000
+    GAD_T3             1.500      0.000    999.000    999.000
+    GAD_T4             2.000      0.000    999.000    999.000
+    GAD_T5             2.500      0.000    999.000    999.000
+    GAD_T6             3.000      0.000    999.000    999.000
+    GAD_T7             3.500      0.000    999.000    999.000
+    GAD_T8             4.000      0.000    999.000    999.000
+    GAD_T9             4.500      0.000    999.000    999.000
+    GAD_T10            5.500      0.000    999.000    999.000
+    GAD_T11            6.500      0.000    999.000    999.000
+    GAD_T12            7.500      0.000    999.000    999.000
+    GAD_T13            8.500      0.000    999.000    999.000
+    GAD_T14            9.500      0.000    999.000    999.000
+    GAD_T15           10.500      0.000    999.000    999.000
+    GAD_T16           11.500      0.000    999.000    999.000
+
+ QUAD     |
+    GAD_T0             0.000      0.000    999.000    999.000
+    GAD_T3             2.250      0.000    999.000    999.000
+    GAD_T4             4.000      0.000    999.000    999.000
+    GAD_T5             6.250      0.000    999.000    999.000
+    GAD_T6             9.000      0.000    999.000    999.000
+    GAD_T7            12.250      0.000    999.000    999.000
+    GAD_T8            16.000      0.000    999.000    999.000
+    GAD_T9            20.250      0.000    999.000    999.000
+    GAD_T10           30.250      0.000    999.000    999.000
+    GAD_T11           42.250      0.000    999.000    999.000
+    GAD_T12           56.250      0.000    999.000    999.000
+    GAD_T13           72.250      0.000    999.000    999.000
+    GAD_T14           90.250      0.000    999.000    999.000
+    GAD_T15          110.250      0.000    999.000    999.000
+    GAD_T16          132.250      0.000    999.000    999.000
+
+ INT      WITH
+    LIN               -1.173      0.077    -15.153      0.000
+    QUAD               0.067      0.006     11.512      0.000
+
+ LIN      WITH
+    QUAD              -0.027      0.002    -13.228      0.000
+
+ GAD_T0   WITH
+    GAD_T3             1.095      0.147      7.448      0.000
+
+ GAD_T3   WITH
+    GAD_T4            -0.337      0.301     -1.118      0.264
+
+ GAD_T4   WITH
+    GAD_T5             0.041      0.211      0.194      0.846
+
+ GAD_T5   WITH
+    GAD_T6             0.266      0.194      1.375      0.169
+
+ GAD_T6   WITH
+    GAD_T7             0.778      0.207      3.755      0.000
+
+ GAD_T7   WITH
+    GAD_T8             1.023      0.197      5.184      0.000
+
+ GAD_T8   WITH
+    GAD_T9             0.778      0.227      3.434      0.001
+
+ GAD_T9   WITH
+    GAD_T10            0.912      0.279      3.264      0.001
+
+ GAD_T10  WITH
+    GAD_T11            0.477      0.230      2.074      0.038
+
+ GAD_T11  WITH
+    GAD_T12            0.361      0.208      1.736      0.083
+
+ GAD_T12  WITH
+    GAD_T13            0.629      0.243      2.591      0.010
+
+ GAD_T13  WITH
+    GAD_T14            0.384      0.278      1.383      0.167
+
+ GAD_T14  WITH
+    GAD_T15           -0.207      0.288     -0.719      0.472
+
+ GAD_T15  WITH
+    GAD_T16           -0.498      0.306     -1.628      0.103
+
+ Means
+    INT                5.567      0.025    219.414      0.000
+    LIN               -0.135      0.007    -19.720      0.000
+    QUAD               0.010      0.001     17.985      0.000
+
+ Intercepts
+    GAD_T0             0.000      0.000    999.000    999.000
+    GAD_T3             0.000      0.000    999.000    999.000
+    GAD_T4             0.000      0.000    999.000    999.000
+    GAD_T5             0.000      0.000    999.000    999.000
+    GAD_T6             0.000      0.000    999.000    999.000
+    GAD_T7             0.000      0.000    999.000    999.000
+    GAD_T8             0.000      0.000    999.000    999.000
+    GAD_T9             0.000      0.000    999.000    999.000
+    GAD_T10            0.000      0.000    999.000    999.000
+    GAD_T11            0.000      0.000    999.000    999.000
+    GAD_T12            0.000      0.000    999.000    999.000
+    GAD_T13            0.000      0.000    999.000    999.000
+    GAD_T14            0.000      0.000    999.000    999.000
+    GAD_T15            0.000      0.000    999.000    999.000
+    GAD_T16            0.000      0.000    999.000    999.000
+
+ Variances
+    INT               28.351      0.288     98.583      0.000
+    LIN                0.421      0.027     15.721      0.000
+    QUAD               0.002      0.000     12.266      0.000
+
+ Residual Variances
+    GAD_T0             6.119      0.237     25.874      0.000
+    GAD_T3             4.673      0.120     38.874      0.000
+    GAD_T4             4.575      0.110     41.611      0.000
+    GAD_T5             4.190      0.103     40.830      0.000
+    GAD_T6             4.042      0.088     45.745      0.000
+    GAD_T7             4.427      0.099     44.826      0.000
+    GAD_T8             4.284      0.095     44.973      0.000
+    GAD_T9             4.615      0.106     43.419      0.000
+    GAD_T10            5.072      0.124     40.944      0.000
+    GAD_T11            4.928      0.111     44.518      0.000
+    GAD_T12            4.828      0.117     41.403      0.000
+    GAD_T13            4.635      0.112     41.571      0.000
+    GAD_T14            4.812      0.114     42.036      0.000
+    GAD_T15            4.082      0.145     28.247      0.000
+    GAD_T16            3.426      0.160     21.360      0.000
+
+
+STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ INT      |
+    GAD_T0             0.907      0.004    253.097      0.000
+    GAD_T3             0.963      0.004    240.290      0.000
+    GAD_T4             0.971      0.004    230.531      0.000
+    GAD_T5             0.982      0.004    237.102      0.000
+    GAD_T6             0.988      0.005    216.001      0.000
+    GAD_T7             0.983      0.005    206.549      0.000
+    GAD_T8             0.986      0.005    195.484      0.000
+    GAD_T9             0.980      0.005    188.345      0.000
+    GAD_T10            0.971      0.006    175.112      0.000
+    GAD_T11            0.970      0.006    175.651      0.000
+    GAD_T12            0.968      0.006    171.729      0.000
+    GAD_T13            0.968      0.005    176.995      0.000
+    GAD_T14            0.960      0.005    179.875      0.000
+    GAD_T15            0.963      0.005    179.810      0.000
+    GAD_T16            0.958      0.005    178.426      0.000
+
+ LIN      |
+    GAD_T0             0.000      0.000    999.000    999.000
+    GAD_T3             0.176      0.006     31.155      0.000
+    GAD_T4             0.237      0.008     31.172      0.000
+    GAD_T5             0.299      0.010     31.484      0.000
+    GAD_T6             0.361      0.012     31.286      0.000
+    GAD_T7             0.419      0.013     31.269      0.000
+    GAD_T8             0.481      0.015     31.267      0.000
+    GAD_T9             0.538      0.017     31.206      0.000
+    GAD_T10            0.651      0.021     31.144      0.000
+    GAD_T11            0.769      0.025     31.219      0.000
+    GAD_T12            0.885      0.028     31.121      0.000
+    GAD_T13            1.003      0.032     31.310      0.000
+    GAD_T14            1.112      0.035     31.353      0.000
+    GAD_T15            1.232      0.040     31.151      0.000
+    GAD_T16            1.343      0.043     31.057      0.000
+
+ QUAD     |
+    GAD_T0             0.000      0.000    999.000    999.000
+    GAD_T3             0.018      0.001     24.390      0.000
+    GAD_T4             0.033      0.001     24.432      0.000
+    GAD_T5             0.052      0.002     24.555      0.000
+    GAD_T6             0.076      0.003     24.477      0.000
+    GAD_T7             0.103      0.004     24.445      0.000
+    GAD_T8             0.134      0.005     24.468      0.000
+    GAD_T9             0.169      0.007     24.409      0.000
+    GAD_T10            0.250      0.010     24.387      0.000
+    GAD_T11            0.349      0.014     24.419      0.000
+    GAD_T12            0.464      0.019     24.378      0.000
+    GAD_T13            0.596      0.024     24.487      0.000
+    GAD_T14            0.738      0.030     24.583      0.000
+    GAD_T15            0.904      0.037     24.352      0.000
+    GAD_T16            1.079      0.044     24.414      0.000
+
+ INT      WITH
+    LIN               -0.339      0.013    -26.014      0.000
+    QUAD               0.279      0.016     17.706      0.000
+
+ LIN      WITH
+    QUAD              -0.932      0.005   -196.293      0.000
+
+ GAD_T0   WITH
+    GAD_T3             0.205      0.023      8.725      0.000
+
+ GAD_T3   WITH
+    GAD_T4            -0.073      0.065     -1.113      0.266
+
+ GAD_T4   WITH
+    GAD_T5             0.009      0.048      0.194      0.846
+
+ GAD_T5   WITH
+    GAD_T6             0.065      0.047      1.378      0.168
+
+ GAD_T6   WITH
+    GAD_T7             0.184      0.049      3.777      0.000
+
+ GAD_T7   WITH
+    GAD_T8             0.235      0.045      5.243      0.000
+
+ GAD_T8   WITH
+    GAD_T9             0.175      0.051      3.453      0.001
+
+ GAD_T9   WITH
+    GAD_T10            0.188      0.057      3.278      0.001
+
+ GAD_T10  WITH
+    GAD_T11            0.095      0.046      2.078      0.038
+
+ GAD_T11  WITH
+    GAD_T12            0.074      0.043      1.742      0.081
+
+ GAD_T12  WITH
+    GAD_T13            0.133      0.051      2.607      0.009
+
+ GAD_T13  WITH
+    GAD_T14            0.081      0.059      1.385      0.166
+
+ GAD_T14  WITH
+    GAD_T15           -0.047      0.065     -0.717      0.473
+
+ GAD_T15  WITH
+    GAD_T16           -0.133      0.083     -1.603      0.109
+
+ Means
+    INT                1.045      0.005    222.947      0.000
+    LIN               -0.208      0.012    -17.402      0.000
+    QUAD               0.217      0.015     14.909      0.000
+
+ Intercepts
+    GAD_T0             0.000      0.000    999.000    999.000
+    GAD_T3             0.000      0.000    999.000    999.000
+    GAD_T4             0.000      0.000    999.000    999.000
+    GAD_T5             0.000      0.000    999.000    999.000
+    GAD_T6             0.000      0.000    999.000    999.000
+    GAD_T7             0.000      0.000    999.000    999.000
+    GAD_T8             0.000      0.000    999.000    999.000
+    GAD_T9             0.000      0.000    999.000    999.000
+    GAD_T10            0.000      0.000    999.000    999.000
+    GAD_T11            0.000      0.000    999.000    999.000
+    GAD_T12            0.000      0.000    999.000    999.000
+    GAD_T13            0.000      0.000    999.000    999.000
+    GAD_T14            0.000      0.000    999.000    999.000
+    GAD_T15            0.000      0.000    999.000    999.000
+    GAD_T16            0.000      0.000    999.000    999.000
+
+ Variances
+    INT                1.000      0.000    999.000    999.000
+    LIN                1.000      0.000    999.000    999.000
+    QUAD               1.000      0.000    999.000    999.000
+
+ Residual Variances
+    GAD_T0             0.178      0.006     27.316      0.000
+    GAD_T3             0.153      0.004     42.555      0.000
+    GAD_T4             0.152      0.003     46.666      0.000
+    GAD_T5             0.143      0.003     46.038      0.000
+    GAD_T6             0.139      0.003     50.541      0.000
+    GAD_T7             0.151      0.003     50.144      0.000
+    GAD_T8             0.147      0.003     50.195      0.000
+    GAD_T9             0.156      0.003     48.917      0.000
+    GAD_T10            0.169      0.004     46.921      0.000
+    GAD_T11            0.164      0.003     49.719      0.000
+    GAD_T12            0.160      0.003     46.502      0.000
+    GAD_T13            0.153      0.003     46.441      0.000
+    GAD_T14            0.156      0.003     47.168      0.000
+    GAD_T15            0.133      0.004     30.517      0.000
+    GAD_T16            0.111      0.005     21.913      0.000
+
+
+R-SQUARE
+
+    Observed                                        Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    GAD_T0             0.822      0.006    126.548      0.000
+    GAD_T3             0.847      0.004    235.954      0.000
+    GAD_T4             0.848      0.003    259.869      0.000
+    GAD_T5             0.857      0.003    276.708      0.000
+    GAD_T6             0.861      0.003    312.656      0.000
+    GAD_T7             0.849      0.003    282.122      0.000
+    GAD_T8             0.853      0.003    291.535      0.000
+    GAD_T9             0.844      0.003    263.913      0.000
+    GAD_T10            0.831      0.004    231.499      0.000
+    GAD_T11            0.836      0.003    254.240      0.000
+    GAD_T12            0.840      0.003    244.609      0.000
+    GAD_T13            0.847      0.003    256.796      0.000
+    GAD_T14            0.844      0.003    254.513      0.000
+    GAD_T15            0.867      0.004    198.222      0.000
+    GAD_T16            0.889      0.005    175.539      0.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.504E-09
+       (ratio of smallest to largest eigenvalue)
+
+
+RESIDUAL OUTPUT
+
+
+     ESTIMATED MODEL AND RESIDUALS (OBSERVED - ESTIMATED)
+
+
+           Model Estimated Means
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+                5.567         5.386         5.335         5.290         5.249
+
+
+           Model Estimated Means
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+                5.213         5.183         5.157         5.120         5.102
+
+
+           Model Estimated Means
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+                5.104         5.126         5.168         5.229         5.310
+
+
+           Residuals for Means
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+                0.360         0.116        -0.138        -0.031        -0.137
+
+
+           Residuals for Means
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+               -0.059        -0.277        -0.141        -0.058         0.208
+
+
+           Residuals for Means
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+                0.093         0.168         0.119         0.020        -0.273
+
+
+           Standardized Residuals (z-scores) for Means
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+               18.800         6.618        -7.402        -1.499        -6.770
+
+
+           Standardized Residuals (z-scores) for Means
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+               -2.852       -13.128        -6.426        -2.599         9.809
+
+
+           Standardized Residuals (z-scores) for Means
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+                4.358         7.618         5.434         0.944       -14.647
+
+
+           Normalized Residuals for Means
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+               11.331         4.179        -4.897        -1.060        -4.707
+
+
+           Normalized Residuals for Means
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+               -1.999        -9.240        -4.580        -1.849         6.768
+
+
+           Normalized Residuals for Means
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+                3.002         5.337         3.763         0.623        -8.458
+
+
+           Model Estimated Covariances
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+ GAD_T0        34.470
+ GAD_T3        27.838        30.581
+ GAD_T4        26.274        25.324        30.052
+ GAD_T5        25.839        25.429        25.345        29.374
+ GAD_T6        25.438        25.212        25.141        25.337        29.045
+ GAD_T7        25.071        25.011        24.988        24.963        25.714
+ GAD_T8        24.737        24.826        24.846        24.861        24.872
+ GAD_T9        24.437        24.656        24.714        24.765        24.809
+ GAD_T10       23.938        24.362        24.481        24.591        24.690
+ GAD_T11       23.573        24.129        24.290        24.440        24.577
+ GAD_T12       23.344        23.959        24.141        24.312        24.471
+ GAD_T13       23.249        23.850        24.033        24.207        24.373
+ GAD_T14       23.289        23.803        23.966        24.126        24.282
+ GAD_T15       23.464        23.817        23.941        24.068        24.198
+ GAD_T16       23.774        23.894        23.958        24.034        24.122
+
+
+           Model Estimated Covariances
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+ GAD_T7        29.335
+ GAD_T8        25.901        29.163
+ GAD_T9        24.846        25.654        29.513
+ GAD_T10       24.778        24.855        25.834        30.095
+ GAD_T11       24.702        24.815        24.916        25.560        30.129
+ GAD_T12       24.620        24.757        24.882        25.099        25.633
+ GAD_T13       24.530        24.679        24.819        25.074        25.293
+ GAD_T14       24.434        24.583        24.727        25.005        25.268
+ GAD_T15       24.331        24.467        24.607        24.894        25.194
+ GAD_T16       24.222        24.333        24.457        24.741        25.072
+
+
+           Model Estimated Covariances
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+ GAD_T12       30.226
+ GAD_T13       26.108        30.265
+ GAD_T14       25.515        26.131        30.776
+ GAD_T15       25.506        25.830        25.959        30.596
+ GAD_T16       25.451        25.878        26.352        26.377        30.871
+
+
+           Model Estimated Correlations
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+ GAD_T0         1.000
+ GAD_T3         0.857         1.000
+ GAD_T4         0.816         0.835         1.000
+ GAD_T5         0.812         0.848         0.853         1.000
+ GAD_T6         0.804         0.846         0.851         0.867         1.000
+ GAD_T7         0.788         0.835         0.842         0.850         0.881
+ GAD_T8         0.780         0.831         0.839         0.849         0.855
+ GAD_T9         0.766         0.821         0.830         0.841         0.847
+ GAD_T10        0.743         0.803         0.814         0.827         0.835
+ GAD_T11        0.731         0.795         0.807         0.822         0.831
+ GAD_T12        0.723         0.788         0.801         0.816         0.826
+ GAD_T13        0.720         0.784         0.797         0.812         0.822
+ GAD_T14        0.715         0.776         0.788         0.802         0.812
+ GAD_T15        0.723         0.779         0.790         0.803         0.812
+ GAD_T16        0.729         0.778         0.787         0.798         0.806
+
+
+           Model Estimated Correlations
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+ GAD_T7         1.000
+ GAD_T8         0.886         1.000
+ GAD_T9         0.844         0.874         1.000
+ GAD_T10        0.834         0.839         0.867         1.000
+ GAD_T11        0.831         0.837         0.836         0.849         1.000
+ GAD_T12        0.827         0.834         0.833         0.832         0.849
+ GAD_T13        0.823         0.831         0.830         0.831         0.838
+ GAD_T14        0.813         0.821         0.820         0.822         0.830
+ GAD_T15        0.812         0.819         0.819         0.820         0.830
+ GAD_T16        0.805         0.811         0.810         0.812         0.822
+
+
+           Model Estimated Correlations
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+ GAD_T12        1.000
+ GAD_T13        0.863         1.000
+ GAD_T14        0.837         0.856         1.000
+ GAD_T15        0.839         0.849         0.846         1.000
+ GAD_T16        0.833         0.847         0.855         0.858         1.000
+
+
+           Residuals for Covariances
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+ GAD_T0         0.483
+ GAD_T3         0.262        -0.203
+ GAD_T4        -0.587        -0.549        -0.761
+ GAD_T5         0.289         0.191        -0.592         0.150
+ GAD_T6        -0.648        -1.083        -0.011        -0.102         0.267
+ GAD_T7         0.288         0.021        -0.912         0.651         0.041
+ GAD_T8        -0.425        -1.192        -0.908        -0.365         0.273
+ GAD_T9         0.612        -0.603        -1.340        -0.259        -0.554
+ GAD_T10        0.579        -1.058        -0.898        -0.792        -0.584
+ GAD_T11        1.893         0.147        -0.437         0.013        -0.336
+ GAD_T12        1.334        -0.331        -0.341        -0.658        -0.180
+ GAD_T13        1.860         0.115        -0.873        -0.188        -1.009
+ GAD_T14        0.756        -1.350        -0.262         0.154        -0.100
+ GAD_T15        1.605         0.142        -0.798        -0.039        -1.408
+ GAD_T16        0.040        -1.128        -0.576        -0.362        -0.271
+
+
+           Residuals for Covariances
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+ GAD_T7         0.247
+ GAD_T8        -0.316        -0.497
+ GAD_T9         0.232        -0.548        -0.283
+ GAD_T10       -0.439        -0.411        -0.500        -0.536
+ GAD_T11        0.183        -0.055         0.457        -0.153         0.654
+ GAD_T12       -0.268        -0.525        -0.565         0.063         0.194
+ GAD_T13       -0.094        -0.906        -0.099        -1.010         0.724
+ GAD_T14       -0.561        -0.441        -0.451        -0.223        -0.339
+ GAD_T15       -0.031        -1.109        -0.006        -1.137         0.417
+ GAD_T16       -0.561        -0.289        -0.079        -0.337         0.176
+
+
+           Residuals for Covariances
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+ GAD_T12        0.077
+ GAD_T13       -0.179         0.274
+ GAD_T14        0.379        -0.268        -0.095
+ GAD_T15       -0.449         0.387        -0.336         0.226
+ GAD_T16       -0.271        -0.616        -0.431        -0.532        -0.703
+
+
+           Residuals for Correlations
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+ GAD_T0         0.000
+ GAD_T3         0.005         0.000
+ GAD_T4        -0.014        -0.005         0.000
+ GAD_T5         0.001         0.007        -0.011         0.000
+ GAD_T6        -0.029        -0.037         0.007        -0.010         0.000
+ GAD_T7         0.000         0.000        -0.024         0.016        -0.006
+ GAD_T8        -0.012        -0.030        -0.013        -0.007         0.013
+ GAD_T9         0.017        -0.014        -0.031        -0.007        -0.019
+ GAD_T10        0.020        -0.025        -0.013        -0.021        -0.016
+ GAD_T11        0.045        -0.001        -0.013        -0.010        -0.024
+ GAD_T12        0.035        -0.009        -0.002        -0.025        -0.011
+ GAD_T13        0.049         0.003        -0.023        -0.012        -0.041
+ GAD_T14        0.019        -0.040         0.003         0.004        -0.006
+ GAD_T15        0.041         0.004        -0.019        -0.006        -0.054
+ GAD_T16        0.005        -0.026         0.000        -0.005        -0.004
+
+
+           Residuals for Correlations
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+ GAD_T7         0.000
+ GAD_T8        -0.007         0.000
+ GAD_T9         0.008        -0.007         0.000
+ GAD_T10       -0.011         0.001        -0.005         0.000
+ GAD_T11       -0.006        -0.004         0.010        -0.007         0.000
+ GAD_T12       -0.013        -0.012        -0.016         0.009        -0.004
+ GAD_T13       -0.010        -0.027        -0.003        -0.030         0.011
+ GAD_T14       -0.021        -0.006        -0.010         0.001        -0.019
+ GAD_T15       -0.007        -0.033         0.001        -0.033         0.002
+ GAD_T16       -0.013         0.007         0.011         0.006         0.006
+
+
+           Residuals for Correlations
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+ GAD_T12        0.000
+ GAD_T13       -0.011         0.000
+ GAD_T14        0.013        -0.011         0.000
+ GAD_T15       -0.019         0.006        -0.013         0.000
+ GAD_T16        0.000        -0.014        -0.003        -0.011         0.000
+
+
+           Standardized Residuals (z-scores) for Covariances
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+ GAD_T0         3.837
+ GAD_T3         2.887        -1.379
+ GAD_T4        -2.440        -5.418        -4.452
+ GAD_T5         1.800         1.185        -3.194         0.726
+ GAD_T6        -2.493        -0.241        -0.063        -0.540         1.300
+ GAD_T7         1.603         0.128        -2.885         3.472         0.217
+ GAD_T8        -1.536        -0.341        -5.149        -1.267         1.448
+ GAD_T9         2.890        -3.569        -4.225        -1.367        -1.968
+ GAD_T10        1.850        -0.376        -5.048        -2.369        -3.198
+ GAD_T11        9.479         0.898        -1.577         0.070        -1.177
+ GAD_T12        3.577        -0.575        -1.961        -1.884        -0.999
+ GAD_T13        9.015         0.675        -2.478        -1.010        -2.964
+ GAD_T14        2.011        -2.454        -1.457         0.439        -0.537
+ GAD_T15        8.204         0.861        -2.007        -0.207        -4.183
+ GAD_T16        0.092        -0.383        -3.293        -0.832        -1.464
+
+
+           Standardized Residuals (z-scores) for Covariances
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+ GAD_T7         1.182
+ GAD_T8        -1.968        -2.282
+ GAD_T9         1.228        -3.205        -1.269
+ GAD_T10       -1.439        -2.172        -2.651        -2.426
+ GAD_T11        1.032        -0.196         2.480        -0.775         3.212
+ GAD_T12       -0.747        -2.912        -1.715         0.335         1.247
+ GAD_T13       -0.508        -3.034        -0.526        -2.949         4.030
+ GAD_T14       -1.610        -2.325        -1.183        -1.166        -1.112
+ GAD_T15       -0.166        -3.516        -0.033        -3.067         2.275
+ GAD_T16       -1.370        -1.502        -0.206        -1.711         0.551
+
+
+           Standardized Residuals (z-scores) for Covariances
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+ GAD_T12        0.373
+ GAD_T13       -0.812         1.273
+ GAD_T14        2.057        -1.150        -0.455
+ GAD_T15       -1.261         2.093        -1.419         1.111
+ GAD_T16       -1.485        -1.674        -2.515        -2.381        -3.731
+
+
+           Normalized Residuals for Covariances
+              GAD_T0        GAD_T3        GAD_T4        GAD_T5        GAD_T6
+              ________      ________      ________      ________      ________
+ GAD_T0         1.631
+ GAD_T3         1.107        -0.817
+ GAD_T4        -1.874        -1.543        -2.910
+ GAD_T5         1.163         0.815        -1.813         0.528
+ GAD_T6        -2.042        -0.241        -0.046        -0.320         0.962
+ GAD_T7         1.141         0.090        -2.557         2.601         0.126
+ GAD_T8        -1.298        -0.341        -3.758        -1.097         1.081
+ GAD_T9         2.231        -2.554        -3.745        -1.025        -1.688
+ GAD_T10        1.614        -0.375        -3.687        -2.117        -2.336
+ GAD_T11        7.100         0.631        -1.352         0.051        -1.009
+ GAD_T12        3.230        -0.553        -1.419        -1.699        -0.727
+ GAD_T13        6.800         0.483        -2.243        -0.753        -2.656
+ GAD_T14        1.803        -2.348        -1.070         0.397        -0.399
+ GAD_T15        5.722         0.592        -1.844        -0.153        -3.735
+ GAD_T16        0.081        -0.383        -2.280        -0.770        -1.058
+
+
+           Normalized Residuals for Covariances
+              GAD_T7        GAD_T8        GAD_T9        GAD_T10       GAD_T11
+              ________      ________      ________      ________      ________
+ GAD_T7         0.868
+ GAD_T8        -1.037        -1.698
+ GAD_T9         0.909        -1.646        -0.937
+ GAD_T10       -1.250        -1.588        -1.316        -1.721
+ GAD_T11        0.736        -0.166         1.773        -0.433         2.220
+ GAD_T12       -0.672        -2.080        -1.506         0.239         0.607
+ GAD_T13       -0.372        -2.619        -0.384        -2.602         2.794
+ GAD_T14       -1.447        -1.720        -1.074        -0.847        -0.951
+ GAD_T15       -0.122        -3.083        -0.024        -2.758         1.603
+ GAD_T16       -1.258        -1.101        -0.186        -1.248         0.474
+
+
+           Normalized Residuals for Covariances
+              GAD_T12       GAD_T13       GAD_T14       GAD_T15       GAD_T16
+              ________      ________      ________      ________      ________
+ GAD_T12        0.256
+ GAD_T13       -0.475         0.898
+ GAD_T14        1.441        -0.656        -0.311
+ GAD_T15       -1.113         1.443        -0.802         0.725
+ GAD_T16       -1.016        -1.467        -1.564        -1.240        -2.181
+
+
+MODEL MODIFICATION INDICES
+
+NOTE:  Modification indices for direct effects of observed dependent variables
+regressed on covariates may not be included.  To include these, request
+MODINDICES (ALL).
+
+Minimum M.I. value for printing the modification index    30.000
+
+                                   M.I.     E.P.C.  Std E.P.C.  StdYX E.P.C.
+
+BY Statements
+
+INT      BY GAD_T0                74.005     0.038      0.203        0.035
+INT      BY GAD_T8                39.185    -0.020     -0.104       -0.019
+INT      BY GAD_T9                54.497    -0.024     -0.126       -0.023
+INT      BY GAD_T11               40.183     0.021      0.111        0.020
+INT      BY GAD_T12               32.543     0.019      0.100        0.018
+INT      BY GAD_T14               46.855     0.023      0.122        0.022
+INT      BY GAD_T16              102.028    -0.046     -0.245       -0.044
+LIN      BY GAD_T0                39.971     0.864      0.561        0.096
+LIN      BY GAD_T3                30.107    -0.484     -0.314       -0.057
+LIN      BY GAD_T6                34.666    -0.452     -0.293       -0.054
+LIN      BY GAD_T9                51.262     0.445      0.289        0.053
+QUAD     BY GAD_T3                37.264     8.673      0.393        0.071
+QUAD     BY GAD_T9                65.227    -8.657     -0.393       -0.072
+QUAD     BY GAD_T13               30.582     6.101      0.277        0.050
+QUAD     BY GAD_T16               81.951   -17.102     -0.776       -0.140
+
+WITH Statements
+
+GAD_T5   WITH GAD_T0              37.651    -0.576     -0.576       -0.114
+GAD_T5   WITH GAD_T3              35.997     0.397      0.397        0.090
+GAD_T6   WITH GAD_T0              36.097    -1.718     -1.718       -0.345
+GAD_T6   WITH GAD_T4              53.166     0.535      0.535        0.124
+GAD_T7   WITH GAD_T5             123.439     0.714      0.714        0.166
+GAD_T8   WITH GAD_T4              51.984    -0.489     -0.489       -0.110
+GAD_T8   WITH GAD_T6             128.588     0.703      0.703        0.169
+GAD_T9   WITH GAD_T3              43.638    -0.402     -0.402       -0.087
+GAD_T9   WITH GAD_T7              40.951     0.397      0.397        0.088
+GAD_T10  WITH GAD_T6              50.743    -0.451     -0.451       -0.100
+GAD_T11  WITH GAD_T0              37.464     0.555      0.555        0.101
+GAD_T11  WITH GAD_T5              30.167    -0.361     -0.361       -0.079
+GAD_T12  WITH GAD_T8              47.994    -0.438     -0.438       -0.096
+GAD_T12  WITH GAD_T10             36.491     0.417      0.417        0.084
+GAD_T13  WITH GAD_T0              31.434     0.501      0.501        0.094
+GAD_T13  WITH GAD_T11             43.577     0.457      0.457        0.096
+GAD_T14  WITH GAD_T12             75.536     0.605      0.605        0.126
+GAD_T16  WITH GAD_T8              34.600     0.401      0.401        0.105
+GAD_T16  WITH GAD_T14             44.957    -0.845     -0.845       -0.208
+
+Means/Intercepts/Thresholds
+
+[ GAD_T0   ]                     153.652     0.405      0.405        0.069
+[ GAD_T8   ]                      84.668    -0.214     -0.214       -0.040
+[ GAD_T9   ]                      80.246    -0.215     -0.215       -0.040
+[ GAD_T11  ]                      62.263     0.195      0.195        0.035
+[ GAD_T12  ]                      75.091     0.213      0.213        0.039
+[ GAD_T13  ]                      31.034     0.137      0.137        0.025
+[ GAD_T14  ]                     105.207     0.255      0.255        0.046
+[ GAD_T16  ]                     221.026    -0.505     -0.505       -0.091
+
+
+SAMPLE STATISTICS FOR ESTIMATED FACTOR SCORES
+
+
+     SAMPLE STATISTICS
+
+
+           Means
+              INT           INT_SE        LIN           LIN_SE        QUAD
+              ________      ________      ________      ________      ________
+                5.567         1.922        -0.135         0.575         0.010
+
+
+           Means
+              QUAD_SE
+              ________
+                0.042
+
+
+           Covariances
+              INT           INT_SE        LIN           LIN_SE        QUAD
+              ________      ________      ________      ________      ________
+ INT           24.523
+ INT_SE         0.386         0.132
+ LIN           -0.401         0.002         0.088
+ LIN_SE         0.058         0.014         0.000         0.002
+ QUAD           0.021         0.000        -0.005         0.000         0.000
+ QUAD_SE        0.003         0.001         0.000         0.000         0.000
+
+
+           Covariances
+              QUAD_SE
+              ________
+ QUAD_SE        0.000
+
+
+           Correlations
+              INT           INT_SE        LIN           LIN_SE        QUAD
+              ________      ________      ________      ________      ________
+ INT            1.000
+ INT_SE         0.214         1.000
+ LIN           -0.273         0.019         1.000
+ LIN_SE         0.241         0.792        -0.015         1.000
+ QUAD           0.239        -0.014        -0.911         0.015         1.000
+ QUAD_SE        0.271         0.755        -0.021         0.963         0.026
+
+
+           Correlations
+              QUAD_SE
+              ________
+ QUAD_SE        1.000
+
+
+PLOT INFORMATION
+
+The following plots are available:
+
+  Histograms (sample values, estimated factor scores, estimated values, residuals)
+  Scatterplots (sample values, estimated factor scores, estimated values, residuals)
+  Sample means
+  Estimated means
+  Sample and estimated means
+  Latent variable distribution plots
+  Observed individual values
+  Estimated individual values
+
+     Beginning Time:  17:10:29
+        Ending Time:  17:11:46
+       Elapsed Time:  00:01:17
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2018 Muthen & Muthen

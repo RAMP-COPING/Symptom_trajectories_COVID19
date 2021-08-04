@@ -1,11 +1,12 @@
 Mplus VERSION 8.2 (Mac)
 MUTHEN & MUTHEN
-08/03/2021   5:53 PM
+08/04/2021   5:04 PM
 
 INPUT INSTRUCTIONS
 
   TITLE:
-  Depression symptoms in RAMP and COPING April 2020 - April 2021: Quadratic Growth Curve
+  Depression symptoms in RAMP and COPING
+  Quadratic Growth Curve
   With pairwise correlations
 
   DATA:
@@ -80,7 +81,8 @@ INPUT INSTRUCTIONS
 
 
 
-Depression symptoms in RAMP and COPING April 2020 - April 2021: Quadratic Growth Curve
+Depression symptoms in RAMP and COPING
+Quadratic Growth Curve
 With pairwise correlations
 
 SUMMARY OF ANALYSIS
@@ -1087,9 +1089,9 @@ The following plots are available:
   Observed individual values
   Estimated individual values
 
-     Beginning Time:  17:53:13
-        Ending Time:  17:55:07
-       Elapsed Time:  00:01:54
+     Beginning Time:  17:04:04
+        Ending Time:  17:05:45
+       Elapsed Time:  00:01:41
 
 
 
