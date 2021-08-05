@@ -52,7 +52,7 @@ MODEL:
     	int lin2 | gad_t0@0 gad_t3@0 gad_t4@0
     		 gad_t5@0 gad_t6@1 gad_t7@2 gad_t8@3 gad_t9@4 
     		 gad_t10@6 gad_t11@8 gad_t12@8 gad_t13@8
-    		 gad_t14@8 gad_t15@8 gad_t16@8 gad_t178;
+    		 gad_t14@8 gad_t15@8 gad_t16@8 gad_t17@8;
 	
 !Piece 3 covering 17 November 2020 (Fup12) to 9 February 2021 (Fup 15)
 !Winter lockdowns until spring 2021 easing of restrictions

@@ -9202,12 +9202,11 @@ Maximum total score:</code></pre>
 <p>Also create a keyed name dictionary</p>
 <div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb495-1"><a href="#cb495-1"></a>masq.mplus.reduced &lt;-masq.mplus <span class="op">%&gt;%</span></span>
 <span id="cb495-2"><a href="#cb495-2"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>masq.total_Wave_<span class="dv">01</span>,</span>
-<span id="cb495-3"><a href="#cb495-3"></a>         <span class="op">-</span>masq.total_Wave_<span class="dv">02</span>,</span>
-<span id="cb495-4"><a href="#cb495-4"></a>         <span class="op">-</span>masq.total_Wave_<span class="dv">17</span>)</span>
-<span id="cb495-5"><a href="#cb495-5"></a></span>
-<span id="cb495-6"><a href="#cb495-6"></a>masq.mplus.reduced.names &lt;-<span class="st"> </span><span class="kw">names</span>(masq.mplus.reduced)</span>
-<span id="cb495-7"><a href="#cb495-7"></a>masq.mplus.reduced.names.columns &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="kw">length</span>(masq.mplus.reduced.names))</span>
-<span id="cb495-8"><a href="#cb495-8"></a>masq.mplus.reduced.names &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">cbind</span>(masq.mplus.reduced.names,masq.mplus.reduced.names.columns))</span></code></pre></div>
+<span id="cb495-3"><a href="#cb495-3"></a>         <span class="op">-</span>masq.total_Wave_<span class="dv">02</span>)</span>
+<span id="cb495-4"><a href="#cb495-4"></a></span>
+<span id="cb495-5"><a href="#cb495-5"></a>masq.mplus.reduced.names &lt;-<span class="st"> </span><span class="kw">names</span>(masq.mplus.reduced)</span>
+<span id="cb495-6"><a href="#cb495-6"></a>masq.mplus.reduced.names.columns &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="kw">length</span>(masq.mplus.reduced.names))</span>
+<span id="cb495-7"><a href="#cb495-7"></a>masq.mplus.reduced.names &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">cbind</span>(masq.mplus.reduced.names,masq.mplus.reduced.names.columns))</span></code></pre></div>
 </div>
 <div id="remove-column-names" class="section level2">
 <h2>remove column names</h2>

@@ -131,10 +131,10 @@ options(scipen = 999)
 ```
 
 
-***Colour palette***
+***colour paletttes and plot label list***
 
 RAMP colours (first) from website and second is a generated left tetradic (rectangular) colour complement of the RAMP logo green for contrast and complement. 
-```{r ieso colour palette, include=FALSE}
+```{r colour palette, include=FALSE}
 
 pres.palette <- c("#4ED1B7", "#F6C66A", "#D14D68", "#1A3E72",  "#D1754D","#FFED04","#3F9D8A","#B74DD1") 
 
@@ -143,7 +143,7 @@ prev.pres.palette<-c("#4590B8", "#4D68D1", "#D14D68", "#D1B74D", "#68D14D", "#B7
 timepoint_list <- c("7th April 2020","19th May 2020","2nd June 2020","16th June 2020","30th June 2020",
                     "14th July 2020", "28th July 2020","25th August 2020","22nd September 2020","20th October 2020",
                     "17th November 2020","15th December 2020","12th January 2021","9th February 2021",
-                    "9th March 2021")
+                    "9th March 2021", "6th April 2021")
 
 ```
 
@@ -213,31 +213,12 @@ Piecewise2 therefore:
 
 After manual checks of each stage, a number of alterations were needed. These are detailed here.
 
-**low covatiance coverage**
-The covariance coverage between some time points is lower than MPlus default. This prevents algortihm for missing data being applied (MLR) and standard errors cannot be computed, even when setting the coverage expectations to zero. 
+**low covariance coverage**
+The covariance coverage between some time points is lower than MPlus default (10%). This prevents algorithm for missing data being applied (MLR) and standard errors cannot be computed, even when setting the coverage expectations to zero. 
 
-Looking at our data structure and MPlus output, I suspect this is due to missing data from COPING survey for waves 2 & 3, and from the RAMP survey at wave 17 at present (due to data extraction issues which mean we do not have a recent RAMP extraction)    
+Looking at our data structure and MPlus output, I suspect this is due to missing data from COPING survey for waves 2 & 3 resulting in perfect zero covariance coverage between waves 2 & 3 with wave 17 (COPING only). 
 
-Will try the following to resolve this:   
-
-* Run without timepoints 2,3 and 17   
-* This will require dropping the 4 piece trajectory model (which would only have one timepoint in the final piece) and only running the three piece version.    
-
-
-In addition, I adapted the minimum coverage requirement. Default in MPlus is 0.1 Covariance coverage in MPlus refers to the amount of people who have non missing values on the pair of values. Thus, sensible minimum is sample size dependent, as there may still be a significant proportion of people who have non missing data even if that represents less than 10% of the sample in a large data set.
-
-**update** Our lowest remaining value is 0.007 between time point 3 and timepoint 13. The lowest sample size between these is 19298 at timepoint 13. 
-
-```{r calculate number of people with non missing dep}
-
-19298*0.007
-
-```
-
-~40 people have data on both time points. This is low, but given LCGA (with class division) can be performed on models with as few as 30 subjects [See MPlus message board, discussion with Linda Muthen](http://www.statmodel.com/discussion/messages/23/12750.html?1592615934), this seems acceptable.
-
-* Will drop coverage requirement to 0.0017 as this correspinds to ~30 people from our time point with the least data (18314).   
-
+To resolve this, will run the model without the two RAMP only waves
 
 ### Data summary
 
@@ -453,7 +434,7 @@ Print output file for each correlation for examination of these details and any 
 
 ```{r check full output negative lin}
 
-dep.traj.all$phq_latentGrowthCurve_linear.out$output[277:311]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_linear.out$output[291:326]  %>%   str_split("#") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -462,14 +443,14 @@ dep.traj.all$phq_latentGrowthCurve_linear.out$output[277:311]  %>%   str_split("
 
 ```{r check intercepts are zero lin}
 
-dep.traj.all$phq_latentGrowthCurve_linear.out$output[319:337]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_linear.out$output[427:444]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible   
 ***yes***
 ```{r check correlations lin}
 
-dep.traj.all$phq_latentGrowthCurve_linear.out$output[598:642]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_linear.out$output[653:698]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 
@@ -483,7 +464,7 @@ dep.traj.all$phq_latentGrowthCurve_linear.out$output[598:642]  %>%   str_split("
 
 ```{r check full output negative lin pairwise}
 
-dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[277:311]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[295:330]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -492,14 +473,14 @@ dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[27
 
 ```{r check intercepts are zero lin pairwise}
 
-dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[365:380]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[383:400]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations lin pairwise}
 
-dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[685:727]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[746:792]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 
@@ -512,7 +493,7 @@ dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[68
 ***YES***
 ```{r check full output negative quad}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[286:339]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[298:353]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -521,14 +502,14 @@ dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[286:339]  %>%   str_spli
 
 ```{r check intercepts are zero quad}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[463:484]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[366:383]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***YES***
 ```{r check correlations quad}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[654:697]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[709:762]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 
@@ -541,7 +522,7 @@ dep.traj.all$phq_latentGrowthCurve_quadratic.out$output[654:697]  %>%   str_spli
 ***YES***
 ```{r check full output negative quad pairwise}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[283:337]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[297:352]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -550,14 +531,14 @@ dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output
 
 ```{r check intercepts are zero quad pairwise}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[545:556]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[407:423]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***YES***
 ```{r check correlations quad pairwise}
 
-dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[736:779]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[792:844]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ##### Piecewise (4 pieces)
@@ -569,7 +550,7 @@ dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output
 **YES**
 ```{r check full output negative 4piece}
 
-dep.traj.all$phq_latentGrowthCurve_piecewise.out$output[322:409]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_piecewise.out$output[341:432]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -578,14 +559,14 @@ dep.traj.all$phq_latentGrowthCurve_piecewise.out$output[322:409]  %>%   str_spli
 
 ```{r check intercepts are zero 4piece}
 
-dep.traj.all$phq_latentGrowthCurve_piecewise.out$output[435:451]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_piecewise.out$output[458:475]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations 4piece}
 
-dep.traj.all$phq_latentGrowthCurve_piecewise.out$output[788:830]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_piecewise.out$output[854:906]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ##### Piecewise (4 pieces) with correlations
@@ -597,7 +578,7 @@ dep.traj.all$phq_latentGrowthCurve_piecewise.out$output[788:830]  %>%   str_spli
 **YES**
 ```{r check full output negative 4piece cor}
 
-dep.traj.all$phq_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[328:414]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[345:436]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -606,14 +587,14 @@ dep.traj.all$phq_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[3
 
 ```{r check intercepts are zero 4piece cor}
 
-dep.traj.all$phq_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[684:700]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[507:524]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations 4piece cor}
 
-dep.traj.all$phq_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[877:920]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+dep.traj.all$phq_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[948:1000]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ### Summary table of all fit indices
@@ -645,7 +626,7 @@ Plotting the estimated means for the trajectories with adjacent residuals correl
 
 ```{r Format Depression Growth Curve Data run 2}
 
-dat_dep_run_2<-data.frame(matrix(nrow=15, ncol=6))
+dat_dep_run_2<-data.frame(matrix(nrow=16, ncol=6))
 
 colnames(dat_dep_run_2)<-c("Linear", "LinearWithCorrelations",  "Quadratic", "QuadraticWithCorrelations",  "Piecewise", "PiecewiseWithCorrelations")
 
@@ -661,7 +642,7 @@ dat_dep_run_2$Piecewise <- dep.traj.all$phq_latentGrowthCurve_piecewise.out$gh5$
 dat_dep_run_2$PiecewiseWithCorrelations <- dep.traj.all$phq_latentGrowthCurve_piecewise_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
 
 
-dat_dep_run_2$timepoint<-c(0:14) 
+dat_dep_run_2$timepoint<-c(0:15) 
 
 dat_dep_run_2<-dat_dep_run_2%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear", "LinearWithCorrelations", "Quadratic", "QuadraticWithCorrelations", "Piecewise", "PiecewiseWithCorrelations")))
 
@@ -679,12 +660,15 @@ growth_curves_run2 <- ggplot() +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="PHQ9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 3)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
                                         colour = "gray"),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+                                   hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
         panel.background = element_blank()) 
@@ -700,11 +684,11 @@ Show model that performs best of each paiur of models (with or without residual 
 
 Linear: with correlations
 quadratic: with correlations
-Piecewiser: without correlations
+Piecewise: without correlations
 
 ```{r Format Depression Growth Curve Data run 2b}
 
-dat_dep_run_2b<-data.frame(matrix(nrow=15, ncol=3))
+dat_dep_run_2b<-data.frame(matrix(nrow=16, ncol=3))
 
 colnames(dat_dep_run_2b)<-c("Linear","Quadratic","Piecewise")
 
@@ -713,7 +697,7 @@ dat_dep_run_2b$Linear <- dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseC
 dat_dep_run_2b$Piecewise <- dep.traj.all$phq_latentGrowthCurve_piecewise.out$gh5$means_and_variances_data$y_estimated_means$values
 dat_dep_run_2b$Quadratic <- dep.traj.all$phq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 
-dat_dep_run_2b$timepoint<-c(0:14) 
+dat_dep_run_2b$timepoint<-c(0:15) 
 
 dat_dep_run_2b<-dat_dep_run_2b%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic", "Piecewise")))
 ```
@@ -729,13 +713,16 @@ growth_curves_run2b <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette[c(4, 1:3)]) +
   labs(x = "Follow up time point", y ="PHQ9 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 3)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
+    scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 3)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
                                         colour = "gray"),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+                                   hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
         panel.background = element_blank()) 
@@ -751,7 +738,7 @@ lot pairwise correlation versions only. Plot estimated means from model alongsid
 
 ```{r Format Depression Growth Curve Data run 2 obs est}
 
-dat_dep_run_2c<-data.frame(matrix(nrow=15, ncol=4))
+dat_dep_run_2c<-data.frame(matrix(nrow=16, ncol=4))
 
 colnames(dat_dep_run_2c)<-c("Linear","Quadratic", "Piecewise", "Observed")
 
@@ -765,7 +752,7 @@ dat_dep_run_2c$Quadratic <- dep.traj.all$phq_latentGrowthCurve_quadratic_withPai
 
 dat_dep_run_2c$Observed <- dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_observed_means$values
 
-dat_dep_run_2c$timepoint<-c(0:14) 
+dat_dep_run_2c$timepoint<-c(0:15) 
 
 dat_dep_run_2c<-dat_dep_run_2c%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic","Piecewise", "Observed")))
 
@@ -792,12 +779,15 @@ growth_curves_run2c <- ggplot() +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="PHQ9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 3)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
                                         colour = "gray"),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
         panel.background = element_blank()) 
@@ -887,7 +877,6 @@ Warnings are all about missing data (missing on all obs, this number lines up wi
 
 Otherwise, no warnings. Check one complete.
 
-Note that there are more people missing on all observations having dropped time points 2,3, and 17. Was 8326, but this version is 8678.
 
 ##### errors
 
@@ -976,7 +965,7 @@ Print output file for each correlation for examination of these details and any 
 
 ```{r check full output negative linanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear.out$output[280:313] %>%
+anx.traj.all$gad_latentGrowthCurve_linear.out$output[290:327] %>%
   str_split("/t") %>%
   kbl() %>%
   kable_styling(bootstrap_options = "striped")
@@ -988,14 +977,14 @@ anx.traj.all$gad_latentGrowthCurve_linear.out$output[280:313] %>%
 
 ```{r check intercepts are zero linanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear.out$output[321:337]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear.out$output[335:352]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible   
 ***yes***
 ```{r check correlations linanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear.out$output[598:642]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear.out$output[761:813]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 
@@ -1009,7 +998,7 @@ anx.traj.all$gad_latentGrowthCurve_linear.out$output[598:642]  %>%   str_split("
 
 ```{r check full output negative lin pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[284:316]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[293:330]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1018,14 +1007,14 @@ anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[28
 
 ```{r check intercepts are zero lin pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[367:383]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[383:400]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations lin pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[685:729]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[854:798]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 
@@ -1038,7 +1027,7 @@ anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[68
 ***YES***
 ```{r check full output negative quadanx}
 
-anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[289:339]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[298:353]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1047,14 +1036,14 @@ anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[289:339]  %>%   str_spli
 
 ```{r check intercepts are zero quadanx}
 
-anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[463:484]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[366:383]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***YES***
 ```{r check correlations quadanx}
 
-anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[654:697]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[709:760]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 
@@ -1067,7 +1056,7 @@ anx.traj.all$gad_latentGrowthCurve_quadratic.out$output[654:697]  %>%   str_spli
 ***YES***
 ```{r check full output negative quad pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[289:339]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[297:352]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1076,7 +1065,7 @@ anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output
 
 ```{r check intercepts are zero quad pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[547:563]  %>%
+anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[410:427]  %>%
   str_split("/t") %>%
   kbl() %>%
   kable_styling(bootstrap_options = "striped")
@@ -1086,7 +1075,7 @@ anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output
 ***YES***
 ```{r check correlations quad pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[738:781]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[851:798]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 ##### Piecewise
 
@@ -1097,7 +1086,7 @@ anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output
 **YES**
 ```{r check full output negative 4pieceanx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[332:416]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[340:432]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1106,14 +1095,14 @@ anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[332:416]  %>%   str_spli
 
 ```{r check intercepts are zero 4pieceanx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[442:458]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[458:475]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations 4pieceanx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[794:840]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[854:906]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ##### Piecewise (4 pieces) with correlations
@@ -1125,7 +1114,7 @@ anx.traj.all$gad_latentGrowthCurve_piecewise.out$output[794:840]  %>%   str_spli
 **YES**
 ```{r check full output negative 4piece coranx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[336:420]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[558:648]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1134,14 +1123,14 @@ anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[3
 
 ```{r check intercepts are zero 4piece coranx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[690:706]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[718:736]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ###### 4. correlations look sensible  
 ***yes***
 ```{r check correlations 4piece coranx}
 
-anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[882:926]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[948:1000]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 ### Summary table of all fit indices
@@ -1172,7 +1161,7 @@ Plotting the estimated means for the trajectories with adjacent residuals correl
 
 ```{r Format anxiety Growth Curve Data run 2}
 
-dat_dep_run_2<-data.frame(matrix(nrow=15, ncol=6))
+dat_dep_run_2<-data.frame(matrix(nrow=16, ncol=6))
 
 colnames(dat_dep_run_2)<-c("Linear", "LinearWithCorrelations",  "Quadratic", "QuadraticWithCorrelations",  "Piecewise", "PiecewiseWithCorrelations")
 
@@ -1187,7 +1176,7 @@ dat_dep_run_2$Piecewise <- anx.traj.all$gad_latentGrowthCurve_piecewise.out$gh5$
 dat_dep_run_2$PiecewiseWithCorrelations <- anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
 
 
-dat_dep_run_2$timepoint<-c(0:14) 
+dat_dep_run_2$timepoint<-c(0:15)
 
 dat_dep_run_2<-dat_dep_run_2%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear", "LinearWithCorrelations", "Quadratic", "QuadraticWithCorrelations", "Piecewise", "PiecewiseWithCorrelations")))
 
@@ -1204,13 +1193,16 @@ growth_curves_run2 <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="GAD7 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(4.5,6.5), breaks=seq(4.5, 6.5, 1)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
+  scale_y_continuous(expand = c(0,0), limits = c(5,7), breaks=seq(5, 7, 3)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
                                         colour = "gray"),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+                                   hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
         panel.background = element_blank()) 
@@ -1226,21 +1218,21 @@ Only show the best of each pair of models (with or without pairwise residual cor
 
 Linear: With correlations
 Quadratic: With correlations
-Piecewise: Without correlations
+Piecewise: With correlations
 
 
 ```{r Format anxiety Growth Curve Data run 2b}
 
-dat_dep_run_2b<-data.frame(matrix(nrow=15, ncol=3))
+dat_dep_run_2b<-data.frame(matrix(nrow=16, ncol=3))
 
 colnames(dat_dep_run_2b)<-c("Linear", "Quadratic", "Piecewise")
 
 
 dat_dep_run_2b$Linear <- anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
-dat_dep_run_2b$Piecewise <- anx.traj.all$gad_latentGrowthCurve_piecewise.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2b$Piecewise <- anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
 dat_dep_run_2b$Quadratic <- anx.traj.all$gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
 
-dat_dep_run_2b$timepoint<-c(0:14) 
+dat_dep_run_2b$timepoint<-c(0:15) 
 
 dat_dep_run_2b<-dat_dep_run_2b%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic", "Piecewise")))
 ```
@@ -1257,13 +1249,16 @@ growth_curves_run2b <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette[c(4, 1:3)]) +
   labs(x = "Follow up time point", y ="GAD7 Score") +
- scale_y_continuous(expand = c(0,0), limits = c(4.5,6.5), breaks=seq(4.5, 6.5, 1)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
+  scale_y_continuous(expand = c(0,0), limits = c(5,7), breaks=seq(5, 7, 3)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
                                         colour = "gray"),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+                                   hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
         panel.background = element_blank()) 
@@ -1279,7 +1274,7 @@ lot pairwise correlation versions only. Plot estimated means from model alongsid
 
 ```{r Format anxiety Growth Curve Data run 2 obs est}
 
-dat_dep_run_2c<-data.frame(matrix(nrow=15, ncol=4))
+dat_dep_run_2c<-data.frame(matrix(nrow=16, ncol=4))
 
 colnames(dat_dep_run_2c)<-c("Linear","Quadratic", "Piecewise", "Observed")
 
@@ -1290,7 +1285,7 @@ dat_dep_run_2c$Quadratic <- anx.traj.all$gad_latentGrowthCurve_quadratic_withPai
 
 dat_dep_run_2c$Observed <- anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_observed_means$values
 
-dat_dep_run_2c$timepoint<-c(0:14) 
+dat_dep_run_2c$timepoint<-c(0:15) 
 
 dat_dep_run_2c<-dat_dep_run_2c%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic","Piecewise", "Observed")))
 
@@ -1313,13 +1308,16 @@ growth_curves_run2c <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="GAD7 Score") +
- scale_y_continuous(expand = c(0,0), limits = c(4.5,6.5), breaks=seq(4.5, 6.5, 1)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1)) +
+  scale_y_continuous(expand = c(0,0), limits = c(5,7), breaks=seq(5, 7, 3)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
                                         colour = "gray"),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+                                   hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
         panel.background = element_blank()) 
@@ -1329,8 +1327,3 @@ growth_curves_run2c
 
 
 ```
-
-# to do 
-
-* format plot to show dates rather than timepoint references
-

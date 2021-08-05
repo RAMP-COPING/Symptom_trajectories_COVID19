@@ -52,7 +52,7 @@ MODEL:
     	int lin2 | phq_t0@0 phq_t3@0 phq_t4@0
     		 phq_t5@0 phq_t6@1 phq_t7@2 phq_t8@3 phq_t9@4 
     		 phq_t10@6 phq_t11@8 phq_t12@8 phq_t13@8
-    		 phq_t14@8 phq_t15@8 phq_t16@8 phq_t178;
+    		 phq_t14@8 phq_t15@8 phq_t16@8 phq_t17@8;
 	
 !Piece 3 covering 17 November 2020 (Fup12) to 9 February 2021 (Fup 15)
 !Winter lockdowns until spring 2021 easing of restrictions
