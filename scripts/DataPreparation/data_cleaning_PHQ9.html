@@ -3839,9 +3839,8 @@ visible FALSE                            </code></pre>
 <p>For those who did an earlier wave during the time frame of a later wave, I include them in the later wave.</p>
 <p>Include RAMP waves in ordering, even though COPING waves started later. So some earlier waves will only be RAMP</p>
 </div>
-</div>
-<div id="merge-datasets" class="section level2">
-<h2>merge datasets</h2>
+<div id="merge-datasets" class="section level3">
+<h3>merge datasets</h3>
 <p>doing this before identifying wave dates as there are some people who have duplicated data per wave between datasets (e.g. if there were individual links sent to someone who needed to restart I assume). So need to get latest data for a wave from every possible point.</p>
 <div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1"></a>follow_up_list &lt;-<span class="st"> </span><span class="kw">list</span>(COPING_followupA.id,</span>
 <span id="cb98-2"><a href="#cb98-2"></a>                       COPING_followupA_ong.id,</span>
@@ -3957,6 +3956,7 @@ Joining by: ID, sample, startDate, endDate, phq9.pandemic_little_interest_or_ple
 <span id="cb100-104"><a href="#cb100-104"></a>                           startDate <span class="op">&gt;=</span><span class="st"> </span>start17 <span class="op">&amp;</span><span class="st"> </span>startDate <span class="op">&lt;=</span><span class="st"> </span>end17 <span class="op">~</span><span class="st"> &quot;.Wave_19&quot;</span>,</span>
 <span id="cb100-105"><a href="#cb100-105"></a>                           startDate <span class="op">&gt;=</span><span class="st"> </span>start18 <span class="op">&amp;</span><span class="st"> </span>startDate <span class="op">&lt;=</span><span class="st"> </span>end18 <span class="op">~</span><span class="st"> &quot;.Wave_20&quot;</span>,</span>
 <span id="cb100-106"><a href="#cb100-106"></a>                            startDate <span class="op">&gt;=</span><span class="st"> </span>start19 <span class="op">&amp;</span><span class="st"> </span>startDate <span class="op">&lt;=</span><span class="st"> </span>end19 <span class="op">~</span><span class="st"> &quot;.Wave_21&quot;</span>))</span></code></pre></div>
+</div>
 <div id="check-for-number-of-entries-per-wave" class="section level3">
 <h3>check for number of entries per wave</h3>
 <div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1"></a>COPING_followup.id <span class="op">%&gt;%</span></span>
@@ -9654,12 +9654,11 @@ Maximum total score:</code></pre>
 <p>Also create a keyed name dictionary</p>
 <div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="#cb570-1"></a>phq.mplus.reduced &lt;-<span class="st"> </span>phq.mplus <span class="op">%&gt;%</span></span>
 <span id="cb570-2"><a href="#cb570-2"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>phq.total_Wave_<span class="dv">01</span>,</span>
-<span id="cb570-3"><a href="#cb570-3"></a>         <span class="op">-</span>phq.total_Wave_<span class="dv">02</span>,</span>
-<span id="cb570-4"><a href="#cb570-4"></a>         <span class="op">-</span>phq.total_Wave_<span class="dv">17</span>)</span>
-<span id="cb570-5"><a href="#cb570-5"></a></span>
-<span id="cb570-6"><a href="#cb570-6"></a>phq.mplus.reduced.names &lt;-<span class="st"> </span><span class="kw">names</span>(phq.mplus.reduced)</span>
-<span id="cb570-7"><a href="#cb570-7"></a>phq.mplus.reduced.names.columns &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="kw">length</span>(phq.mplus.reduced.names))</span>
-<span id="cb570-8"><a href="#cb570-8"></a>phq.mplus.reduced.names &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">cbind</span>(phq.mplus.reduced.names,phq.mplus.reduced.names.columns))</span></code></pre></div>
+<span id="cb570-3"><a href="#cb570-3"></a>         <span class="op">-</span>phq.total_Wave_<span class="dv">02</span>)</span>
+<span id="cb570-4"><a href="#cb570-4"></a></span>
+<span id="cb570-5"><a href="#cb570-5"></a>phq.mplus.reduced.names &lt;-<span class="st"> </span><span class="kw">names</span>(phq.mplus.reduced)</span>
+<span id="cb570-6"><a href="#cb570-6"></a>phq.mplus.reduced.names.columns &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="kw">length</span>(phq.mplus.reduced.names))</span>
+<span id="cb570-7"><a href="#cb570-7"></a>phq.mplus.reduced.names &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">cbind</span>(phq.mplus.reduced.names,phq.mplus.reduced.names.columns))</span></code></pre></div>
 </div>
 <div id="remove-column-names" class="section level2">
 <h2>remove column names</h2>

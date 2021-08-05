@@ -2150,8 +2150,7 @@ Also create a keyed name dictionary
 
 phq.mplus.reduced <- phq.mplus %>%
   select(-phq.total_Wave_01,
-         -phq.total_Wave_02,
-         -phq.total_Wave_17)
+         -phq.total_Wave_02)
 
 phq.mplus.reduced.names <- names(phq.mplus.reduced)
 phq.mplus.reduced.names.columns <- seq(1,length(phq.mplus.reduced.names))
