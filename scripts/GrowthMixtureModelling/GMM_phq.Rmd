@@ -1,0 +1,63 @@
+---
+title: "Run Growth Mixture Modelling for RAMP & COPING longitudinal analyses of common mental health symptoms: PHQ"
+author: "K L Purves"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: hide
+
+html_notebook:
+  theme: cerulean
+toc: yes
+---
+
+# Introduction
+
+## background
+This workbook centralises analyses of the PHQ-9 total scores longitudinal analyses in the RAMP and COPING samples - identifying sub classes in overall trajcetories of depression symptoms over the first year of the COVID-19 pandemic (Growth Mixture Modelling; GMM). This corresponds with analytic step 2 in the pre-registration for project ["Moderators of symptom trajectories of depression and anxiety during the COVID-19 pandemic"](https://osf.io/jvca5/).
+
+The exploratory approach attempts to decompose heterogenous trajectories into distinct subclasses. 
+
+To allow estimation of variancewhile minimising computational reqirements, we will constrain the variance of the intercept to be equal across classes, whilst fixing the variance in the slope to zero.
+
+Best fit model from the 1 class LCGA performed (relating to step 1 in the pre-registration) was a piecewise model, with each inflection point dictated by an imposition or easing of lockdown restrictions, allowing for residuals to correlate between contiguous timepoints.
+
+
+## Analytic steps
+
+**global MPlus** 
+All models will be run using Robust Full Information Maximum Likelihood estimation (MLR in MPlus) to account for missing data (assumed missing at random) robust to skewing of the data. 
+
+In order to avoid a global maxima/local solution problem (log likelihood depends on starting values used, thus could have a false maximum or sub-optimal model) we will use multiple random sets of starting values, and ensure the highest log likelihood is replicated at least twice. In practice, we will use 1000 random sets of starting values, and carry forward the 250 values with the ighest log likelihood to final stage optimisations. This will be set using STARTS = 1000 250 in Mplus nput scripts.  This should ensure global maxima are achieved, whilst balancing computational requirements. 
+
+**Step 1. Test a k + 1 class model, starting with 2, of the best fit latent growth curve model established in step 1 (LCGA) until any of the following conditions are met:**   
+
+* Indices of model fit show a deterioration in fit according to the BIC relative to a model with fewer classes. The first model (2 class) will be compared to the LCGA (1 class), and so forth.
+* The model no longer converges due to complexity   
+* We exceed 7 classes (this is the maximum number of classes that would be practically useful and logically interpretable). 
+* If the BIC continues to decrease up until 7 classes, then the best model will be ascertained by first examining the proportion of the sample that has been allocated to the smallest trajectory group. If this is < 1%, then the previous class solution will be preferred. 
+* If BIC decreases up until 7 class solution, and all classes contrain > 1% of the data, then the best model will be selected by creating a screen plot of BIC values. the model that falls at the inflection point (or the point of diminishing gains) will be selected (see pre registration for citations).
+* if inflection point remains ambiguous, then remaining fit indices will be compared globally to select between two similar models. The model wth the highest entropy will be selected preferentially. If entropy is equivalent, then model which has better fit on the most number of fit indices (described below) will be selected. 
+
+**Step 2. Assess overall fit of the selected model to ensure it is the best and most parsimonious solution**
+* We will ensure there is no evidence for the local maxima problem by rerunning the ananlysis usignt he top two seeds from the replicated best log likelihood from the original analysis using OPTSEED in a new Mplus input file. We will check that the best log likelihood from this output matches that from the previous output.
+* assuming model selection was unambiguous, assess model fit indices globally to ensure all indicators are reasonable   
+* assuming above is true, check smallest group has >1% of the sample
+* assess parsimony of the model. Does it divide one trajectory into two which only differ in intercept?
+* Assess entropy. If less than <0.8, ensure appropriatr discussion of this limitation of class assignment. Consider impact of accuracy of class assgnment on any subsequent predictive steps 
+
+## fit indices that will be used to identify the best model
+See pre registration for detailed description of all outcomes.
+
+* Bayesian Information Criterion (BIC). Decisions of best model will be primarily based on this. Smaller value = better fit
+* Aikaike Information Criterion (AIC). Smaller value = better fit
+* Likelihood ratio test (LRT) P > 0.05 indicates better model
+ 
