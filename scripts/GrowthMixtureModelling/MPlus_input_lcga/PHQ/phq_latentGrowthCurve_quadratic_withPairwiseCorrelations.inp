@@ -1,5 +1,6 @@
 TITLE:
-Depression symptoms in RAMP and COPING April 2020 - April 2021: Quadratic Growth Curve
+Depression symptoms in RAMP and COPING
+Quadratic Growth Curve
 With pairwise correlations
 
 DATA:
@@ -11,12 +12,12 @@ VARIABLE:
 	NAMES ARE
 		id phq_t0 phq_t3 phq_t4 phq_t5
 		phq_t6 phq_t7 phq_t8 phq_t9 phq_t10 phq_t11
-		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16;
+		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16 phq_t17;
 				
 	USEVARIABLES ARE
 		phq_t0 phq_t3 phq_t4 phq_t5
 		phq_t6 phq_t7 phq_t8 phq_t9 phq_t10 phq_t11
-		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16;
+		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16 phq_t17;
 		
 	MISSING ARE ALL (-99);
 	IDVARIABLE IS id;
@@ -28,7 +29,6 @@ ANALYSIS:
 	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors 
 	!as data is skew for PHQ at all time points
 	PROCESSORS = 2; !only 2 on Mac
-	COVERAGE=0;
 	ITERATIONS=10000;
 
 
@@ -39,7 +39,7 @@ MODEL:
 	int lin quad | phq_t0@0 phq_t3@1.5 phq_t4@2
     		 phq_t5@2.5 phq_t6@3 phq_t7@3.5 phq_t8@4 phq_t9@4.5 
     		 phq_t10@5.5 phq_t11@6.5 phq_t12@7.5 phq_t13@8.5
-    		 phq_t14@9.5 phq_t15@10.5 phq_t16@11.5;
+    		 phq_t14@9.5 phq_t15@10.5 phq_t16@11.5 phq_t17@12.5;
 	
 	int WITH lin;
 	int WITH quad;
@@ -52,7 +52,7 @@ PLOT:
 	SERIES = phq_t0(0) phq_t3(3) phq_t4(4)
     	phq_t5(5) phq_t6(6) phq_t7(7) phq_t8(8) phq_t9(9) phq_t10(11)
     	phq_t11(13) phq_t12(15) phq_t13(17) phq_t14(19) phq_t15(21) 
-    	phq_t16(23)
+    	phq_t16(23) phq_t17(25)
     
 	
 OUTPUT:
