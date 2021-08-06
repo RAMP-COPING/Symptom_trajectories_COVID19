@@ -20,13 +20,15 @@ html_notebook:
 toc: yes
 ---
 
-This workbook centralises analyses of the PHQ-9 and GAD-7 total scores longitudinal analyses in the RAMP and COPING samples. This corresponds with analytic steps 1-2 in the pre-registration for project ["Moderators of symptom trajectories of depression and anxiety during the COVID-19 pandemic"](https://osf.io/jvca5/).
+This workbook centralises analyses of the PHQ-9, GAD-7 and MASQ total scores longitudinal analyses in the RAMP and COPING samples - identifying the best fit average group trajectories (Latent class growth analyses; LCGA). This corresponds with analytic step 1 in the pre-registration for project ["Moderators of symptom trajectories of depression and anxiety during the COVID-19 pandemic"](https://osf.io/jvca5/).
 
-The analytic steps that will be followed for both PHQ and GAD are:
+The analytic steps that will be followed for PHQ, GAD and MASQ are:
 
-Step 1. Identifying overall group trajectories of anxiety and depression (Latent Growth Curve Modelling; using total scores across all timepoints for whole sample) 
+Step 1. Identifying overall group trajectories of anxiety and depression (Latent Growth Curve Modelling; using total scores across all time points for whole sample) 
+Step 2. Assess fit and stability of models
+Step 3. Identify and conclude the best fitting model
+Step 4. visualise all relevant trajectories alongside observed data-based trajectories. 
 
-Step 2. Identifying optimal numbers of subgroup trajectories of anxiety and depression (Growth Mixture Modelling)
 
 ***Setup***
 
