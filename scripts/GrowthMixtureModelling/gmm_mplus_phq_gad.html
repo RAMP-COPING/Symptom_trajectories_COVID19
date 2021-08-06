@@ -12,7 +12,7 @@
 <meta name="author" content="K L Purves" />
 
 
-<title>Run Latent Class Growth Analyses and Growth Mixture Modelling for RAMP longitudinal analyses of common mental health symptoms: GAD and PHQ</title>
+<title>Run Latent Class Growth Analyses for RAMP longitudinal analyses of common mental health symptoms: GAD and PHQ, and MASQ (due to CFA indicating tripartite model not a good fit for data</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -3081,9 +3081,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Run Latent Class Growth Analyses and Growth Mixture Modelling for RAMP longitudinal analyses of common mental health symptoms: GAD and PHQ</h1>
+<h1 class="title toc-ignore">Run Latent Class Growth Analyses for RAMP longitudinal analyses of common mental health symptoms: GAD and PHQ, and MASQ (due to CFA indicating tripartite model not a good fit for data</h1>
 <h4 class="author">K L Purves</h4>
-<h4 class="date">05 August, 2021</h4>
+<h4 class="date">06 August, 2021</h4>
 
 </div>
 
@@ -19142,7 +19142,7 @@ x
 <div id="correlations-look-sensible-6" class="section level6">
 <h6>4. correlations look sensible</h6>
 <p><strong><em>yes</em></strong></p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a>anx.traj.all<span class="op">$</span>gad_latentGrowthCurve_linear.out<span class="op">$</span>output[<span class="dv">761</span><span class="op">:</span><span class="dv">813</span>]  <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">str_split</span>(<span class="st">&quot;/t&quot;</span>) <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">kbl</span>() <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="st">&quot;striped&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a>anx.traj.all<span class="op">$</span>gad_latentGrowthCurve_linear.out<span class="op">$</span>output[<span class="dv">653</span><span class="op">:</span><span class="dv">705</span>]  <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">str_split</span>(<span class="st">&quot;/t&quot;</span>) <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">kbl</span>() <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="st">&quot;striped&quot;</span>)</span></code></pre></div>
 <table class="kable_wrapper table table-striped" style="margin-left: auto; margin-right: auto;">
 <tbody>
 <tr>
@@ -19158,7 +19158,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-Residuals for Correlations
+Model Estimated Correlations
 </td>
 </tr>
 </tbody>
@@ -19212,7 +19212,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T0 0.000
+GAD_T0 1.000
 </td>
 </tr>
 </tbody>
@@ -19230,7 +19230,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T3 0.047 0.000
+GAD_T3 0.806 1.000
 </td>
 </tr>
 </tbody>
@@ -19248,7 +19248,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T4 0.012 0.026 0.000
+GAD_T4 0.810 0.860 1.000
 </td>
 </tr>
 </tbody>
@@ -19266,7 +19266,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T5 -0.007 -0.003 0.019 0.000
+GAD_T5 0.810 0.861 0.868 1.000
 </td>
 </tr>
 </tbody>
@@ -19284,7 +19284,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T6 -0.020 -0.016 -0.004 0.021 0.000
+GAD_T6 0.807 0.860 0.867 0.869 1.000
 </td>
 </tr>
 </tbody>
@@ -19302,7 +19302,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T7 -0.026 -0.021 -0.015 0.003 0.028
+GAD_T7 0.802 0.855 0.862 0.865 0.865
 </td>
 </tr>
 </tbody>
@@ -19320,7 +19320,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T8 -0.028 -0.032 -0.025 -0.010 0.011
+GAD_T8 0.795 0.849 0.857 0.860 0.861
 </td>
 </tr>
 </tbody>
@@ -19338,7 +19338,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T9 -0.023 -0.031 -0.024 -0.018 -0.007
+GAD_T9 0.786 0.841 0.849 0.853 0.854
 </td>
 </tr>
 </tbody>
@@ -19356,7 +19356,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T10 -0.016 -0.028 -0.030 -0.025 -0.019
+GAD_T10 0.772 0.829 0.838 0.842 0.844
 </td>
 </tr>
 </tbody>
@@ -19374,7 +19374,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T11 -0.007 -0.023 -0.024 -0.022 -0.015
+GAD_T11 0.763 0.821 0.831 0.837 0.840
 </td>
 </tr>
 </tbody>
@@ -19392,7 +19392,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T12 0.001 -0.021 -0.022 -0.022 -0.016
+GAD_T12 0.755 0.816 0.826 0.833 0.837
 </td>
 </tr>
 </tbody>
@@ -19410,7 +19410,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T13 0.004 -0.016 -0.022 -0.024 -0.018
+GAD_T13 0.744 0.807 0.819 0.826 0.831
 </td>
 </tr>
 </tbody>
@@ -19428,7 +19428,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T14 0.022 -0.005 -0.012 -0.012 -0.010
+GAD_T14 0.730 0.794 0.807 0.815 0.821
 </td>
 </tr>
 </tbody>
@@ -19446,7 +19446,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T15 0.026 0.001 -0.008 -0.011 -0.012
+GAD_T15 0.720 0.787 0.800 0.809 0.816
 </td>
 </tr>
 </tbody>
@@ -19464,7 +19464,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T16 0.028 0.005 0.002 0.002 0.000
+GAD_T16 0.706 0.774 0.788 0.798 0.806
 </td>
 </tr>
 </tbody>
@@ -19482,24 +19482,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T17 0.048 0.029 0.021 0.019 0.020
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
+GAD_T17 0.687 0.756 0.771 0.781 0.790
 </td>
 </tr>
 </tbody>
@@ -19534,7 +19517,24 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-Residuals for Correlations
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Model Estimated Correlations
 </td>
 </tr>
 </tbody>
@@ -19588,7 +19588,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T7 0.000
+GAD_T7 1.000
 </td>
 </tr>
 </tbody>
@@ -19606,7 +19606,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T8 0.039 0.000
+GAD_T8 0.858 1.000
 </td>
 </tr>
 </tbody>
@@ -19624,7 +19624,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T9 0.004 0.024 0.000
+GAD_T9 0.852 0.849 1.000
 </td>
 </tr>
 </tbody>
@@ -19642,7 +19642,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T10 -0.007 0.005 0.031 0.000
+GAD_T10 0.843 0.841 0.837 1.000
 </td>
 </tr>
 </tbody>
@@ -19660,7 +19660,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T11 -0.010 -0.004 0.016 0.040 0.000
+GAD_T11 0.840 0.838 0.835 0.832 1.000
 </td>
 </tr>
 </tbody>
@@ -19678,7 +19678,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T12 -0.014 -0.009 0.000 0.013 0.035
+GAD_T12 0.837 0.837 0.835 0.833 0.837
 </td>
 </tr>
 </tbody>
@@ -19696,7 +19696,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T13 -0.017 -0.009 0.000 0.005 0.015
+GAD_T13 0.833 0.833 0.832 0.833 0.838
 </td>
 </tr>
 </tbody>
@@ -19714,7 +19714,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T14 -0.012 -0.006 -0.004 0.002 0.004
+GAD_T14 0.823 0.825 0.824 0.827 0.834
 </td>
 </tr>
 </tbody>
@@ -19732,7 +19732,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T15 -0.013 -0.006 0.001 -0.002 -0.001
+GAD_T15 0.819 0.822 0.822 0.827 0.836
 </td>
 </tr>
 </tbody>
@@ -19750,7 +19750,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T16 -0.002 0.005 0.006 -0.001 -0.008
+GAD_T16 0.810 0.813 0.815 0.821 0.832
 </td>
 </tr>
 </tbody>
@@ -19768,24 +19768,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T17 0.018 0.019 0.020 0.012 0.005
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
+GAD_T17 0.795 0.800 0.802 0.810 0.822
 </td>
 </tr>
 </tbody>
@@ -19820,7 +19803,24 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-Residuals for Correlations
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Model Estimated Correlations
 </td>
 </tr>
 </tbody>
@@ -19874,7 +19874,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T12 0.000
+GAD_T12 1.000
 </td>
 </tr>
 </tbody>
@@ -19892,7 +19892,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T13 0.032 0.000
+GAD_T13 0.845 1.000
 </td>
 </tr>
 </tbody>
@@ -19910,7 +19910,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T14 0.012 0.023 0.000
+GAD_T14 0.843 0.850 1.000
 </td>
 </tr>
 </tbody>
@@ -19928,7 +19928,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T15 -0.001 0.003 0.018 0.000
+GAD_T15 0.847 0.855 0.858 1.000
 </td>
 </tr>
 </tbody>
@@ -19946,7 +19946,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T16 -0.006 -0.008 -0.003 0.011 0.000
+GAD_T16 0.845 0.855 0.860 0.871 1.000
 </td>
 </tr>
 </tbody>
@@ -19964,24 +19964,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T17 -0.003 -0.004 -0.013 -0.006 0.010
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
+GAD_T17 0.837 0.849 0.855 0.868 0.875
 </td>
 </tr>
 </tbody>
@@ -20016,7 +19999,24 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-Residuals for Correlations
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Model Estimated Correlations
 </td>
 </tr>
 </tbody>
@@ -20070,7 +20070,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-GAD_T17 0.000
+GAD_T17 1.000
 </td>
 </tr>
 </tbody>
@@ -21133,7 +21133,7 @@ x
 <div id="correlations-look-sensible-7" class="section level6">
 <h6>4. correlations look sensible</h6>
 <p><strong><em>yes</em></strong></p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>anx.traj.all<span class="op">$</span>gad_latentGrowthCurve_linear_withpairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">854</span><span class="op">:</span><span class="dv">798</span>]  <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">str_split</span>(<span class="st">&quot;/t&quot;</span>) <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">kbl</span>() <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="st">&quot;striped&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>anx.traj.all<span class="op">$</span>gad_latentGrowthCurve_linear_withpairwiseCorrelations.out<span class="op">$</span>output[<span class="dv">746</span><span class="op">:</span><span class="dv">798</span>]  <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">str_split</span>(<span class="st">&quot;/t&quot;</span>) <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">kbl</span>() <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="st">&quot;striped&quot;</span>)</span></code></pre></div>
 <table class="kable_wrapper table table-striped" style="margin-left: auto; margin-right: auto;">
 <tbody>
 <tr>
@@ -21149,935 +21149,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-Residuals for Correlations
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T17 -1.713
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-________
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T17
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Residuals for Covariances
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T17 -0.659 -0.604 -0.830 -0.509 -0.941
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T16 0.105 0.127 0.329 0.221 -0.222
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T15 0.666 0.861 0.608 0.585
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T14 1.050 0.611 0.482
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T13 0.617 0.459
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T12 0.475
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-________ ________ ________ ________ ________
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T12 GAD_T13 GAD_T14 GAD_T15 GAD_T16
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Residuals for Covariances
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T17 -0.516 -0.765 -0.702 -0.719 -0.447
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T16 -0.255 -0.331 -0.273 -0.254 0.005
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T15 -0.206 -0.284 -0.029 0.122 0.640
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T14 -0.154 -0.289 -0.181 0.227 0.744
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T13 -0.268 -0.353 -0.045 0.335 1.089
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T12 -0.148 -0.321 0.005 0.607 0.690
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T11 0.028 -0.105 0.516 0.253 0.550
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T10 -0.239 -0.234 -0.407 -0.399
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T9 -0.045 -0.655 -0.735
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T8 -0.319 -0.839
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T7 -0.067
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-________ ________ ________ ________ ________
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T7 GAD_T8 GAD_T9 GAD_T10 GAD_T11
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Residuals for Covariances
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T17 -0.052 -0.404 -0.656 -0.513 -0.451
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T16 0.134 -0.290 -0.390 -0.180 -0.229
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T15 0.540 0.007 -0.268 -0.167 -0.172
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T14 0.418 -0.148 -0.362 -0.157 -0.107
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T13 -0.100 -0.436 -0.617 -0.489 -0.314
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T12 -0.125 -0.520 -0.565 -0.378 -0.187
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T11 -0.287 -0.523 -0.568 -0.320 -0.095
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T10 -0.930 -1.027 -1.093 -0.766 -0.593
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T9 -1.274 -1.221 -1.033 -0.672 -0.342
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T8 -1.421 -1.231 -1.040 -0.409 0.216
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T7 -0.980 -0.539 -0.383 0.358 0.170
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T6 -0.698 -0.319 0.013 0.103 0.027
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T5 -0.214 0.117 -0.122 -0.013
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T4 0.266 -0.311 -0.413
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T3 -0.576 -0.621
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-GAD_T0 -0.902
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-________ ________ ________ ________ ________
+Model Estimated Correlations
 </td>
 </tr>
 </tbody>
@@ -22113,7 +21185,7 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-Residuals for Covariances
+________ ________ ________ ________ ________
 </td>
 </tr>
 </tbody>
@@ -22131,6 +21203,865 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
+GAD_T0 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T3 0.851 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T4 0.799 0.881 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T5 0.800 0.846 0.884 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T6 0.799 0.846 0.857 0.887 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T7 0.794 0.842 0.852 0.856 0.888
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T8 0.789 0.837 0.848 0.852 0.854
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T9 0.782 0.831 0.843 0.846 0.849
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T10 0.769 0.820 0.832 0.836 0.840
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T11 0.762 0.814 0.826 0.832 0.835
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T12 0.756 0.810 0.823 0.828 0.833
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T13 0.748 0.803 0.817 0.824 0.829
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T14 0.736 0.793 0.807 0.814 0.820
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T15 0.729 0.787 0.802 0.810 0.817
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T16 0.718 0.778 0.794 0.802 0.810
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T17 0.708 0.769 0.786 0.795 0.803
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Model Estimated Correlations
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T7 GAD_T8 GAD_T9 GAD_T10 GAD_T11
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+________ ________ ________ ________ ________
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T7 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T8 0.894 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T9 0.847 0.872 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T10 0.838 0.836 0.865 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T11 0.835 0.834 0.831 0.865 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T12 0.833 0.833 0.831 0.829 0.865
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T13 0.830 0.830 0.829 0.828 0.832
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T14 0.822 0.823 0.823 0.823 0.828
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T15 0.819 0.821 0.821 0.823 0.830
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T16 0.813 0.815 0.817 0.820 0.828
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T17 0.806 0.810 0.812 0.817 0.826
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Model Estimated Correlations
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T12 GAD_T13 GAD_T14 GAD_T15 GAD_T16
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+________ ________ ________ ________ ________
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T12 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T13 0.871 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T14 0.835 0.866 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T15 0.838 0.845 0.872 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T16 0.838 0.846 0.850 0.880 1.000
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T17 0.838 0.847 0.852 0.862 0.887
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Model Estimated Correlations
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T17
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+________
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GAD_T17 1.000
 </td>
 </tr>
 </tbody>

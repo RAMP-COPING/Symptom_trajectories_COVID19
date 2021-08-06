@@ -984,7 +984,7 @@ anx.traj.all$gad_latentGrowthCurve_linear.out$output[335:352]  %>%   str_split("
 ***yes***
 ```{r check correlations linanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear.out$output[761:813]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear.out$output[653:705]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 
@@ -1014,7 +1014,7 @@ anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[38
 ***yes***
 ```{r check correlations lin pairwiseanx}
 
-anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[854:798]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[746:798]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
 
 
