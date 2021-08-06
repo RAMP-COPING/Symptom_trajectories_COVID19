@@ -25,7 +25,7 @@ This workbook will conduct the factor analysis of MASQ, GAD and PHQ-9 data in RA
 #Set up 
 
 ```{r Delete everything in your global environment}
-remove(list = ls())
+#remove(list = ls())
 ```
 
 ```{r setup, include=FALSE}
@@ -67,10 +67,16 @@ if(!require(lavaan)){
   library(lavaan)
 }
 
-if(!require(geom_text)){
-  install.packages("geom_text")
-  library(geom_text)
+if(!require(reshape2)){
+  install.packages("reshape2")
+  library(reshape2)
 }
+
+
+# if(!require(geom_text)){
+#   install.packages("geom_text")
+#   library(geom_text)
+# }
 
 ```
 
@@ -132,7 +138,7 @@ dim(merged_data)
 
 cfa_data.clean <- merged_data %>% #new dataset with ID
   drop_na(ID) %>% # Drop NAs
-  select(-c(sample,startDate,endDate))
+  select(-c(startDate,endDate))
 
 names(cfa_data.clean)
 
@@ -373,23 +379,43 @@ gad7.pandemic_nervous_anxious_on_edge
 
 ```{r specify lavaan model}
 
-tripartite_model <- 'General_distress =~ gad7.pandemic_cant_control_worry + gad7.pandemic_worry_too_much + gad7.pandemic_easily_annoyed + gad7.pandemic_afraid_something_terrible_will_happen + phq9.pandemic_down_depressed_hopeless + phq9.pandemic_trouble_falling_or_staying_asleep + phq9.pandemic_feel_tired_little_energy + phq9.pandemic_poor_appetite_or_overeating + phq9.pandemic_feeling_like_a_failure + phq9.pandemic_trouble_concentrating + phq9.pandemic_thoughts_better_off_dead
+tripartite_model <- 'General_distress =~ gad7.pandemic_cant_control_worry_.Wave_0 + gad7.pandemic_worry_too_much_.Wave_0 + gad7.pandemic_easily_annoyed_.Wave_0 + gad7.pandemic_afraid_something_terrible_will_happen_.Wave_0 + phq9.pandemic_down_depressed_hopeless_.Wave_0 + phq9.pandemic_trouble_falling_or_staying_asleep_.Wave_0 + phq9.pandemic_feel_tired_little_energy_.Wave_0 + phq9.pandemic_poor_appetite_or_overeating_.Wave_0 + phq9.pandemic_feeling_like_a_failure_.Wave_0 + phq9.pandemic_trouble_concentrating_.Wave_0 + phq9.pandemic_thoughts_better_off_dead_.Wave_0
 
-negative_affect =~ masq.pandemic_felt_successful + masq.pandemic_felt_really_happy + masq.pandemic_felt_optimistic + masq.pandemic_lot_felt_fun + masq.pandemic_felt_like_i_accomplished_a_lot + masq.pandemic_forward_lot_felt + masq.pandemic_felt_really_talkative + masq.pandemic_felt_really_up_or_lively + masq.pandemic_lot_felt_energy + masq.pandemic_felt_really_good_about_myself + phq9.pandemic_little_interest_or_pleasure
+negative_affect =~ masq.pandemic_felt_successful_.Wave_0 + masq.pandemic_felt_really_happy_.Wave_0 + masq.pandemic_felt_optimistic_.Wave_0 + masq.pandemic_lot_felt_fun_.Wave_0 + masq.pandemic_felt_like_i_accomplished_a_lot_.Wave_0 + masq.pandemic_forward_lot_felt_.Wave_0 + masq.pandemic_felt_really_talkative_.Wave_0 + masq.pandemic_felt_really_up_or_lively_.Wave_0 + masq.pandemic_lot_felt_energy_.Wave_0 + masq.pandemic_felt_really_good_about_myself_.Wave_0 + phq9.pandemic_little_interest_or_pleasure_.Wave_0
 
-anxious_arousal =~  + gad7.pandemic_restless + gad7.pandemic_trouble_relaxing + phq9.pandemic_fidgeting_or_moving_slowly + gad7.pandemic_nervous_anxious_on_edge'
+anxious_arousal =~  + gad7.pandemic_restless_.Wave_0 + gad7.pandemic_trouble_relaxing_.Wave_0 + phq9.pandemic_fidgeting_or_moving_slowly_.Wave_0 + gad7.pandemic_nervous_anxious_on_edge_.Wave_0'
+
+
+twofactor_model <- 'negative_affect =~ gad7.pandemic_cant_control_worry_.Wave_0 + gad7.pandemic_worry_too_much_.Wave_0 + gad7.pandemic_easily_annoyed_.Wave_0 + gad7.pandemic_afraid_something_terrible_will_happen_.Wave_0 + phq9.pandemic_down_depressed_hopeless_.Wave_0 + phq9.pandemic_trouble_falling_or_staying_asleep_.Wave_0 + phq9.pandemic_feel_tired_little_energy_.Wave_0 + phq9.pandemic_poor_appetite_or_overeating_.Wave_0 + phq9.pandemic_feeling_like_a_failure_.Wave_0 + phq9.pandemic_trouble_concentrating_.Wave_0 + phq9.pandemic_thoughts_better_off_dead_.Wave_0 + gad7.pandemic_nervous_anxious_on_edge_.Wave_0 + gad7.pandemic_restless_.Wave_0 + gad7.pandemic_trouble_relaxing_.Wave_0 + phq9.pandemic_fidgeting_or_moving_slowly_.Wave_0
+
+positive_affect =~ masq.pandemic_felt_successful_.Wave_0 + masq.pandemic_felt_really_happy_.Wave_0 + masq.pandemic_felt_optimistic_.Wave_0 + masq.pandemic_lot_felt_fun_.Wave_0 + masq.pandemic_felt_like_i_accomplished_a_lot_.Wave_0 + masq.pandemic_forward_lot_felt_.Wave_0 + masq.pandemic_felt_really_talkative_.Wave_0 + masq.pandemic_felt_really_up_or_lively_.Wave_0 + masq.pandemic_lot_felt_energy_.Wave_0 + masq.pandemic_felt_really_good_about_myself_.Wave_0 + phq9.pandemic_little_interest_or_pleasure_.Wave_0 '
+
 
 ```
 
-```{r fit cfa}
+```{r fit cfa tri}
 
-#fit <- cfa(tripartite_model, data=cfa_data.clean)
+fit.tri <- cfa(tripartite_model, data=cfa_data.clean)
 
 ```
 
 
-```{r summarise cfa model}
+```{r fit cfa two}
 
-#summary(fit,fit.measures = TRUE,standardized=TRUE)
+fit.two <- cfa(twofactor_model, data=cfa_data.clean)
+
+```
+
+
+```{r summarise cfa model tri}
+
+summary(fit.tri,fit.measures = TRUE,standardized=TRUE)
+
+```
+
+
+```{r summarise cfa model two}
+
+summary(fit.two,fit.measures = TRUE,standardized=TRUE)
 
 ```

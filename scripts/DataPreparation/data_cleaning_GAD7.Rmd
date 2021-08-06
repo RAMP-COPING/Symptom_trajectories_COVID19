@@ -98,10 +98,14 @@ COPING_EDGI <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_edg
 COPING_GLAD <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_glad/gad7_coping_glad.rds"))
 COPING_NBR <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_nbr/gad7_coping_nbr.rds"))
 
-# merge GLAD, EDGI and NBR
 
-COPING_baseline <- left_join(COPING_NBR, COPING_GLAD)
-COPING_baseline <- left_join(COPING_baseline, COPING_EDGI)
+# merge GLAD, EDGI and NBR
+COPING_NBR <- COPING_NBR %>%
+  select(-externalDataReference) %>%
+  rename(externalDataReference = subjectid)
+
+COPING_baseline <- full_join(COPING_NBR, COPING_GLAD)
+COPING_baseline <- full_join(COPING_baseline, COPING_EDGI)
   
 # Check column names
 COPING_baseline %>%
@@ -120,7 +124,7 @@ Select & rename relevant columns (will be a function at some point)
 ```{r}
 
 COPING_baseline.id <- COPING_baseline %>% #new dataset with ID
-  drop_na(subjectid) %>% # Drop NAs
+  drop_na(externalDataReference) %>% # Drop NAs
   select(-gad7.feeling_nervous_anxious_or_on_edge.1,
          -gad7.control_worrying_stop.1,
          -gad7.worrying_too_much_about_different_things.1,
@@ -134,9 +138,9 @@ COPING_baseline.id <- COPING_baseline %>% #new dataset with ID
          -gad7.problems_made_care_difficult,
          -gad7.problems_made_difficult_care,
          -externalDataReference,
-         ID = subjectid, # ID
-         startDate,
-         endDate,
+         ID = externalDataReference, # ID
+         -startDate,
+         -endDate,
          gad7.pandemic_nervous_anxious_on_edge = gad7.feeling_nervous_anxious_or_on_edge,
          gad7.pandemic_cant_control_worry = gad7.control_worrying_stop,
          gad7.pandemic_worry_too_much = gad7.worrying_too_much_about_different_things,
@@ -148,6 +152,7 @@ COPING_baseline.id <- COPING_baseline %>% #new dataset with ID
 
 # Inspect colnames
 colnames(COPING_baseline.id)
+dim(COPING_baseline.id)
 
 ```
 
@@ -285,31 +290,22 @@ colnames(COPING_followupA_ong.id)
 
 ```
 
-## Join COPING follow up A and follow up A ongoing
-
-```{r Join COPING follow up A and COPING follow up A ongoing, eval=FALSE}
-# check column names match
-colnames(COPING_followupA.id)
-colnames(COPING_followupA_ong.id)
-
-# rbind
-COPING_followupA.id_joined <- rbind(COPING_followupA.id,
-                                    COPING_followupA_ong.id)
-
-dim(COPING_followupA.id_joined)
-```
-
 ## Creating follow up time points
 
-### Create waves within the FOLLOW UP DATA 
-Note: dates from google sheet from Kirstin
-Checked with Gerome - set start date as the date the survey was released, and keep window open until the DAY BEFORE the next survey was released
+### merge datasets
+doing this before identifying wave dates as there are some people who have duplicated data per wave between datasets (e.g. if there were individual links sent to someone who needed to restart I assume). So need to get latest data for a wave from every possible point.
 
-NOTE: Am changing wave indicators to be in order
 
-For those who did an earlier wave during the time frame of a later wave, I include them in the later wave.
+```{r merge coping datasets}
 
-Include RAMP waves in ordering, even though COPING waves started later. So some earlier waves will only be RAMP
+follow_up_list <- list(COPING_followupA.id,
+                       COPING_followupA_ong.id,
+                       COPING_followupB.id)
+
+COPING_followup.id <- plyr::join_all(follow_up_list,
+                                     type="full")
+  
+```
 
 
 ```{r}
@@ -399,35 +395,12 @@ end18 <-  as.POSIXct("2021-07-26")
 start19 <- as.POSIXct("2021-07-27")
 end19 <-  as.POSIXct("2021-08-17")
 
-#JM**do we have data beyond this?
 
-
-COPING_followupA.id <- COPING_followupA.id %>%
-  mutate(waveA = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_03",
+COPING_followup.id <- COPING_followup.id %>%
+  mutate(wave = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_03",
                            startDate >= start2 & startDate <= end2 ~ ".Wave_04",
-                            startDate >= start3 & startDate <= end3 ~ ".Wave_03", #repeat
-                           startDate >= start4 & startDate <= end4 ~ ".Wave_06",
-                            startDate >= start5 & startDate <= end5 ~ ".Wave_07",
-                           startDate >= start6 & startDate <= end6 ~ ".Wave_08",
-                            startDate >= start7 & startDate <= end7 ~ ".Wave_09",
-                           startDate >= start8 & startDate <= end8 ~ ".Wave_10",
-                            startDate >= start9 & startDate <= end9 ~ ".Wave_11",
-                           startDate >= start10 & startDate <= end10 ~ ".Wave_12",
-                            startDate >= start11 & startDate <= end11 ~ ".Wave_13",
-                           startDate >= start12 & startDate <= end12 ~ ".Wave_14",
-                            startDate >= start13 & startDate <= end13 ~ ".Wave_15",
-                              startDate >= start14 & startDate <= end14 ~ ".Wave_16",
-                            startDate >= start15 & startDate <= end15 ~ ".Wave_17",
-                            startDate >= start16 & startDate <= end16 ~ ".Wave_18",
-                           startDate >= start17 & startDate <= end17 ~ ".Wave_19",
-                           startDate >= start18 & startDate <= end18 ~ ".Wave_20",
-                            startDate >= start19 & startDate <= end19 ~ ".Wave_21"))
-
-COPING_followupA_ong.id <- COPING_followupA_ong.id %>%
-  mutate(waveA = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_03",
-                           startDate >= start2 & startDate <= end2 ~ ".Wave_04",
-                            startDate >= start3 & startDate <= end3 ~ ".Wave_05",
-                           startDate >= start4 & startDate <= end4 ~ ".Wave_06",
+                            startDate >= start3 & startDate <= end3 ~ ".Wave_05", 
+                           startDate >= start4 & startDate < start5 ~ ".Wave_06",
                             startDate >= start5 & startDate < start6 ~ ".Wave_07",
                            startDate >= start6 & startDate <= end6 ~ ".Wave_08",
                             startDate >= start7 & startDate <= end7 ~ ".Wave_09",
@@ -444,124 +417,56 @@ COPING_followupA_ong.id <- COPING_followupA_ong.id %>%
                            startDate >= start18 & startDate <= end18 ~ ".Wave_20",
                             startDate >= start19 & startDate <= end19 ~ ".Wave_21"))
 
-COPING_followupB.id <- COPING_followupB.id %>%
-  mutate(waveB = case_when(startDate >= start1 & startDate < end1 ~ ".Wave_3A_in_B", # should be impossible to exist
-                           startDate >= start2 & startDate <= end2 ~ ".Wave_04",
-                            startDate >= start3 & startDate <= end3 ~ ".Wave_05",
-                           startDate >= start4 & startDate < start5 ~ ".Wave_06",
-                            startDate >= start5 & startDate <= end5 ~ ".Wave_07",
-                           startDate >= start6 & startDate <= end6 ~ ".Wave_08",
-                            startDate >= start7 & startDate <= end7 ~ ".Wave_09",
-                           startDate >= start8 & startDate <= end8 ~ ".Wave_10",
-                            startDate >= start9 & startDate <= end9 ~ ".Wave_11",
-                           startDate >= start10 & startDate <= end10 ~ ".Wave_12",
-                            startDate >= start11 & startDate <= end11 ~ ".Wave_13",
-                           startDate >= start12 & startDate <= end12 ~ ".Wave_14",
-                            startDate >= start13 & startDate <= end13 ~ ".Wave_15",
-                              startDate >= start14 & startDate <= end14 ~ ".Wave_16",
-                            startDate >= start15 & startDate <= end15 ~ ".Wave_17",
-                            startDate >= start16 & startDate <= end16 ~ ".Wave_18",
-                           startDate >= start17 & startDate <= end17 ~ ".Wave_19",
-                           startDate >= start18 & startDate <= end18 ~ ".Wave_20",
-                            startDate >= start19 & startDate <= end19 ~ ".Wave_21"))
 
 ```
 
 ### check for number of entries per wave
 
 ```{r check for number of entries per wave COPING}
-COPING_followupA.id %>%
-  group_by(waveA) %>%
-  count()
 
-COPING_followupA_ong.id %>%
-  group_by(waveA) %>%
-  count()
-
-COPING_followupB.id %>%
-  group_by(waveB) %>%
+COPING_followup.id %>%
+  group_by(wave) %>%
   count()
 ```
 
 ### Identifying duplicate IDs in a single wave
 ```{r Identifying duplicate IDs in a single wave COPING}
 
-##Identify dup IDs in a single wave (follow up A)
-COPING_followupA.id %>%
-   group_by(waveA, ID) %>%
-   summarize(N = n()) %>%
+
+##Identify dup IDs in a single wave (all) 
+COPING_followup.id %>%
+   group_by(wave, ID) %>%
+   dplyr::summarize(N = n()) %>%
    filter(N > 1)
 
-
-##Identify dup IDs in a single wave (follow up A ongoing)
-COPING_followupA_ong.id %>%
-   group_by(waveA, ID) %>%
-   summarize(N = n()) %>%
-   filter(N > 1)
-
-
-##Identify dup IDs in a single wave (B) 
-COPING_followupB.id %>%
-   group_by(waveB, ID) %>%
-   summarize(N = n()) %>%
-   filter(N > 1)
 
 ##Identify dup IDs in baseline 
 COPING_baseline.id %>%
    group_by(ID) %>%
-   summarize(N = n()) %>%
+   dplyr::summarize(N = n()) %>%
    filter(N > 1)
 
 
 ```
 
-**removing duplicates, reatining the latest possible data where there are repeats**
+**removing duplicates, retaining the latest possible data where there are repeats**
 
-### Want the LATER data entry from people who answered twice within a single wave 
+### Retain most recent completion where duplicate completions
 We want there to be unique IDs within each of the waves
 ```{r}
-##FOLLOW UP A
-##confirm number of rows in current dataset (= 22542)
-nrow(COPING_followupA.id)
+##FOLLOW UP 
+##confirm number of rows in current dataset
+nrow(COPING_followup.id)
 
 #Filter out duplicated IDs AND wave, keeping the LAST entry
-COPING_followupA.id <- COPING_followupA.id %>% 
+COPING_followup.id <- COPING_followup.id %>% 
     group_by(ID) %>% 
-    filter(!duplicated(waveA,
+    filter(!duplicated(wave,
                       fromLast = TRUE)
            )
 
 ##confirm number of rows in dataset after filtering (should be 22485)
-nrow(COPING_followupA.id)
-
-##FOLLOW UP A ONGOING
-##confirm number of rows in current dataset (= 22542)
-nrow(COPING_followupA_ong.id)
-
-#Filter out duplicated IDs AND wave, keeping the LAST entry
-COPING_followupA_ong.id <- COPING_followupA_ong.id %>% 
-    group_by(ID) %>% 
-    filter(!duplicated(waveA,
-                      fromLast = TRUE)
-           )
-
-##confirm number of rows in dataset after filtering (should be 22485)
-nrow(COPING_followupA_ong.id)
-
-
-##FOLLOW UP B
-##confirm number of rows in current dataset 
-nrow(COPING_followupB.id)
-
-#Filter out duplicated IDs AND wave, keeping the LAST entry
-COPING_followupB.id <- COPING_followupB.id %>% 
-    group_by(ID) %>% 
-    filter(!duplicated(waveB,
-                      fromLast = TRUE)
-           )
-
-##confirm number of rows in dataset after filtering 
-nrow(COPING_followupB.id)
+nrow(COPING_followup.id)
 
 ##BASELINE
 ##confirm number of rows in current dataset 
@@ -580,13 +485,13 @@ nrow(COPING_baseline.id)
 
 ```
 
-## Change COPING follow up A and B from long to wide format (we want this for the numeric ones so we can sum them)
+## Change COPING follow  from long to wide format
 ```{r COPING follow up A and B long to wide format}
 
-COPING_followupA.id.long <- COPING_followupA.id %>%
-  group_by(waveA) %>%
+COPING_followup.id.long <- COPING_followup.id %>%
+  group_by(wave) %>%
   tidyr::pivot_wider(id_cols = ID, 
-    names_from = waveA, 
+    names_from = wave, 
                      values_from = c(gad7.pandemic_nervous_anxious_on_edge,
                                      gad7.pandemic_cant_control_worry,
                                      gad7.pandemic_worry_too_much,
@@ -594,37 +499,8 @@ COPING_followupA.id.long <- COPING_followupA.id %>%
                                      gad7.pandemic_restless,
                                      gad7.pandemic_easily_annoyed,
                                      gad7.pandemic_afraid_something_terrible_will_happen)) 
-
-COPING_followupA_ong.id.long <- COPING_followupA_ong.id %>%
-  group_by(waveA) %>%
-  tidyr::pivot_wider(id_cols = ID, 
-    names_from = waveA, 
-                       values_from = c(gad7.pandemic_nervous_anxious_on_edge,
-                                     gad7.pandemic_cant_control_worry,
-                                     gad7.pandemic_worry_too_much,
-                                     gad7.pandemic_trouble_relaxing,
-                                     gad7.pandemic_restless,
-                                     gad7.pandemic_easily_annoyed,
-                                     gad7.pandemic_afraid_something_terrible_will_happen)) 
-
-COPING_followupB.id.long <- COPING_followupB.id %>%
-  group_by(waveB) %>%
-  tidyr::pivot_wider(id_cols = ID, 
-    names_from = waveB, 
-                     values_from = c(gad7.pandemic_nervous_anxious_on_edge,
-                                     gad7.pandemic_cant_control_worry,
-                                     gad7.pandemic_worry_too_much,
-                                     gad7.pandemic_trouble_relaxing,
-                                     gad7.pandemic_restless,
-                                     gad7.pandemic_easily_annoyed,
-                                     gad7.pandemic_afraid_something_terrible_will_happen)) 
-  
-
-# Check
-colnames(COPING_followupA.id.long)
-colnames(COPING_followupA_ong.id.long)
-colnames(COPING_followupB.id.long)
-
+# check
+colnames(COPING_followup.id.long)
 
 ```
   
@@ -726,36 +602,36 @@ COPING_baseline.id.clean <- COPING_baseline.id %>%
 colnames(COPING_baseline.id.clean)
 ```
 
-## COPING follow up A
+## COPING follow up 
 
-```{r Add "_unc" to the end of all variables COPING follow up A}
-COPING_followupA.id.long <- COPING_followupA.id.long %>% 
+```{r Add "_unc" to the end of all variables COPING follow up }
+COPING_followup.id.long <- COPING_followup.id.long %>% 
   rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("gad")) # Add suffix "unc" for all uncleaned data columns
 
 # check
-colnames(COPING_followupA.id.long)
+colnames(COPING_followup.id.long)
 ```
 
-```{r COPING follow up A inspect the variables}
-COPING_followupA.id.long %>% 
+```{r COPING follow up  inspect the variables}
+COPING_followup.id.long %>% 
   freq(gad7.pandemic_cant_control_worry_.Wave_03_unc)
 ```
 
 ### Make list of variables for cleaning
-```{r Make list of variables for cleaning COPING A}
-gad.items.followupA_unc <- COPING_followupA.id.long %>% 
+```{r Make list of variables for cleaning COPING }
+gad.items.followup_unc <- COPING_followup.id.long %>% 
   select(contains("_unc")) %>% 
   colnames()
 
-gad.items.followupA_unc
+gad.items.followup_unc
 ```
 
 ### Recode implausuble values
-```{r Recode implausible values COPING A}
+```{r Recode implausible values COPING }
 # Recode and clean
-COPING_followupA.id.long <- COPING_followupA.id.long %>%
+COPING_followup.id.long <- COPING_followup.id.long %>%
    mutate(
-     across(all_of(gad.items.followupA_unc),
+     across(all_of(gad.items.followup_unc),
             .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
               . == -77 | . == -88 | . == -99 ~ ., # leave as is 
               . < gad.min.scale | . > gad.max.scale ~ -66, # recode as implausible value
@@ -770,222 +646,59 @@ COPING_followupA.id.long <- COPING_followupA.id.long %>%
    )
 
 # Check
-colnames(COPING_followupA.id.long)
+colnames(COPING_followup.id.long)
 ```
 ### Make new list of cleaned variables
 ```{r}
-gad.items.followupA_clean <- COPING_followupA.id.long %>% 
+gad.items.followup_clean <- COPING_followup.id.long %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
   select(!"ID") %>% # deselect the ID variable
   colnames()
 
-gad.items.followupA_clean
+gad.items.followup_clean
 ```
 ### Check number of implausible values
 ```{r}
 # Check for implausible values
-gad_followupA_imp_n <- COPING_followupA.id.long %>% 
-  select(all_of(gad.items.followupA_clean)) %>% 
+gad_followup_imp_n <- COPING_followup.id.long %>% 
+  select(all_of(gad.items.followup_clean)) %>% 
   filter(. == -66) %>% 
   nrow()
 
 # If statement
-if (gad_followupA_imp_n == 0) {
-  print(paste0("The number of implausible values in the coping follow up A gad variables is ", gad_followupA_imp_n, ". Can leave these variables as they are."))
+if (gad_followup_imp_n == 0) {
+  print(paste0("The number of implausible values in the coping follow up A gad variables is ", gad_followup_imp_n, ". Can leave these variables as they are."))
 } else {
-  print(paste0("The number of implausible values in the coping follow up A gad variables is ", gad_followupA_imp_n, ". Please investigate."))
+  print(paste0("The number of implausible values in the coping follow up A gad variables is ", gad_followup_imp_n, ". Please investigate."))
 }
 ```
 
 ### Select only the clean variables
 Note: keep ID in this data set
 ```{r}
-COPING_followupA.id.long.clean <- COPING_followupA.id.long %>% 
+COPING_followup.id.long.clean <- COPING_followup.id.long %>% 
   select(!contains("_unc")) 
 
-colnames(COPING_followupA.id.long.clean)
+colnames(COPING_followup.id.long.clean)
 ```
 
-
-## COPING follow up A ongoing
-
-```{r Add "_unc" to the end of all variables COPING follow up A ongoing}
-COPING_followupA_ong.id.long <- COPING_followupA_ong.id.long %>% 
-  rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("gad")) # Add suffix "unc" for all uncleaned data columns
-
-# check
-colnames(COPING_followupA_ong.id.long)
-```
-
-```{r COPING follow up A ongoing inspect the variables}
-COPING_followupA_ong.id.long %>% 
-  freq(gad7.pandemic_nervous_anxious_on_edge_.Wave_05_unc)
-```
-
-### Make list of variables for cleaning
-```{r Make list of variables for cleaning COPING A ongoing}
-gad.items.followupA_ong_unc <- COPING_followupA_ong.id.long %>% 
-  select(contains("_unc")) %>% 
-  colnames()
-
-gad.items.followupA_ong_unc
-```
-
-### Recode implausible values
-```{r Recode implausible values COPING A ongoing}
-# Recode and clean
-COPING_followupA_ong.id.long <- COPING_followupA_ong.id.long %>%
-   mutate(
-     across(all_of(gad.items.followupA_ong_unc),
-            .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
-              . == -77 | . == -88 | . == -99 ~ ., # leave as is 
-              . < gad.min.scale | . > gad.max.scale ~ -66, # recode as implausible value
-              TRUE ~ . # leave as is
-            )
-            )
-     )
-   ) %>%
-   rename_at(
-     vars(contains( "_unc_clean")), # specify variables that now contain "_clean"
-     list(~paste0(gsub("_unc_clean", "", .))) # remove the "_clean" now that they have been cleaned
-   )
-
-# Check
-colnames(COPING_followupA_ong.id.long)
-```
-
-### Make new list of cleaned variables
-```{r}
-gad.items.followupA_ong_clean <- COPING_followupA_ong.id.long %>% 
-  select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
-  select(!"ID") %>% # deselect the ID variable
-  colnames()
-
-gad.items.followupA_ong_clean
-```
-
-### Check number of implausible values
-```{r}
-# Check for implausible values
-gad_followupA_ong_imp_n <- COPING_followupA_ong.id.long %>% 
-  select(all_of(gad.items.followupA_ong_clean)) %>% 
-  filter(. == -66) %>% 
-  nrow()
-
-# If statement
-if (gad_followupA_ong_imp_n == 0) {
-  print(paste0("The number of implausible values in the coping follow up A ongoing gad variables is ", gad_followupA_ong_imp_n, ". Can leave these variables as they are."))
-} else {
-  print(paste0("The number of implausible values in the coping follow up A ongoing gad variables is ", gad_followupA_ong_imp_n, ". Please investigate."))
-}
-```
-
-### Select only the clean variables
-Note: keep ID in this data set
-```{r}
-COPING_followupA_ong.id.long.clean <- COPING_followupA_ong.id.long %>% 
-  select(!contains("_unc")) 
-
-colnames(COPING_followupA_ong.id.long.clean)
-```
-
-
-## COPING follow up B
-
-```{r Add "_unc" to the end of all variables COPING follow up B}
-COPING_followupB.id.long <- COPING_followupB.id.long %>% 
-  rename_with( ~ paste(.x, "unc", sep = "_"), starts_with("gad")) # Add suffix "unc" for all uncleaned data columns
-```
-
-### Make list of variables for cleaning
-```{r Make list of variables for cleaning COPING B}
-gad.items.followupB_unc <- COPING_followupB.id.long %>% 
-  select(contains("_unc")) %>% 
-  colnames()
-
-gad.items.followupB_unc
-```
-
-### Recode implausible values
-```{r Recode implausible valuesCOPING B}
-# Recode and clean
-COPING_followupB.id.long <- COPING_followupB.id.long %>%
-   mutate(
-     across(all_of(gad.items.followupB_unc),
-            .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
-              . == -77 | . == -88 | . == -99 ~ ., # leave as is 
-              . < gad.min.scale | . > gad.max.scale ~ -66, # recode as implausible value
-              TRUE ~ . # leave as is
-            )
-            )
-     )
-   ) %>%
-   rename_at(
-     vars(contains( "_unc_clean")), # specify variables that now contain "_clean"
-     list(~paste0(gsub("_unc_clean", "", .))) # remove the "_clean" now that they have been cleaned
-   )
-
-# Check
-colnames(COPING_followupB.id.long)
-```
-### Make new list of cleaned variables
-```{r}
-gad.items.followupB_clean <- COPING_followupB.id.long %>% 
-  select(!contains("_unc")) %>% 
-  select(!"ID") %>% 
-  colnames()
-
-gad.items.followupB_clean
-```
-### Check number of implausible values
-```{r}
-# Check for implausible values
-gad_followupB_imp_n <- COPING_followupB.id.long %>% 
-  select(all_of(gad.items.followupB_clean)) %>% 
-  filter(. == -66) %>% 
-  nrow()
-
-# If statement
-if (gad_followupB_imp_n == 0) {
-  print(paste0("The number of implausible values in the coping follow up B gad variables is ", gad_followupB_imp_n, ". Can leave these variables as they are."))
-} else {
-  print(paste0("The number of implausible values in the coping follow up B gad variables is ", gad_followupB_imp_n, ". Please investigate."))
-}
-```
-
-### Select only the clean variables
-```{r}
-COPING_followupB.id.long.clean <- COPING_followupB.id.long %>% 
-  select(!contains("_unc"))
-
-colnames(COPING_followupB.id.long.clean)
-```
 
 
 # Merge COPING Baseline, follow up A and B surveys
 Note: full join (i.e. to get all participants in all three data sets)
 ```{r Merge COPING follow up A and B surveys}
 gad.merging <- list(COPING_baseline.id.clean,
-                    COPING_followupA_ong.id.long.clean,
-                       COPING_followupA.id.long.clean,
-                       COPING_followupB.id.long.clean)
+                    COPING_followup.id.long.clean)
 
 
 gad.COPING <- plyr::join_all(gad.merging,
-#                    by = "ID", #if included, this stops columns with the same name from combined. Allowing to merge on all common names columns
+                    by = "ID", 
                     type = "full")
 
-# relocate ID to the beginning
-
-gad.COPING <- gad.COPING %>%
-  relocate(ID, .before = startDate)
-  
   
   
 # check
-dim(COPING_followupA.id.long.clean)
-dim(COPING_followupA_ong.id.long.clean)
-dim(COPING_followupB.id.long.clean)
+dim(COPING_followup.id.long.clean)
 dim(COPING_baseline.id.clean)
 dim(gad.COPING)
 
@@ -994,9 +707,7 @@ colnames(gad.COPING)
 
 # reorder so that it is easy to see each wave in place.
 gad.COPING.reordered <- gad.COPING %>% 
-  select(order(names(gad.COPING)),
-         -startDate,
-         -endDate) %>%
+  select(order(names(gad.COPING))) %>%
   relocate(ID, .before = gad7.pandemic_afraid_something_terrible_will_happen_.Wave_0)
 
 colnames(gad.COPING.reordered)
@@ -1686,7 +1397,7 @@ gad.merging <- list(RAMP_baseline.id.clean,
 
 
 gad.RAMP <- plyr::join_all(gad.merging,
-     #               by = "ID", freeing to merge on all common columns so we dont drop anyything needlessly
+                    by = "ID",
                     type = "full")
 
   
@@ -1710,7 +1421,6 @@ colnames(gad.RAMP.reordered)
 
 # merge COPING and RAMP all wave data
 
-Merge by all common columns so that we dont duplicate waves. This is effectively an rbind action (adding a row for every case but keeping columns standard across)
 
 ```{r merge RAMP and COPING}
 
@@ -2116,8 +1826,7 @@ Also create a keyed name dictionary
 
 gad.mplus.reduced <-gad.mplus %>%
   select(-gad.total_Wave_01,
-         -gad.total_Wave_02,
-         -gad.total_Wave_17)
+         -gad.total_Wave_02)
 
 gad.mplus.reduced.names <- names(gad.mplus.reduced)
 gad.mplus.reduced.names.columns <- seq(1,length(gad.mplus.reduced.names))
