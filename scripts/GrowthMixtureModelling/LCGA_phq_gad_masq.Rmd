@@ -794,7 +794,6 @@ print(list_all_missing)
 
 ```
 
-Note: this corresponds to the dataset with all time points, thus, different missing on all data pattern from MPlus run with time points 1,2, and 17 removed. 
 
 #### run all models 
 
@@ -1270,3 +1269,506 @@ growth_curves_run2b
 ```
 
 
+## MASQ: Current anhedonia {.tabset}
+
+Measure has been reverse coded, such that higher scores indicate higher levels of negative affect, to correspond with the direction of the GAD-7 and PHQ 9
+
+Will run these trajectories starting from follow up time 3 as this is the first point where we have both CPOING and RAMP data
+
+### Data summary
+
+```{r read in masq and check missing all cases}
+
+masq_check <-  readRDS("../../../data_clean/masq/masq.clean_merged_total_scores.rds")
+
+# get a list of the total score columns
+total_cols <- grep("total_Wave", names(masq_check))
+
+#count how many columns we have
+n_cols <- length(total_cols)
+
+# create a list of how many NAs are missing across these 18 columns per row
+list_n_missing <- apply(masq_check[total_cols],1,function(x) sum(is.na(x)))
+
+# count how many people are missing data for all columns (NA = total_cols)
+list_all_missing <-  sum(list_n_missing ==n_cols)
+
+print(dim(masq_check)[1])
+print(list_all_missing)
+
+```
+
+Note: this corresponds to the dataset with all time points, thus, different missing on all data pattern from MPlus run with time points 1,2 and baseline
+
+#### run all models 
+
+dont rerun models if there is already output for it (to save computational time), do show the output in the console
+
+Note:
+```{r run anxiety linear models, eval=FALSE}
+
+runModels("./MPlus_input_lcga/masq", 
+          recursive = FALSE,
+          showOutput=TRUE,
+          replaceOutfile="never")
+
+```
+
+### Examine model output {.tabset}
+this reads in all output, including the gh5 plot files
+```{r read anxiety model}
+
+anx.traj.all <- readModels("./MPlus_input_lcga/masq", 
+                           recursive=FALSE)
+
+```
+
+
+#### Check warnings and error messages {.tabset}
+
+- warnings  
+- that none of the residual variances are negative and significant  
+- loadings of indicators and intercept should all be 1, and estimates should relate to the time points you specified (e.g. lin 0, 1, 2; quad 0, 1, 4) 
+- intercept 0 for all and correlations look sensible
+
+##### warnings
+
+at the moment this doesnt say which model the warning is from, so any warning requires checking to identify its source. Though order in list will give some indication
+```{r check warnings anxiety}
+
+justWarnings <- do.call("paste",
+  sapply(anx.traj.all ,"[", "warnings"))
+
+justWarnings
+
+```
+
+Warnings are all about missing data (missing on all obs, this number lines up with our expectations from the dataset in the section above) 
+
+Otherwise, no warnings. Check one complete.
+
+
+##### errors
+
+No errors occurred. Used the same alterations as for PHQ (see above)
+
+Check any errors with running any of the models. Output here will not say which model it belongs to, so will need to manually examine if errors occur,
+
+```{r check errors anxiety}
+
+justErrors <- do.call("paste",
+  sapply(anx.traj.all ,"[", "errors"))
+
+justErrors
+
+```
+
+
+#### Check indicators of model success and stability {.tabset}
+
+Tabs to check that:   
+1. Any residual variance is positive. Significant negative residual variance would indicate a model error. 
+2. The loadings of indicators and intercepts are 1
+3. Estimates late correctly to specific time points (i.e. the relative time references for each time point make sense and are accurate).
+4. The intercept is zero for all time points
+5. Model estimated correlations between time points look sensible      
+
+
+Output from each relevant file will be printed in each tab for review without needing MPlus software. You may need to scroll across to see full output.
+
+##### Residuals 
+check if any residual variances are negative and significant (would indicate model error)
+###### Linear 
+All variances are positive
+```{r check if residual variances negative linanx}
+
+model <- anx.traj.all$masq_latentGrowthCurve_linear.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+###### Linear with pairwise correlations
+All variances are positive
+```{r check if residual variances negative lin pairwiseanx}
+
+model <- anx.traj.all$masq_latentGrowthCurve_linear_withpairwiseCorrelations.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+###### Quadratic 
+All variances are positive
+```{r check if residual variances negative quadanx}
+
+model <- anx.traj.all$masq_latentGrowthCurve_quadratic.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+###### Quadratic with pairwise correlations
+All variances are positive
+```{r check if residual variances negative quad pairwiseanx}
+
+model <- anx.traj.all$masq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+###### Piecewise
+All variances are positive
+```{r check if residual variances negative piece 1 anx}
+
+model <- anx.traj.all$masq_latentGrowthCurve_piecewise.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+###### Piecewise with pairwise correlations 
+All variances are positive
+```{r check if residual variances negative piece 1 pairwise anx}
+
+model <- anx.traj.all$masq_latentGrowthCurve_piecewise_wPairwise_correlations.out$parameters$unstandardized
+model[model$paramHeader == "Residual.Variances",]
+
+```
+
+##### Loadings & Estimates 
+Check loadings of indicators and intercepts are 1, and  estimates relate to specified time points (e.g. lin 0, 1, 2; quad 0, 1, 4)
+
+Note that time references are relative. For most models run here, a difference of 1 refers to a gap of 2 weeks. Thus a difference of 2 refers to a gap of 4 weeks. For Quadratic models, a difference of 0.5 indicates a gap of 2 weeks, and a difference of 1 indicates a gap of 4 weeks. 0 is always the start of a trajectory, before we expect any change to occur. E.g. baseline would be 0 in a linear model.
+
+So linear trajectories (given we are not including follow up time points 1 and 2, which occurred during our 2 week assessment phase) should have a time point reference that looks something like: 0, 3, 4, 5, 6, 7, 8, 9 *(two weekly assessment time period ends here, four weeekly assessment period begins)*, 11, 13, 15, 17, 19, 21, 23, 25 
+
+###### Linear 
+All is fine
+```{r check full output negative linanx}
+
+anx.traj.all$masq_latentGrowthCurve_linear.out$output[290:327] %>%
+  str_split("/t") %>%
+  kbl() %>%
+  kable_styling(bootstrap_options = "striped")
+
+```
+###### Linear with pairwise correlations 
+All is fine
+```{r check full output negative lin pairwiseanx}
+
+anx.traj.all$masq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[293:330]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+
+```
+###### Quadratic
+All is fine
+```{r check full output negative quadanx}
+
+anx.traj.all$masq_latentGrowthCurve_quadratic.out$output[298:353]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+
+```
+###### Quadratic with pairwise correlations
+All is fine
+```{r check full output negative quad pairwiseanx}
+
+anx.traj.all$masq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[297:352]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+
+```
+###### Piecewise 
+All is fine
+```{r check full output negative 4pieceanx}
+
+anx.traj.all$masq_latentGrowthCurve_piecewise.out$output[340:432]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+
+```
+###### Piecewise with pairwise correlations
+All is fine
+```{r check full output negative 4piece coranx}
+
+anx.traj.all$masq_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[558:648]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+
+```
+
+
+
+
+##### Intercepts  
+check intercept 0 for all time points
+
+###### Linear 
+All is fine
+```{r check intercepts are zero linanx}
+
+anx.traj.all$masq_latentGrowthCurve_linear.out$output[335:352]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+###### Linear with pairwise correlations 
+All is fine
+```{r check intercepts are zero lin pairwiseanx}
+
+anx.traj.all$masq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[383:400]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+###### Quadratic
+All is fine
+```{r check intercepts are zero quadanx}
+
+anx.traj.all$masq_latentGrowthCurve_quadratic.out$output[366:383]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+###### Quadratic with pairwise correlations
+All is fine
+```{r check intercepts are zero quad pairwiseanx}
+
+anx.traj.all$masq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[410:427]  %>%
+  str_split("/t") %>%
+  kbl() %>%
+  kable_styling(bootstrap_options = "striped")
+```
+###### Piecewise 
+All is fine
+```{r check intercepts are zero 4pieceanx}
+
+anx.traj.all$masq_latentGrowthCurve_piecewise.out$output[458:475]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+###### Piecewise with pairwise correlations
+All is fine
+```{r check intercepts are zero 4piece coranx}
+
+anx.traj.all$masq_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[718:736]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+
+
+
+
+##### Correlations  
+Check that the model estimated correlations between all time points looks sensible. 
+
+###### Linear 
+All is fine
+```{r check correlations linanx}
+
+anx.traj.all$masq_latentGrowthCurve_linear.out$output[653:705]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+###### Linear with pairwise correlations 
+All is fine
+```{r check correlations lin pairwiseanx}
+
+anx.traj.all$masq_latentGrowthCurve_linear_withpairwiseCorrelations.out$output[746:798]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+###### Quadratic
+All is fine
+```{r check correlations quadanx}
+
+anx.traj.all$masq_latentGrowthCurve_quadratic.out$output[709:760]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+###### Quadratic with pairwise correlations
+All is fine
+```{r check correlations quad pairwiseanx}
+
+anx.traj.all$masq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$output[851:798]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+###### Piecewise 
+All is fine
+```{r check correlations 4pieceanx}
+
+anx.traj.all$masq_latentGrowthCurve_piecewise.out$output[854:906]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+###### Piecewise with pairwise correlations
+All is fine
+
+```{r check correlations 4piece coranx}
+
+anx.traj.all$masq_latentGrowthCurve_piecewise_wPairwise_correlations.out$output[948:1000]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
+```
+
+
+
+
+### Summary table of all fit indices
+
+Sorted by BIC, as this is the most informative criteria (as per Muthens)
+
+```{r create summary tableanx}
+
+
+justSummaries <- do.call("rbind.fill",
+  sapply(anx.traj.all ,"[", "summaries")) %>%
+  select(c("Title", "Observations", "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate")) %>%
+  arrange(BIC)
+
+justSummaries %>%
+  kbl() %>%
+  kable_styling()
+```
+
+### Plots {.tabset}
+
+I show the plots for all runs. Output for all runs is available in the GMM folder on GitHub to review input and output data that generated these plots.   
+
+1. Observed and estimated means: Showing model estimated means from linear, quadratic, and piecewise trajectories (solid lines) overlaid on the observed means from our sample (dashed line)
+2. Plot estimated mean trajectories for every model run (with and without pairwise correlations)
+3. plot estimated mean trajectories for the best of each pair of model (i.e. only including te version of the model where contiguous time point residuals were allowed to correlate as these were the best fit for the data)   
+
+#### Observed and estimated means
+
+Plot estimated means from model (solid lines) alongside the observed means (dashed lines) from the data.
+
+Using the best models from each model type pairing (i.e. the version with pairwise correlations of residuals between contiguous time points)
+
+```{r Format anxiety Growth Curve Data run 2 obs est, include=FALSE}
+
+dat_dep_run_2c<-data.frame(matrix(nrow=16, ncol=4))
+
+colnames(dat_dep_run_2c)<-c("Linear","Quadratic", "Piecewise", "Observed")
+
+
+dat_dep_run_2c$Linear <- anx.traj.all$masq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2c$Piecewise <- anx.traj.all$masq_latentGrowthCurve_piecewise_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2c$Quadratic <- anx.traj.all$masq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+dat_dep_run_2c$Observed <- anx.traj.all$masq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_observed_means$values
+
+dat_dep_run_2c$timepoint<-c(0:15) 
+
+dat_dep_run_2c<-dat_dep_run_2c%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic","Piecewise", "Observed")))
+
+
+dat_dep_run_2c <- dat_dep_run_2c %>%
+  mutate(Type = case_when(Model == "Observed"~ "Observed",
+                          TRUE ~ "Estimated"))
+  
+```
+
+```{r anxiety Growth Curve Forms run 2 obs est}
+growth_curves_run2c <- ggplot() +
+  geom_line(data = dat_dep_run_2c,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_dep_run_2c,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="masq7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(5,7), breaks=seq(5, 7, 3)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+                                   hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_run2c
+
+
+
+```
+
+#### All models
+
+
+Plotting the estimated means for the trajectories with adjacent residuals correlated as these all had better fit than uncorrelated models
+
+```{r Format anxiety Growth Curve Data run 2, include=FALSE}
+
+dat_dep_run_2<-data.frame(matrix(nrow=16, ncol=6))
+
+colnames(dat_dep_run_2)<-c("Linear", "LinearWithCorrelations",  "Quadratic", "QuadraticWithCorrelations",  "Piecewise", "PiecewiseWithCorrelations")
+
+
+dat_dep_run_2$Linear <-anx.traj.all$masq_latentGrowthCurve_linear.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2$LinearWithCorrelations <- anx.traj.all$masq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+dat_dep_run_2$Quadratic <-anx.traj.all$masq_latentGrowthCurve_quadratic.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2$QuadraticWithCorrelations <- anx.traj.all$masq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+dat_dep_run_2$Piecewise <- anx.traj.all$masq_latentGrowthCurve_piecewise.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2$PiecewiseWithCorrelations <- anx.traj.all$masq_latentGrowthCurve_piecewise_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+
+dat_dep_run_2$timepoint<-c(0:15)
+
+dat_dep_run_2<-dat_dep_run_2%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear", "LinearWithCorrelations", "Quadratic", "QuadraticWithCorrelations", "Piecewise", "PiecewiseWithCorrelations")))
+
+```
+
+
+```{r anxiety Growth Curve Forms run 2}
+
+growth_curves_run2 <- ggplot() +
+  geom_line(data = dat_dep_run_2,
+        aes(x = timepoint, y = score, colour = Model), size = 1) +
+  geom_point(data = dat_dep_run_2,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="masq7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(5,7), breaks=seq(5, 7, 3)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+                                   hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_run2
+
+```
+
+
+#### Best model from each trajectory type
+
+Only show the best of each pair of models (with or without pairwise residual correlations)
+
+Linear: With correlations
+Quadratic: With correlations
+Piecewise: With correlations
+
+
+```{r Format anxiety Growth Curve Data run 2b, include=FALSE}
+
+dat_dep_run_2b<-data.frame(matrix(nrow=16, ncol=3))
+
+colnames(dat_dep_run_2b)<-c("Linear", "Quadratic", "Piecewise")
+
+
+dat_dep_run_2b$Linear <- anx.traj.all$masq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2b$Piecewise <- anx.traj.all$masq_latentGrowthCurve_piecewise_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_dep_run_2b$Quadratic <- anx.traj.all$masq_latentGrowthCurve_quadratic_withPairwiseCorrelations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+dat_dep_run_2b$timepoint<-c(0:15) 
+
+dat_dep_run_2b<-dat_dep_run_2b%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Linear","Quadratic", "Piecewise")))
+```
+
+
+
+```{r anxiety Growth Curve Forms run 2b}
+growth_curves_run2b <- ggplot() +
+  geom_line(data = dat_dep_run_2b,
+        aes(x = timepoint, y = score, colour = Model), size = 1) +
+  geom_point(data = dat_dep_run_2b,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette[c(4, 1:3)]) +
+  labs(x = "Follow up time point", y ="masq7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(5,7), breaks=seq(5, 7, 3)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+                                   hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_run2b
+
+
+
+```
