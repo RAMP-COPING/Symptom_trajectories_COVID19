@@ -423,27 +423,27 @@ model[model$paramHeader == "Residual.Variances",]
 
 Print output file for each correlation for examination of these details and any other relevant information
 
-##### Loadings:  
+##### Loadings  
 Check loadings of indicators and intercepts are 1    
 
-######Linear:  
+###### Linear  
 ***YES***
-######Linear with pairwise correlations: 
+###### Linear with pairwise correlations: 
 ***YES***
-######Quadratic: 
+###### Quadratic 
 ***YES***
-######Quadratic with pairwise correlations: 
+###### Quadratic with pairwise correlations 
 ***YES***
-######Piecewise: 
-to check
-######Piecewise with pairwise correlations: 
+###### Piecewise
 ***YES***
-
-##### Estimates: 
-Check estimates relate to specified timepoints   
-###### 2. Estimates relate to specified timepoints  
+###### Piecewise with pairwise correlations 
 ***YES***
 
+##### Estimates 
+Check estimates relate to specified timepoints  
+
+###### Estimates relate to specified timepoints  
+***YES***
 
 ```{r check full output negative lin}
 
