@@ -1,5 +1,5 @@
 ---
-title: "Run Latent Class Growth Analyses for RAMP longitudinal analyses of common mental health symptoms: GAD and PHQ, and MASQ (due to CFA indicating tripartite model not a good fit for data"
+title: "Run Latent Class Growth Analyses for RAMP & COPING longitudinal analyses of common mental health symptoms: GAD and PHQ, and MASQ (due to CFA indicating tripartite model not a good fit for data"
 
 author: "K L Purves"
 date: '`r format(Sys.time(), "%d %B, %Y")`'
@@ -595,9 +595,65 @@ justSummaries %>%
 
 I show the plots for all runs. Output for all runs is available in the GMM folder on GitHub to review input and output data that generated these plots.   
 
-1. Observed and estimated means: Showing model estimated means from linear, quadratic, and piecewise trajectories (solid lines) overlaid on the observed means from our sample (dashed line)
-2. Plot estimated mean trajectories for every model run (with and without pairwise correlations)
-3. plot estimated mean trajectories for the best of each pair of model (i.e. only including te version of the model where contiguous time point residuals were allowed to correlate as these were the best fit for the data)   
+1. Observed (dashed lines) and estimated (solid lines) means for best fit trajectory only 
+2. Observed and estimated means: Showing model estimated means from linear, quadratic, and piecewise trajectories (solid lines) overlaid on the observed means from our sample (dashed line)
+3. Plot estimated mean trajectories for every model run (with and without pairwise correlations)
+4. plot estimated mean trajectories for the best of each pair of model (i.e. only including te version of the model where contiguous time point residuals were allowed to correlate as these were the best fit for the data)   
+
+#### Best model: Observed and estimated means
+Showing model estimated means from  piecewise trajectories with pairwise correlations between contiguous time points (solid lines) overlaid on the observed means from our sample (dashed line)
+
+```{r Format Depression Growth Curve Data best model, include=FALSE}
+
+dat_dep_best<-data.frame(matrix(nrow=16, ncol=2))
+
+colnames(dat_dep_best)<-c("Piecewise", "Observed")
+
+dat_dep_best$Piecewise <- dep.traj.all$phq_latentGrowthCurve_piecewise_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+dat_dep_best$Observed <- dep.traj.all$phq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_observed_means$values
+
+dat_dep_best$timepoint<-c(0:15) 
+
+dat_dep_best<-dat_dep_best%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Piecewise", "Observed")))
+
+
+dat_dep_best <- dat_dep_best %>%
+  mutate(Type = case_when(Model == "Observed"~ "Observed",
+                          TRUE ~ "Estimated"))
+  
+```
+
+
+```{r Depression Growth Curve Forms best model}
+growth_curves_best <- ggplot() +
+  geom_line(data = dat_dep_best,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_dep_best,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="PHQ9 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 1)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_best
+
+
+
+```
+
+
 
 
 #### Observed and estimated means
@@ -1101,10 +1157,65 @@ justSummaries %>%
 
 I show the plots for all runs. Output for all runs is available in the GMM folder on GitHub to review input and output data that generated these plots.   
 
-1. Observed and estimated means: Showing model estimated means from linear, quadratic, and piecewise trajectories (solid lines) overlaid on the observed means from our sample (dashed line)
-2. Plot estimated mean trajectories for every model run (with and without pairwise correlations)
-3. plot estimated mean trajectories for the best of each pair of model (i.e. only including te version of the model where contiguous time point residuals were allowed to correlate as these were the best fit for the data)   
 
+1. Observed (dashed lines) and estimated (solid lines) means for best fit trajectory only 
+2. Observed and estimated means: Showing model estimated means from linear, quadratic, and piecewise trajectories (solid lines) overlaid on the observed means from our sample (dashed line)
+3. Plot estimated mean trajectories for every model run (with and without pairwise correlations)
+4. plot estimated mean trajectories for the best of each pair of model (i.e. only including te version of the model where contiguous time point residuals were allowed to correlate as these were the best fit for the data)   
+
+#### Best model: Observed and estimated means
+Showing model estimated means from  piecewise trajectories with pairwise correlations between contiguous time points (solid lines) overlaid on the observed means from our sample (dashed line)
+
+```{r Format anxiety Growth Curve Data best model, include=FALSE}
+
+dat_anx_best<-data.frame(matrix(nrow=16, ncol=2))
+
+colnames(dat_anx_best)<-c("Piecewise", "Observed")
+
+dat_anx_best$Piecewise <- anx.traj.all$gad_latentGrowthCurve_piecewise_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+dat_anx_best$Observed <- anx.traj.all$gad_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_observed_means$values
+
+dat_anx_best$timepoint<-c(0:15) 
+
+dat_anx_best<-dat_anx_best%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Piecewise", "Observed")))
+
+
+dat_anx_best <- dat_anx_best %>%
+  mutate(Type = case_when(Model == "Observed"~ "Observed",
+                          TRUE ~ "Estimated"))
+  
+```
+
+
+```{r anxiety Growth Curve Forms best model}
+
+growth_curves_best <- ggplot() +
+  geom_line(data = dat_anx_best,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_anx_best,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="GAD7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(5,7), breaks=seq(5, 7, 1)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_best
+
+
+
+```
 #### Observed and estimated means
 
 Plot estimated means from model (solid lines) alongside the observed means (dashed lines) from the data.
@@ -1606,10 +1717,65 @@ justSummaries %>%
 
 I show the plots for all runs. Output for all runs is available in the GMM folder on GitHub to review input and output data that generated these plots.   
 
-1. Observed and estimated means: Showing model estimated means from linear, quadratic, and piecewise trajectories (solid lines) overlaid on the observed means from our sample (dashed line)
-2. Plot estimated mean trajectories for every model run (with and without pairwise correlations)
-3. plot estimated mean trajectories for the best of each pair of model (i.e. only including te version of the model where contiguous time point residuals were allowed to correlate as these were the best fit for the data)   
 
+1. Observed (dashed lines) and estimated (solid lines) means for best fit trajectory only 
+2. Observed and estimated means: Showing model estimated means from linear, quadratic, and piecewise trajectories (solid lines) overlaid on the observed means from our sample (dashed line)
+3. Plot estimated mean trajectories for every model run (with and without pairwise correlations)
+4. plot estimated mean trajectories for the best of each pair of model (i.e. only including te version of the model where contiguous time point residuals were allowed to correlate as these were the best fit for the data)   
+
+#### Best model: Observed and estimated means
+Showing model estimated means from  piecewise trajectories with pairwise correlations between contiguous time points (solid lines) overlaid on the observed means from our sample (dashed line)
+
+```{r Format anhedonia Growth Curve Data best model, include=FALSE}
+
+dat_anhed_best<-data.frame(matrix(nrow=15, ncol=2))
+
+colnames(dat_anhed_best)<-c("Piecewise", "Observed")
+
+dat_anhed_best$Piecewise <- anhed.traj.all$masq_latentGrowthCurve_piecewise_wPairwise_correlations.out$gh5$means_and_variances_data$y_estimated_means$values
+
+dat_anhed_best$Observed <- anhed.traj.all$masq_latentGrowthCurve_linear_withpairwiseCorrelations.out$gh5$means_and_variances_data$y_observed_means$values
+
+dat_anhed_best$timepoint<-c(0:14) 
+
+dat_anhed_best<-dat_anhed_best%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Piecewise", "Observed")))
+
+
+dat_anhed_best <- dat_anhed_best %>%
+  mutate(Type = case_when(Model == "Observed"~ "Observed",
+                          TRUE ~ "Estimated"))
+  
+```
+
+
+```{r anhedonia Growth Curve Forms best model}
+
+growth_curves_best <- ggplot() +
+  geom_line(data = dat_anhed_best,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_anhed_best,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="masq (reverse) Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(25,29), breaks=seq(25, 29, 1)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
+                   labels = timepoint_list_anh) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_best
+
+
+
+```
 #### Observed and estimated means
 
 Plot estimated means from model (solid lines) alongside the observed means (dashed lines) from the data.
