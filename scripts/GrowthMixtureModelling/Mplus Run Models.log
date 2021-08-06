@@ -1,14 +1,14 @@
-------Begin Mplus Model Run: 05Aug2021 20:09:11------
+------Begin Mplus Model Run: 06Aug2021 13:29:49------
 Run options:
 	Recursive (run models in subdirectories): FALSE
 	Show output on console: TRUE
 	Replace existing outfile: never
 ------
-Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/GAD/gad_latentGrowthCurve_linear_withpairwiseCorrelations.inp
-Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/GAD/gad_latentGrowthCurve_linear.inp
-Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/GAD/gad_latentGrowthCurve_piecewise_wPairwise_correlations.inp
-Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/GAD/gad_latentGrowthCurve_piecewise.inp
-Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/GAD/gad_latentGrowthCurve_quadratic_withPairwiseCorrelations.inp
-Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_lcga/GAD/gad_latentGrowthCurve_quadratic.inp
+Currently running model: masq_latentGrowthCurve_linear_withpairwiseCorrelations.inp
+Currently running model: masq_latentGrowthCurve_linear.inp
+Currently running model: masq_latentGrowthCurve_piecewise_wPairwise_correlations.inp
+Currently running model: masq_latentGrowthCurve_piecewise.inp
+Currently running model: masq_latentGrowthCurve_quadratic_withPairwiseCorrelations.inp
+Currently running model: masq_latentGrowthCurve_quadratic.inp
 
-------End Mplus Model Run: 05Aug2021 20:09:13------
+------End Mplus Model Run: 06Aug2021 13:31:57------

@@ -38,7 +38,7 @@ MODEL:
 !Mplus not to converge
 !reating 0.5 as a 2 week unit instead of 1
 
-	int slope quad | masq_t3@0 masq_t4@0.5
+	int lin quad | masq_t3@0 masq_t4@0.5
     		 masq_t5@1 masq_t6@1.5 masq_t7@2 masq_t8@2.5 masq_t9@3 
     		 masq_t10@4 masq_t11@5 masq_t12@6 masq_t13@7
     		 masq_t14@8 masq_t15@9 masq_t16@10 masq_t17@11;

@@ -70,7 +70,7 @@ MODEL:
     		 masq_t10@0 masq_t11@0 masq_t12@0 masq_t13@0
     		 masq_t14@0 masq_t15@0 masq_t16@2 masq_t17@4;
     		 
-	
+	lin1@0;
 	lin4@0; 
 	
 	int WITH lin1;
