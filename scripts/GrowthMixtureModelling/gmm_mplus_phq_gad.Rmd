@@ -1,5 +1,5 @@
 ---
-title: "Run Latent Class Growth Analyses and Growth Mixture Modelling for RAMP longitudinal analyses of common mental health symptoms: GAD and PHQ"
+title: "Run Latent Class Growth Analyses for RAMP longitudinal analyses of common mental health symptoms: GAD and PHQ, and MASQ (due to CFA indicating tripartite model not a good fit for data"
 author: "K L Purves"
 date: '`r format(Sys.time(), "%d %B, %Y")`'
 output:
