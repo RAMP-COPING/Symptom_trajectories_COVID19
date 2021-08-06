@@ -227,7 +227,7 @@ melted_cormat[(melted_cormat$value == 0.63),]
 ```
 # CFA
 
-## a prior model specficiation
+## a priori model specficiation
 What items will work best for the tripartite: specify the model
 
 ***Item pool***
