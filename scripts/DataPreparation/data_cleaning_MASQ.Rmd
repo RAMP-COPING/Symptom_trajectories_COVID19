@@ -76,7 +76,6 @@ if(!require(modeest)){
 
 ```{r}
 # read in the files (save to environment)
-
 source("../../../Credentials/paths_anhedonia_analysis.R")
 ```
 

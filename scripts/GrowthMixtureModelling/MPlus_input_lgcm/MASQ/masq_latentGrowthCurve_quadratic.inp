@@ -1,0 +1,65 @@
+TITLE:
+Anhedonia symptoms in RAMP and COPING
+Quadratic Growth Curve
+No pairwise correlations
+
+DATA:
+  	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
+  	data_clean/masq/masq.clean_merged_total_scores_reduced.csv";
+
+VARIABLE:
+
+	NAMES ARE
+		id masq_t3 masq_t4 masq_t5
+		masq_t6 masq_t7 masq_t8 masq_t9 masq_t10 masq_t11
+		masq_t12 masq_t13 masq_t14 masq_t15 masq_t16 masq_t17;
+				
+	USEVARIABLES ARE
+		masq_t3 masq_t4 masq_t5
+		masq_t6 masq_t7 masq_t8 masq_t9 masq_t10 masq_t11
+		masq_t12 masq_t13 masq_t14 masq_t15 masq_t16 masq_t17;
+		
+	MISSING ARE ALL (-99);
+	IDVARIABLE IS id;
+	
+	
+ANALYSIS:
+	
+	ESTIMATOR = MLR; !Maximum lifelihood with robust standard errors 
+	!as data is skew for GAD at all time points
+	PROCESSORS = 2; !only 2 on Mac
+	ITERATIONS=5000;
+
+
+	
+MODEL:
+!trying smaller growth factors
+!sometimes large time specifiers can cause 
+!Mplus not to converge
+!reating 0.5 as a 2 week unit instead of 1
+
+	int lin quad | masq_t3@0 masq_t4@0.5
+    		 masq_t5@1 masq_t6@1.5 masq_t7@2 masq_t8@2.5 masq_t9@3 
+    		 masq_t10@4 masq_t11@5 masq_t12@6 masq_t13@7
+    		 masq_t14@8 masq_t15@9 masq_t16@10 masq_t17@11;
+    		 
+	
+	int WITH lin;
+	int WITH quad;
+	lin WITH quad;
+PLOT:
+	TYPE = PLOT3; !do not get plots on Mac but we use the gh5 file in R
+	
+	SERIES = masq_t3(0) masq_t4(1)
+    	masq_t5(2) masq_t6(3) masq_t7(4) masq_t8(5) masq_t9(6) masq_t10(8)
+    	masq_t11(10) masq_t12(12) masq_t13(14) masq_t14(16) masq_t15(18) 
+    	masq_t16(20) masq_t17(22);
+    
+	
+OUTPUT:
+	STDYX MODINDICES(30) RESIDUAL;
+
+SAVEDATA:
+
+   ! SAVE=FS;		
+   ! FILE IS lgca-masq-quad.dat;	

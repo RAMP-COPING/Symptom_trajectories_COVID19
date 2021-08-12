@@ -1,14 +1,7 @@
-------Begin Mplus Model Run: 06Aug2021 13:29:49------
+------Begin Mplus Model Run: 12Aug2021 04:42:01------
 Run options:
 	Recursive (run models in subdirectories): FALSE
 	Show output on console: TRUE
 	Replace existing outfile: never
 ------
-Currently running model: masq_latentGrowthCurve_linear_withpairwiseCorrelations.inp
-Currently running model: masq_latentGrowthCurve_linear.inp
-Currently running model: masq_latentGrowthCurve_piecewise_wPairwise_correlations.inp
-Currently running model: masq_latentGrowthCurve_piecewise.inp
-Currently running model: masq_latentGrowthCurve_quadratic_withPairwiseCorrelations.inp
-Currently running model: masq_latentGrowthCurve_quadratic.inp
-
-------End Mplus Model Run: 06Aug2021 13:31:57------
+Currently running model: phq_GMM_piecewise_5_classes.inp
