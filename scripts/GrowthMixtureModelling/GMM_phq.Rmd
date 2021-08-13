@@ -592,7 +592,7 @@ run optseed again with TECH 14
 read all GMM models
 ```{r read all models} 
 
-depression.all.out <- readModels("./MPlus_input_gmm/PHQ", 
+depression.all.out <- readModels("./MPlus_input_gmm/PHQ/output", 
                            recursive=FALSE)
 
 ```
@@ -602,7 +602,7 @@ extract relevant summaries from GMM and 1 class lgcm
 ```{r extract gmm summaries}
 justSummariesGMM <- do.call("rbind.fill",
   sapply(depression.all.out ,"[", "summaries")) %>%
-  select(c("Title", "Observations", "Parameters","NGroups", "AIC", "BIC", "LL")) %>%
+  select(c("Title", "Parameters",  "Entropy", "AIC", "BIC","aBIC", "LL")) %>%
   arrange(BIC)
 ```
 
@@ -610,12 +610,20 @@ extract the same from the one trajectory lgcm
 
 ```{r extract all sums from one trajectory}
 
-justSummarieslgcm <- do.call(sapply(depression.one.class.out ,"[", "summaries")) %>%
-  select(c("Title", "Observations", "Parameters","NGroups","AIC", "BIC",  "LL"))
+justSummarieslgcm <- depression.one.class.out$summaries %>%
+  select(c("Title", "Parameters", "AIC", "BIC","aBIC", "LL")) %>%
+  arrange(BIC)
+
+justSummarieslgcm$Entropy <- "1"
+
+justSummarieslgcm <- justSummarieslgcm %>%
+  relocate(Entropy, .after=Parameters)
 
 ```
 
 And bind these together to print in a nice table
+
+*discuss with Katie whether to add entropy, or just report this in text. 
 
 ```{r build pretty summary table}
 
@@ -691,21 +699,29 @@ growth_curves_oneclass
 
 ```{r Format latent growth curves data two class, include=FALSE}
 
-dat_plot_curves_two<-data.frame(matrix(nrow=16, ncol=3))
+dat_plot_curves_two<-data.frame(matrix(nrow=16, ncol=4))
 
-colnames(dat_plot_curves_two)<-c("Class1","Class2","Observed")
+colnames(dat_plot_curves_two)<-c("Class1","Class2","Observed1", "Observed2")
 
-dat_plot_curves_two$Class1<- depression.two.class.out$gh5$means_and_variances_data$y_estimated_means$values[1] 
-dat_plot_curves_two$Class2<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[2]
-dat_plot_curves_two$Observed<- depression.one.class.out$gh5$means_and_variances_data$y_observed_means$values
+dat_plot_curves_two$Class1<- depression.two.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_two$Class2<- depression.two.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_two$Observed1<- depression.two.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_two$Observed2<- depression.two.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+
 
 dat_plot_curves_two$timepoint<-c(0:15) 
 
-dat_plot_curves_two<-dat_plot_curves_two%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Observed")))
+dat_plot_curves_two<-dat_plot_curves_two%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Observed1","Observed2")))
 
 dat_plot_curves_two <- dat_plot_curves_two %>%
-  mutate(Type = case_when(Model == "Observed"~ "Observed",
-                          TRUE ~ "Estimated"))
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2"
+                          ))
 ```
 
 
@@ -719,7 +735,7 @@ growth_curves_twoclass <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="PHQ9 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(4,9), breaks=seq(4,9, 1)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
   theme(panel.grid.major.y = element_line(size = 0.5,
@@ -744,22 +760,35 @@ growth_curves_twoclass
 
 ```{r Format latent growth curves data three class, include=FALSE}
 
-dat_plot_curves_three<-data.frame(matrix(nrow=16, ncol=4))
+dat_plot_curves_three<-data.frame(matrix(nrow=16, ncol=6))
 
-colnames(dat_plot_curves_three)<-c("Class1","Class2","Class3","Observed")
+colnames(dat_plot_curves_three)<-c("Class1","Class2","Class3",
+                                   "Observed1", "Observed2","Observed3")
 
-dat_plot_curves_three$Class1<- depression.three.class.out$gh5$means_and_variances_data$y_estimated_means$values[1] 
-dat_plot_curves_three$Class2<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[2]
-dat_plot_curves_three$Class3<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[3]
-dat_plot_curves_three$Observed<- depression.one.class.out$gh5$means_and_variances_data$y_observed_means$values
+dat_plot_curves_three$Class1<- depression.three.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_three$Class2<- depression.three.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_three$Class3<- depression.three.class.out$gh5$means_and_variances_data$y_estimated_means$values[,3]
+
+dat_plot_curves_three$Observed1<- depression.three.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_three$Observed2<- depression.three.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+dat_plot_curves_three$Observed3<- depression.three.class.out$gh5$means_and_variances_data$y_observed_means$values[,3]
 
 dat_plot_curves_three$timepoint<-c(0:15) 
 
-dat_plot_curves_three<-dat_plot_curves_three%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3", "Observed")))
+dat_plot_curves_three<-dat_plot_curves_three%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Observed1","Observed2","Observed3")))
 
 dat_plot_curves_three <- dat_plot_curves_three %>%
-  mutate(Type = case_when(Model == "Observed"~ "Observed",
-                          TRUE ~ "Estimated"))
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          Model == "Observed3"~ "Observed",  
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Observed3"~ "Class3",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2",
+                          Model == "Class3"~ "Class3"
+                          ))
 ```
 
 
@@ -773,7 +802,7 @@ growth_curves_threeclass <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="PHQ9 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(7,16), breaks=seq(7,16, 1)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
   theme(panel.grid.major.y = element_line(size = 0.5,
@@ -795,23 +824,40 @@ growth_curves_threeclass
 
 ```{r Format latent growth curves data four class, include=FALSE}
 
-dat_plot_curves_four<-data.frame(matrix(nrow=16, ncol=5))
+dat_plot_curves_four<-data.frame(matrix(nrow=16, ncol=8))
 
-colnames(dat_plot_curves_four)<-c("Class1","Class2","Class3","Class4","Observed")
+colnames(dat_plot_curves_four)<-c("Class1","Class2","Class3","Class4",
+                                   "Observed1", "Observed2","Observed3","Observed4")
 
-dat_plot_curves_four$Class1<- depression.four.class.out$gh5$means_and_variances_data$y_estimated_means$values[1] 
-dat_plot_curves_four$Class2<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[2]
-dat_plot_curves_four$Class3<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[3]
-dat_plot_curves_four$Class4<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[4]
-dat_plot_curves_four$Observed<- depression.one.class.out$gh5$means_and_variances_data$y_observed_means$values
+dat_plot_curves_four$Class1<- depression.four.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_four$Class2<- depression.four.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_four$Class3<- depression.four.class.out$gh5$means_and_variances_data$y_estimated_means$values[,3]
+dat_plot_curves_four$Class4<- depression.four.class.out$gh5$means_and_variances_data$y_estimated_means$values[,4]
+
+dat_plot_curves_four$Observed1<- depression.four.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_four$Observed2<- depression.four.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+dat_plot_curves_four$Observed3<- depression.four.class.out$gh5$means_and_variances_data$y_observed_means$values[,3]
+dat_plot_curves_four$Observed4<- depression.four.class.out$gh5$means_and_variances_data$y_observed_means$values[,4]
 
 dat_plot_curves_four$timepoint<-c(0:15) 
 
-dat_plot_curves_four<-dat_plot_curves_four%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4", "Observed")))
+dat_plot_curves_four<-dat_plot_curves_four%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Observed1","Observed2","Observed3","Observed4")))
 
 dat_plot_curves_four <- dat_plot_curves_four %>%
-  mutate(Type = case_when(Model == "Observed"~ "Observed",
-                          TRUE ~ "Estimated"))
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          Model == "Observed3"~ "Observed",
+                          Model == "Observed4"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Observed3"~ "Class3",
+                          Model == "Observed4"~ "Class4",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2",
+                          Model == "Class3"~ "Class3",
+                          Model == "Class4"~ "Class4"
+                          ))
 ```
 
 
@@ -825,7 +871,7 @@ growth_curves_fourclass <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="PHQ9 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(7,24), breaks=seq(7,24, 1)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
   theme(panel.grid.major.y = element_line(size = 0.5,
@@ -847,24 +893,47 @@ growth_curves_fourclass
 
 ```{r Format latent growth curves data five class, include=FALSE}
 
-dat_plot_curves_five<-data.frame(matrix(nrow=16, ncol=6))
+dat_plot_curves_five<-data.frame(matrix(nrow=16, ncol=10))
 
-colnames(dat_plot_curves_five)<-c("Class1","Class2","Class3","Class4","Class5","Observed")
+colnames(dat_plot_curves_five)<-c("Class1","Class2","Class3","Class4",
+                                  "Class5",
+                                   "Observed1", "Observed2","Observed3","Observed4",
+                                  "Observed5")
 
-dat_plot_curves_five$Class1<- depression.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[1] 
-dat_plot_curves_five$Class2<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[2]
-dat_plot_curves_five$Class3<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[3]
-dat_plot_curves_five$Class4<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[4]
-dat_plot_curves_five$Class5<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[5]
-dat_plot_curves_five$Observed<- depression.one.class.out$gh5$means_and_variances_data$y_observed_means$values
+dat_plot_curves_five$Class1<- depression.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_five$Class2<- depression.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_five$Class3<- depression.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[,3]
+dat_plot_curves_five$Class4<- depression.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[,4]
+dat_plot_curves_five$Class5<- depression.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[,5]
+
+dat_plot_curves_five$Observed1<- depression.five.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_five$Observed2<- depression.five.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+dat_plot_curves_five$Observed3<- depression.five.class.out$gh5$means_and_variances_data$y_observed_means$values[,3]
+dat_plot_curves_five$Observed4<- depression.five.class.out$gh5$means_and_variances_data$y_observed_means$values[,4]
+dat_plot_curves_five$Observed5<- depression.five.class.out$gh5$means_and_variances_data$y_observed_means$values[,5]
 
 dat_plot_curves_five$timepoint<-c(0:15) 
 
-dat_plot_curves_five<-dat_plot_curves_five%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Class5", "Observed")))
+dat_plot_curves_five<-dat_plot_curves_five%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Class5","Observed1","Observed2","Observed3","Observed4","Observed5")))
 
 dat_plot_curves_five <- dat_plot_curves_five %>%
-  mutate(Type = case_when(Model == "Observed"~ "Observed",
-                          TRUE ~ "Estimated"))
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          Model == "Observed3"~ "Observed",
+                          Model == "Observed4"~ "Observed",
+                          Model == "Observed5"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Observed3"~ "Class3",
+                          Model == "Observed4"~ "Class4",
+                          Model == "Observed5"~ "Class5",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2",
+                          Model == "Class3"~ "Class3",
+                          Model == "Class4"~ "Class4",
+                          Model == "Class5"~ "Class5"
+                          ))
 ```
 
 
@@ -900,25 +969,54 @@ growth_curves_fiveclass
 
 ```{r Format latent growth curves data six class, include=FALSE}
 
-dat_plot_curves_six<-data.frame(matrix(nrow=16, ncol=7))
+dat_plot_curves_six<-data.frame(matrix(nrow=16, ncol=12))
 
-colnames(dat_plot_curves_six)<-c("Class1","Class2","Class3","Class4","Class5","Class6", "Observed")
+colnames(dat_plot_curves_six)<-c("Class1","Class2","Class3","Class4",
+                                  "Class5","Class6",
+                                   "Observed1", "Observed2","Observed3","Observed4",
+                                  "Observed5","Observed6")
 
-dat_plot_curves_six$Class1<- depression.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[1] 
-dat_plot_curves_six$Class2<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[2]
-dat_plot_curves_six$Class3<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[3]
-dat_plot_curves_six$Class4<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[4]
-dat_plot_curves_six$Class5<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[5]
-dat_plot_curves_six$Class6<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[6]
-dat_plot_curves_six$Observed<- depression.one.class.out$gh5$means_and_variances_data$y_observed_means$values
+dat_plot_curves_six$Class1<- depression.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_six$Class2<- depression.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_six$Class3<- depression.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,3]
+dat_plot_curves_six$Class4<- depression.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,4]
+dat_plot_curves_six$Class5<- depression.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,5]
+dat_plot_curves_six$Class6<- depression.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,6]
+
+
+dat_plot_curves_six$Observed1<- depression.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_six$Observed2<- depression.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+dat_plot_curves_six$Observed3<- depression.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,3]
+dat_plot_curves_six$Observed4<- depression.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,4]
+dat_plot_curves_six$Observed5<- depression.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,5]
+dat_plot_curves_six$Observed6<- depression.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,6]
+
 
 dat_plot_curves_six$timepoint<-c(0:15) 
 
-dat_plot_curves_six<-dat_plot_curves_six%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Class5","Class6","Observed")))
+dat_plot_curves_six<-dat_plot_curves_six%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Class5","Class6","Observed1","Observed2","Observed3","Observed4","Observed5","Observed6")))
 
 dat_plot_curves_six <- dat_plot_curves_six %>%
-  mutate(Type = case_when(Model == "Observed"~ "Observed",
-                          TRUE ~ "Estimated"))
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          Model == "Observed3"~ "Observed",
+                          Model == "Observed4"~ "Observed",
+                          Model == "Observed5"~ "Observed",
+                          Model == "Observed6"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Observed3"~ "Class3",
+                          Model == "Observed4"~ "Class4",
+                          Model == "Observed5"~ "Class5",
+                          Model == "Observed6"~ "Class6",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2",
+                          Model == "Class3"~ "Class3",
+                          Model == "Class4"~ "Class4",
+                          Model == "Class5"~ "Class5",
+                          Model == "Class6"~ "Class6"
+                          ))
 ```
 
 
@@ -953,26 +1051,59 @@ growth_curves_sixclass
 
 ```{r Format latent growth curves data seven class, include=FALSE}
 
-dat_plot_curves_seven<-data.frame(matrix(nrow=16, ncol=8))
+dat_plot_curves_seven<-data.frame(matrix(nrow=16, ncol=14))
 
-colnames(dat_plot_curves_seven)<-c("Class1","Class2","Class3","Class4","Class5","Class6", "Class7", "Observed")
+colnames(dat_plot_curves_seven)<-c("Class1","Class2","Class3","Class4",
+                                  "Class5","Class6","Class7",
+                                   "Observed1", "Observed2","Observed3","Observed4",
+                                  "Observed5","Observed6","Observed7")
 
-dat_plot_curves_seven$Class1<- depression.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[1] 
-dat_plot_curves_seven$Class2<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[2]
-dat_plot_curves_seven$Class3<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[3]
-dat_plot_curves_seven$Class4<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[4]
-dat_plot_curves_seven$Class5<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[5]
-dat_plot_curves_seven$Class6<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[6]
-dat_plot_curves_seven$Class7<- depression.one.class.out$gh5$means_and_variances_data$y_estimated_means$values[7]
-dat_plot_curves_seven$Observed<- depression.one.class.out$gh5$means_and_variances_data$y_observed_means$values
+dat_plot_curves_seven$Class1<- depression.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_seven$Class2<- depression.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_seven$Class3<- depression.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,3]
+dat_plot_curves_seven$Class4<- depression.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,4]
+dat_plot_curves_seven$Class5<- depression.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,5]
+dat_plot_curves_seven$Class6<- depression.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,6]
+dat_plot_curves_seven$Class7<- depression.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,7]
+
+
+dat_plot_curves_seven$Observed1<- depression.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_seven$Observed2<- depression.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+dat_plot_curves_seven$Observed3<- depression.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,3]
+dat_plot_curves_seven$Observed4<- depression.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,4]
+dat_plot_curves_seven$Observed5<- depression.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,5]
+dat_plot_curves_seven$Observed6<- depression.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,6]
+dat_plot_curves_seven$Observed7<- depression.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,7]
+
 
 dat_plot_curves_seven$timepoint<-c(0:15) 
 
-dat_plot_curves_seven<-dat_plot_curves_seven%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Class5","Class6","Class7", "Observed")))
+dat_plot_curves_seven<-dat_plot_curves_seven%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Class5","Class6","Class7","Observed1","Observed2","Observed3","Observed4","Observed5","Observed6","Observed7")))
 
 dat_plot_curves_seven <- dat_plot_curves_seven %>%
-  mutate(Type = case_when(Model == "Observed"~ "Observed",
-                          TRUE ~ "Estimated"))
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          Model == "Observed3"~ "Observed",
+                          Model == "Observed4"~ "Observed",
+                          Model == "Observed5"~ "Observed",
+                          Model == "Observed6"~ "Observed",
+                          Model == "Observed7"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Observed3"~ "Class3",
+                          Model == "Observed4"~ "Class4",
+                          Model == "Observed5"~ "Class5",
+                          Model == "Observed6"~ "Class6",
+                          Model == "Observed7"~ "Class7",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2",
+                          Model == "Class3"~ "Class3",
+                          Model == "Class4"~ "Class4",
+                          Model == "Class5"~ "Class5",
+                          Model == "Class6"~ "Class6",
+                          Model == "Class7"~ "Class7"
+                          ))
 ```
 
 

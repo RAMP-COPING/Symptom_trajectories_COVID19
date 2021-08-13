@@ -584,7 +584,7 @@ Sorted by BIC, as this is the most informative criteria (as per Muthens)
 ```{r create summary table}
 justSummaries <- do.call("rbind.fill",
   sapply(dep.traj.all ,"[", "summaries")) %>%
-  select(c("Title", "Observations", "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate")) %>%
+  select(c("Title",  "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate")) %>%
   arrange(BIC)
 
 justSummaries %>%
@@ -1146,7 +1146,7 @@ Sorted by BIC, as this is the most informative criteria (as per Muthens)
 
 justSummaries <- do.call("rbind.fill",
   sapply(anx.traj.all ,"[", "summaries")) %>%
-  select(c("Title", "Observations", "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate")) %>%
+  select(c("Title",  "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate")) %>%
   arrange(BIC)
 
 justSummaries %>%
@@ -1706,7 +1706,7 @@ Sorted by BIC, as this is the most informative criteria (as per Muthens)
 
 justSummaries <- do.call("rbind.fill",
   sapply(anhed.traj.all ,"[", "summaries")) %>%
-  select(c("Title", "Observations", "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate")) %>%
+  select(c("Title",  "Parameters", "AIC", "BIC", "CFI", "TLI", "SRMR", "RMSEA_Estimate")) %>%
   arrange(BIC)
 
 justSummaries %>%
