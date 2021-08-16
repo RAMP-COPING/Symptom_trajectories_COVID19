@@ -645,13 +645,13 @@ justSummaries %>%
 
 ```{r all BIC scree}
 
+# reorder the title column by BIC for plotting
+justSummaries$Title <-  reorder(justSummaries$Title, -justSummaries$BIC)
 
 BIC_scree_plot <- ggplot() +
-  geom_line(data = justSummaries %>%
-              arrange(-BIC),
+  geom_line(data =justSummaries,
         aes(x = Title, y = BIC,group=1)) +
-  geom_point(data = justSummaries %>%
-              arrange(-BIC),
+  geom_point(data = justSummaries,
         aes(x = Title, y = BIC,group=1), show.legend = F) +
   labs(x = "Model", y ="BIC") +
   theme(panel.background = element_blank(),
