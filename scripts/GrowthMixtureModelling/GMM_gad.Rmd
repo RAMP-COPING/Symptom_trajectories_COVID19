@@ -632,10 +632,11 @@ And bind these together to print in a nice table
 justSummaries <- rbind(justSummariesGMM,justSummarieslgcm) %>%
   arrange(BIC)
 
-justSummaries %>%
+summary_table <- justSummaries %>%
   kbl(caption ="Growth mixture modelling fit statistics for all models tested: GAD") %>%
   kable_styling()
 
+summary_table
 ```
 
 ## Class counts for each model run
@@ -645,7 +646,7 @@ Particularly need to make sure that the selected model has >1% of the sample in 
 2 class
 ```{r two class most likely counts}
 
-anxiety.all.out$gad_GMM_piecewise_2_classes.out$class_counts$mostLikely %>%
+class_allocation_2 <- anxiety.all.out$gad_GMM_piecewise_2_classes.out$class_counts$mostLikely %>%
   kbl(caption = "Counts and proportions of most likely class membership: Two class solution",
         align='lll',
         digits = 2,
@@ -653,62 +654,73 @@ anxiety.all.out$gad_GMM_piecewise_2_classes.out$class_counts$mostLikely %>%
   kable_styling(position = "left",
                 "striped")
 
+class_allocation_2
 ```
 
 3 class
 ```{r three class most likely counts}
 
-anxiety.all.out$gad_GMM_piecewise_3_classes.out$class_counts$mostLikely %>%
+class_allocation_3 <-anxiety.all.out$gad_GMM_piecewise_3_classes.out$class_counts$mostLikely %>%
   kbl(caption = "Counts and proportions of most likely class membership: Three class solution",
         align='lll',
         digits = 2,
         col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_3_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
+
+class_allocation_3
 ```
 
 4 class
 ```{r four class most likely counts}
-anxiety.all.out$gad_GMM_piecewise_4_classes.out$class_counts$mostLikely %>%
+class_allocation_4 <- anxiety.all.out$gad_GMM_piecewise_4_classes.out$class_counts$mostLikely %>%
   kbl(caption = "Counts and proportions of most likely class membership: Four class solution",
         align='lll',
         digits = 2,
         col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_4_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
+
+class_allocation_4
 ```
 
 5 class
 ```{r five class most likely counts}
-anxiety.all.out$gad_GMM_piecewise_5_classes.out$class_counts$mostLikely %>%
+class_allocation_5 <- anxiety.all.out$gad_GMM_piecewise_5_classes.out$class_counts$mostLikely %>%
   kbl(caption = "Counts and proportions of most likely class membership: Five class solution",
         align='lll',
         digits = 2,
         col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_5_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
+
+class_allocation_5
 ```
 
 6 class
 ```{r six class most likely counts}
-anxiety.all.out$gad_GMM_piecewise_6_classes.out$class_counts$mostLikely %>%
+class_allocation_6 <-anxiety.all.out$gad_GMM_piecewise_6_classes.out$class_counts$mostLikely %>%
   kbl(caption = "Counts and proportions of most likely class membership: Six class solution",
         align='lll',
         digits = 2,
         col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_6_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
+
+class_allocation_6
 ```
 
 7 class
 ```{r seven class most likely counts}
-anxiety.all.out$gad_GMM_piecewise_7_classes.out$class_counts$mostLikely %>%
+class_allocation_7 <-anxiety.all.out$gad_GMM_piecewise_7_classes.out$class_counts$mostLikely %>%
   kbl(caption = "Counts and proportions of most likely class membership: Seven class solution",
         align='lll',
         digits = 2,
         col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_7_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
+
+class_allocation_7
 ```
 
 
@@ -735,6 +747,41 @@ BIC_scree_plot
 
 ```
 
+## Save supplementary tables and figures
+
+```{r save supp tables and figures}
+# set up folder reference
+save_file_path <- file.path(dirname(dirname(getwd())),"output/supplementary_tables_figures/GAD/")
+
+# save summary table
+save_kable(summary_table,
+           file.path(save_file_path,"gad_gmm_allModelsfitStatistics.html"))
+
+# save BIC scree
+ggsave(
+  filename=file.path(save_file_path,"gad_BIC_scree_plot.png"),
+  plot =BIC_scree_plot)
+    
+# save class proportion data tables
+save_kable(class_allocation_2,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_2class.html"))
+
+save_kable(class_allocation_3,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_3class"))
+
+save_kable(class_allocation_4,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_4class"))
+
+save_kable(class_allocation_5,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_5class"))
+
+save_kable(class_allocation_6,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_6class"))
+
+save_kable(class_allocation_7,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_7class"))
+
+```
 
 # Plots {.tabset}
 
@@ -1248,5 +1295,42 @@ growth_curves_sevenclass <- ggplot() +
         panel.background = element_blank()) 
 
 growth_curves_sevenclass
+
+```
+
+## Save all plots for manuscript or supplementary figures
+
+```{r save trajectory figures}
+# set up folder reference
+save_file_path <- file.path(dirname(dirname(getwd())),"output/Trajectory_plots/GAD/")
+
+# save all trajectory plots
+ggsave(
+  filename=file.path(save_file_path,"gad_oneclass_trajectory.png"),
+  plot =growth_curves_oneclass)
+
+ggsave(
+  filename=file.path(save_file_path,"gad_twoclass_trajectory.png"),
+  plot =growth_curves_twoclass)
+
+ggsave(
+  filename=file.path(save_file_path,"gad_threeclass_trajectory.png"),
+  plot =growth_curves_threeclass)
+
+ggsave(
+  filename=file.path(save_file_path,"gad_fourclass_trajectory.png"),
+  plot =growth_curves_fourclass)
+
+ggsave(
+  filename=file.path(save_file_path,"gad_fiveclass_trajectory.png"),
+  plot =growth_curves_fiveclass)
+
+ggsave(
+  filename=file.path(save_file_path,"gad_sixclass_trajectory.png"),
+  plot =growth_curves_sixclass)
+
+ggsave(
+  filename=file.path(save_file_path,"gad_sevenclass_trajectory.png"),
+  plot =growth_curves_sevenclass)
 
 ```
