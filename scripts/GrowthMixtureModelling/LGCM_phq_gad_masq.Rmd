@@ -588,7 +588,7 @@ justSummaries <- do.call("rbind.fill",
   arrange(BIC)
 
 justSummaries %>%
-  kbl() %>%
+  kbl("Latent curve growth modelling fit statistics for all models tested: PHQ") %>%
   kable_styling()
 ```
 
@@ -1150,7 +1150,7 @@ justSummaries <- do.call("rbind.fill",
   arrange(BIC)
 
 justSummaries %>%
-  kbl() %>%
+  kbl("Latent curve growth modelling fit statistics for all models tested: GAD-7") %>%
   kable_styling()
 ```
 
@@ -1686,6 +1686,7 @@ All is fine
 
 anhed.traj.all$masq_latentGrowthCurve_piecewise.out$output[793:836]  %>%   str_split("/t") %>%   kbl() %>%   kable_styling(bootstrap_options = "striped")
 ```
+
 ###### Piecewise with pairwise correlations
 All is fine
 
@@ -1710,7 +1711,7 @@ justSummaries <- do.call("rbind.fill",
   arrange(BIC)
 
 justSummaries %>%
-  kbl() %>%
+  kbl(caption ="Latent curve growth modelling fit statistics for all models tested: MASQ") %>%
   kable_styling()
 ```
 

@@ -592,7 +592,6 @@ run optseed again with TECH 14
 # Supplementary checks, tables and figures
 
 ## fit indices for all models run
-
 read all GMM models
 ```{r read all models} 
 
@@ -633,20 +632,23 @@ justSummaries <- rbind(justSummariesGMM,justSummarieslgcm) %>%
   arrange(BIC)
 
 justSummaries %>%
-  kbl() %>%
+  kbl(caption ="Growth mixture modelling fit statistics for all models tested: PHQ") %>%
   kable_styling()
 
 ```
 
 ## Class counts for each model run
 
-Partiuclarly need to make sure that the selected model has >1% of the sample in the smallest class.
+Particularly need to make sure that the selected model has >1% of the sample in the smallest class.
 
 2 class
 ```{r two class most likely counts}
 
-round(depression.all.out$phq_GMM_piecewise_2_classes.out$class_counts$mostLikely,2) %>%
-  kbl(caption = "Counts and proportions of most likely class membership: Two class solution") %>%
+depression.all.out$phq_GMM_piecewise_2_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Two class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(depression.all.out$phq_GMM_piecewise_2_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
 
@@ -655,40 +657,55 @@ round(depression.all.out$phq_GMM_piecewise_2_classes.out$class_counts$mostLikely
 3 class
 ```{r three class most likely counts}
 
-round(depression.all.out$phq_GMM_piecewise_3_classes.out$class_counts$mostLikely,2) %>%
-  kbl(caption = "Counts and proportions of most likely class membership: Three class solution") %>%
+depression.all.out$phq_GMM_piecewise_3_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Three class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(depression.all.out$phq_GMM_piecewise_3_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
 ```
 
 4 class
 ```{r four class most likely counts}
-round(depression.all.out$phq_GMM_piecewise_4_classes.out$class_counts$mostLikely,2) %>%
-  kbl(caption = "Counts and proportions of most likely class membership: Four class solution") %>%
+depression.all.out$phq_GMM_piecewise_4_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Four class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(depression.all.out$phq_GMM_piecewise_4_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
 ```
 
 5 class
 ```{r five class most likely counts}
-round(depression.all.out$phq_GMM_piecewise_5_classes.out$class_counts$mostLikely,2) %>%
-  kbl(caption = "Counts and proportions of most likely class membership: Five class solution") %>%
+depression.all.out$phq_GMM_piecewise_5_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Five class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(depression.all.out$phq_GMM_piecewise_5_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
 ```
 
 6 class
 ```{r six class most likely counts}
-round(depression.all.out$phq_GMM_piecewise_6_classes.out$class_counts$mostLikely,2) %>%
-  kbl(caption = "Counts and proportions of most likely class membership: Six class solution") %>%
+depression.all.out$phq_GMM_piecewise_6_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Six class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(depression.all.out$phq_GMM_piecewise_6_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
 ```
 
 7 class
 ```{r seven class most likely counts}
-round(depression.all.out$phq_GMM_piecewise_7_classes.out$class_counts$mostLikely,2) %>%
-  kbl(caption = "Counts and proportions of most likely class membership: Seven class solution") %>%
+depression.all.out$phq_GMM_piecewise_7_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Seven class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(depression.all.out$phq_GMM_piecewise_7_classes.out$class_counts$mostLikely)))) %>%
   kable_styling(position = "left",
                 "striped")
 ```
