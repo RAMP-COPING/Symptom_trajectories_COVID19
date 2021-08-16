@@ -638,12 +638,67 @@ justSummaries %>%
 
 ```
 
+## Class counts for each model run
+
+Partiuclarly need to make sure that the selected model has >1% of the sample in the smallest class.
+
+2 class
+```{r two class most likely counts}
+
+round(anxiety.all.out$gad_GMM_piecewise_2_classes.out$class_counts$mostLikely,2) %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Two class solution") %>%
+  kable_styling(position = "left",
+                "striped")
+
+```
+
+3 class
+```{r three class most likely counts}
+
+round(anxiety.all.out$gad_GMM_piecewise_3_classes.out$class_counts$mostLikely,2) %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Three class solution") %>%
+  kable_styling(position = "left",
+                "striped")
+```
+
+4 class
+```{r four class most likely counts}
+round(anxiety.all.out$gad_GMM_piecewise_4_classes.out$class_counts$mostLikely,2) %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Four class solution") %>%
+  kable_styling(position = "left",
+                "striped")
+```
+
+5 class
+```{r five class most likely counts}
+round(anxiety.all.out$gad_GMM_piecewise_5_classes.out$class_counts$mostLikely,2) %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Five class solution") %>%
+  kable_styling(position = "left",
+                "striped")
+```
+
+6 class
+```{r six class most likely counts}
+round(anxiety.all.out$gad_GMM_piecewise_6_classes.out$class_counts$mostLikely,2) %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Six class solution") %>%
+  kable_styling(position = "left",
+                "striped")
+```
+
+7 class
+```{r seven class most likely counts}
+round(anxiety.all.out$gad_GMM_piecewise_7_classes.out$class_counts$mostLikely,2) %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Seven class solution") %>%
+  kable_styling(position = "left",
+                "striped")
+```
 
 ### add LRT output these as a column to our table and print again
 
 ## BIC scree plot
 
 ```{r all BIC scree}
+
 # reorder the title column by BIC for plotting
 justSummaries$Title <-  reorder(justSummaries$Title, -justSummaries$BIC)
 
