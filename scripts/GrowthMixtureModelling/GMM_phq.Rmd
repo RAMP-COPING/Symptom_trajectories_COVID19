@@ -26,7 +26,7 @@ This workbook centralises analyses of the PHQ-9 total scores longitudinal analys
 
 The exploratory approach attempts to decompose heterogeneous trajectories into distinct subclasses. 
 
-To allow estimation of variance while minimising computational requirements, we will constrain the variance of the intercept to be equal across classes, whilst fixing the variance in the slope to zero.
+Variance was constrained to zero for the 4th linear trajectory as this is only estimated using two time points, and cannot converge otherwise. variances for each intercept and slope were freely estimated for all sub groups.  
 
 Best fit model from the 1 class lgcm performed (relating to step 1 in the pre-registration) was a piecewise model, with each inflection point dictated by an imposition or easing of lockdown restrictions, allowing for residuals to correlate between contiguous time points.
 
@@ -36,21 +36,23 @@ Best fit model from the 1 class lgcm performed (relating to step 1 in the pre-re
 **global MPlus** 
 All models will be run using Robust Full Information Maximum Likelihood estimation (MLR in MPlus) to account for missing data (assumed missing at random) robust to skewing of the data. 
 
-In order to avoid a global maxima/local solution problem (log likelihood depends on starting values used, thus could have a false maximum or sub-optimal model) we will use multiple random sets of starting values, and ensure the highest log likelihood is replicated at least twice. In practice, we will use 1000 random sets of starting values, and carry forward the 250 values with the highest log likelihood to final stage optimisations. This will be set using STARTS = 1000 250 in Mplus input scripts.  This should ensure global maxima are achieved, whilst balancing computational requirements. 
+In order to avoid a global maxima/local solution problem (log likelihood depends on starting values used, thus could have a false maximum or sub-optimal model) we will use multiple random sets of starting values, and ensure the highest log likelihood is replicated at least twice (using OPTSEED in MPlus). In practice, we will use 500 random sets of starting values, and carry forward the 125 values with the highest log likelihood to final stage optimisations. This will be set using STARTS = 500 125 in Mplus input scripts.  This should ensure global maxima are achieved, whilst balancing computational requirements. 
 
-**Step 1. Test a k + 1 class model, starting with 2, of the best fit latent growth curve model established in step 1 (lgcm) until any of the following conditions are met:**   
+***note: in our pre-registration we specified STARTS 1000 250, however this proved computationally impossible. Thus we ran with half the number of random starts. Providing these replicate, we will still perform two further replications of the best likelihood from our selected model using OPTSEED to ensure there is no evidence for the local maxima problem***
+
+**Step 1. Test a k + 1 class model, starting with k=1 (2 classes tested), of the best fit latent growth curve model established in step 1 (lgcm) until any of the following conditions are met:**   
 
 * Indices of model fit show a deterioration in fit according to the BIC relative to a model with fewer classes. The first model (2 class) will be compared to the lgcm (1 class), and so forth.
 * The model no longer converges due to complexity   
 * We exceed 7 classes (this is the maximum number of classes that would be practically useful and logically interpretable). 
 * If the BIC continues to decrease up until 7 classes, then the best model will be ascertained by first examining the proportion of the sample that has been allocated to the smallest trajectory group. If this is < 1%, then the previous class solution will be preferred. 
-* If BIC decreases up until 7 class solution, and all classes constrain > 1% of the data, then the best model will be selected by creating a screen plot of BIC values. the model that falls at the inflection point (or the point of diminishing gains) will be selected (see pre registration for citations).
+* If BIC decreases up until 7 class solution, and all classes contain > 1% of the data, then the best model will be selected by creating a scree plot of BIC values. the model that falls at the inflection point (or the point of diminishing gains) will be selected (see pre registration for citations).
 * if inflection point remains ambiguous, then remaining fit indices will be compared globally to select between two similar models. The model with the highest entropy will be selected preferentially. If entropy is equivalent, then model which has better fit on the most number of fit indices (described below) will be selected. 
 
 **Step 2. Assess overall fit of the selected model to ensure it is the best and most parsimonious solution**
-* We will ensure there is no evidence for the local maxima problem by rerunning the analysis using he top two seeds from the replicated best log likelihood from the original analysis using OPTSEED in a new Mplus input file. We will check that the best log likelihood from this output matches that from the previous output. We will include TECH11 output in this MPLUS run to output the Vuong-Lo-Mendell-Rubin Likelihood ratios test comparing the best fit model to the earlier fit model
+* We will ensure there is no evidence for the local maxima problem by rerunning the analysis using the top two seeds from the replicated best log likelihood from the original analysis using OPTSEED in a new Mplus input file. We will check that the best log likelihood from this output matches that from the previous output. We will include TECH11 output in this MPLUS run to output the Vuong-Lo-Mendell-Rubin Likelihood ratios test comparing the best fit model to the earlier fit model
 
-* We will run a second analysis using OPTSEED to be even more ure there is no evidence for the local maxima problem by rerunning the analysis using the top two seeds from the replicated best log likelihood from the original analysis in a new Mplus input file. We will check that the best log likelihood from this output matches that from the previous output. We will include TECH14 output in this MPLUS run to output the Bootstrapped Likelihood ratios test (BLRT) comparing the best fit model to the earlier nested model.
+* We will run a second analysis using OPTSEED to be even more sure there is no evidence for the local maxima problem by rerunning the analysis using the top two seeds from the replicated best log likelihood from the original analysis in a new Mplus input file. We will check that the best log likelihood from this output matches that from the previous output. We will include TECH14 output in this MPLUS run to output the Bootstrapped Likelihood ratios test (BLRT) comparing the best fit model to the earlier nested model.
 
 This step wise procedure should save time whilst ensuring we select the optimal model and obtain unbiased estimates. [see this webnote for a description of the step wise procedure](https://www.statmodel.com/examples/webnotes/webnote14.pdf).
 
@@ -185,7 +187,7 @@ options(scipen = 999)
 RAMP colours (first) from website and second is a generated left tetradic (rectangular) colour complement of the RAMP logo green for contrast and complement. 
 ```{r colour palette, include=FALSE}
 
-pres.palette <- c("#4ED1B7", "#F6C66A", "#D14D68", "#1A3E72",  "#D1754D","#FFED04","#3F9D8A","#B74DD1") 
+pres.palette <- c("#4ED1B7", "#F6C66A", "#6564DB", "#D90368","#481620",  "#6F7C12","#061A40") 
 
 prev.pres.palette<-c("#4590B8", "#4D68D1", "#D14D68", "#D1B74D", "#68D14D", "#B74DD1", "#D1754D")
 
@@ -240,7 +242,7 @@ depression.one.class.out <- readModels("./MPlus_input_lgcm/PHQ/phq_latentGrowthC
 
 ```{r read depression model two}
 
-depression.two.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_2_classes.out", 
+depression.two.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_2_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -305,7 +307,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_3_classes.inp",
 
 ```{r read depression model three}
 
-depression.three.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_3_classes.out", 
+depression.three.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_3_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -363,7 +365,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_4_classes.inp",
 
 ```{r read depression model four}
 
-depression.four.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_4_classes.out", 
+depression.four.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_4_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -422,7 +424,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_5_classes.inp",
 
 ```{r read depression model five}
 
-depression.five.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_5_classes.out", 
+depression.five.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_5_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -481,7 +483,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_6_classes.inp",
 
 ```{r read depression model six}
 
-depression.six.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_6_classes.out", 
+depression.six.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_6_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -539,7 +541,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_7_classes.inp",
 
 ```{r read depression model seven}
 
-depression.seven.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_7_classes.out", 
+depression.seven.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_7_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -587,7 +589,9 @@ run optseed again with TECH 14
 
 
 
-# Supplementary table of fit indices for all models run
+# Supplementary tables and figures
+
+## fit indices for all models run
 
 read all GMM models
 ```{r read all models} 
@@ -623,8 +627,6 @@ justSummarieslgcm <- justSummarieslgcm %>%
 
 And bind these together to print in a nice table
 
-*discuss with Katie whether to add entropy, or just report this in text. 
-
 ```{r build pretty summary table}
 
 justSummaries <- rbind(justSummariesGMM,justSummarieslgcm) %>%
@@ -637,10 +639,26 @@ justSummaries %>%
 ```
 
 
-
-
-
 ### add LRT output these as a column to our table and print again
+
+## BIC scree plot
+
+```{r all BIC scree}
+
+
+BIC_scree_plot <- ggplot() +
+  geom_line(data = justSummaries,
+        aes(x = Title, y = BIC,group=1)) +
+  geom_point(data = justSummaries,
+        aes(x = Title, y = BIC,group=1), show.legend = F) +
+  labs(x = "Model", y ="BIC") +
+  theme(panel.background = element_blank()) 
+
+BIC_scree_plot 
+
+
+```
+
 
 # Plots {.tabset}
 
@@ -661,7 +679,10 @@ dat_plot_curves_1<-dat_plot_curves_1%>%pivot_longer(-timepoint, names_to = "Mode
 
 dat_plot_curves_1 <- dat_plot_curves_1 %>%
   mutate(Type = case_when(Model == "Observed"~ "Observed",
-                          TRUE ~ "Estimated"))
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed"~ "Piecewise",
+                          Model == "Group"~ "Piecewise"
+                          ))
 ```
 
 
@@ -674,13 +695,17 @@ growth_curves_oneclass <- ggplot() +
   geom_point(data = dat_plot_curves_1,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
-  labs(x = "Follow up time point", y ="PHQ9 Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(6,10), breaks=seq(6, 10, 1)) + 
+  labs(x = "Follow up time point", y ="PHQ-9 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0, 27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
+  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=27, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "#FFDBA4") +
+  geom_hline(yintercept=10, linetype="dashed", color = "#FF9E6E") +
+  geom_hline(yintercept=15, linetype="dashed", color = "#FF603B") +
+  geom_hline(yintercept=20, linetype="dashed", color = "#FF0000") +
+  theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
         axis.text.x = element_text(angle = 90,
@@ -734,13 +759,17 @@ growth_curves_twoclass <- ggplot() +
   geom_point(data = dat_plot_curves_two,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
-  labs(x = "Follow up time point", y ="PHQ9 Score") +
+  labs(x = "Follow up time point", y ="PHQ-9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
+   geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=27, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "#FFDBA4") +
+  geom_hline(yintercept=10, linetype="dashed", color = "#FF9E6E") +
+  geom_hline(yintercept=15, linetype="dashed", color = "#FF603B") +
+  geom_hline(yintercept=20, linetype="dashed", color = "#FF0000") +
+  theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
         axis.text.x = element_text(angle = 90,
@@ -801,13 +830,17 @@ growth_curves_threeclass <- ggplot() +
   geom_point(data = dat_plot_curves_three,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
-  labs(x = "Follow up time point", y ="PHQ9 Score") +
+  labs(x = "Follow up time point", y ="PHQ-9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
+ geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=27, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "#FFDBA4") +
+  geom_hline(yintercept=10, linetype="dashed", color = "#FF9E6E") +
+  geom_hline(yintercept=15, linetype="dashed", color = "#FF603B") +
+  geom_hline(yintercept=20, linetype="dashed", color = "#FF0000") +
+  theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
         axis.text.x = element_text(angle = 90,
@@ -870,13 +903,17 @@ growth_curves_fourclass <- ggplot() +
   geom_point(data = dat_plot_curves_four,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
-  labs(x = "Follow up time point", y ="PHQ9 Score") +
+  labs(x = "Follow up time point", y ="PHQ-9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
+ geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=27, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "#FFDBA4") +
+  geom_hline(yintercept=10, linetype="dashed", color = "#FF9E6E") +
+  geom_hline(yintercept=15, linetype="dashed", color = "#FF603B") +
+  geom_hline(yintercept=20, linetype="dashed", color = "#FF0000") +
+  theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
         axis.text.x = element_text(angle = 90,
@@ -946,13 +983,17 @@ growth_curves_fiveclass <- ggplot() +
   geom_point(data = dat_plot_curves_five,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
-  labs(x = "Follow up time point", y ="PHQ9 Score") +
+  labs(x = "Follow up time point", y ="PHQ-9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
+ geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=27, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "#FFB3B3") +
+  geom_hline(yintercept=10, linetype="dashed", color = "#FFB3B3") +
+  geom_hline(yintercept=15, linetype="dashed", color = "#FFB3B3") +
+  geom_hline(yintercept=20, linetype="dashed", color = "#FFB3B3") +
+  theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
         axis.text.x = element_text(angle = 90,
@@ -1029,10 +1070,14 @@ growth_curves_sixclass <- ggplot() +
   geom_point(data = dat_plot_curves_six,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
-  labs(x = "Follow up time point", y ="PHQ9 Score") +
+  labs(x = "Follow up time point", y ="PHQ-9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
+  geom_hline(yintercept=5, linetype="dashed", color = "#FFDBA4") +
+  geom_hline(yintercept=10, linetype="dashed", color = "#FF9E6E") +
+  geom_hline(yintercept=15, linetype="dashed", color = "#FF603B") +
+  geom_hline(yintercept=20, linetype="dashed", color = "#FF0000") +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
                                         colour = "gray"),
@@ -1116,10 +1161,14 @@ growth_curves_sevenclass <- ggplot() +
   geom_point(data = dat_plot_curves_seven,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
-  labs(x = "Follow up time point", y ="PHQ9 Score") +
+  labs(x = "Follow up time point", y ="PHQ-9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
+  geom_hline(yintercept=5, linetype="dashed", color = "#FFDBA4") +
+  geom_hline(yintercept=10, linetype="dashed", color = "#FF9E6E") +
+  geom_hline(yintercept=15, linetype="dashed", color = "#FF603B") +
+  geom_hline(yintercept=20, linetype="dashed", color = "#FF0000") +
   theme(panel.grid.major.y = element_line(size = 0.5,
                                         linetype = 'dashed',
                                         colour = "gray"),

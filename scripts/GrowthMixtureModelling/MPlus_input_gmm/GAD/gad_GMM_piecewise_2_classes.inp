@@ -1,5 +1,6 @@
 TITLE:
-Anxiety Symptoms in RAMP & COPING
+An
+	xiety Symptoms in RAMP & COPING
 2 class solution
 
 DATA:
@@ -26,7 +27,7 @@ VARIABLE:
 ANALYSIS:
 	
       ESTIMATOR = MLR;
-      STARTS = 1000 250; 
+      STARTS = 500 125; 
    
 	PROCESSORS = 2; 
 	TYPE = MIXTURE;

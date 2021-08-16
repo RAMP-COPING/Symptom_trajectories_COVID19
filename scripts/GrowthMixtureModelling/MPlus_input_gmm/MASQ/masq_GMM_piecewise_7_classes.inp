@@ -27,7 +27,6 @@ ANALYSIS:
 	
       ESTIMATOR = MLR;
       STARTS = 500 125;
-     !STARTS = 1000 250;!run with half this to start to make sure all runs well and be able o write the subsequent scripts . will run with final value set after 
    
 	PROCESSORS = 2; 
 	TYPE = MIXTURE;
