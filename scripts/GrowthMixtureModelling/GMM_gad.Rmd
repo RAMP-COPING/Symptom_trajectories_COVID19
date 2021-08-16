@@ -702,9 +702,9 @@ growth_curves_oneclass <- ggplot() +
                    labels = timepoint_list) +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
   geom_hline(yintercept=21, linetype="dashed", color = "grey") +
-  geom_hline(yintercept=5, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=10, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=15, linetype="dashed", color = "#FFB3B3") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
@@ -765,9 +765,9 @@ growth_curves_twoclass <- ggplot() +
                    labels = timepoint_list) +
   geom_hline(yintercept=0, linetype="dashed", color = "grey") +
   geom_hline(yintercept=21, linetype="dashed", color = "grey") +
-  geom_hline(yintercept=5, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=10, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=15, linetype="dashed", color = "#FFB3B3") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
@@ -835,9 +835,9 @@ growth_curves_threeclass <- ggplot() +
                    labels = timepoint_list) +
   geom_hline(yintercept=0, linetype="dashed", color = "grey") +
   geom_hline(yintercept=21, linetype="dashed", color = "grey") +
-  geom_hline(yintercept=5, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=10, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=15, linetype="dashed", color = "#FFB3B3") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
@@ -907,9 +907,9 @@ growth_curves_fourclass <- ggplot() +
                    labels = timepoint_list) +
   geom_hline(yintercept=0, linetype="dashed", color = "grey") +
   geom_hline(yintercept=21, linetype="dashed", color = "grey") +
-  geom_hline(yintercept=5, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=10, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=15, linetype="dashed", color = "#FFB3B3") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
@@ -986,9 +986,9 @@ growth_curves_fiveclass <- ggplot() +
                    labels = timepoint_list) +
   geom_hline(yintercept=0, linetype="dashed", color = "grey") +
   geom_hline(yintercept=21, linetype="dashed", color = "grey") +
-  geom_hline(yintercept=5, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=10, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=15, linetype="dashed", color = "#FFB3B3") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
@@ -1159,9 +1159,9 @@ growth_curves_sevenclass <- ggplot() +
                    labels = timepoint_list) +
   geom_hline(yintercept=0, linetype="dashed", color = "grey") +
   geom_hline(yintercept=21, linetype="dashed", color = "grey") +
-  geom_hline(yintercept=5, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=10, linetype="dashed", color = "#FFB3B3") +
-  geom_hline(yintercept=15, linetype="dashed", color = "#FFB3B3") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
