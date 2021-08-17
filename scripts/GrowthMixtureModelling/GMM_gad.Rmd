@@ -213,7 +213,7 @@ Will run each class consecutively, to check model for clear indications of stopp
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run two class model, eval=TRUE}
+```{r run two class model, eval=FALSE}
 runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_2_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -242,7 +242,7 @@ anxiety.one.class.out <- readModels("./MPlus_input_lgcm/GAD/gad_latentGrowthCurv
 
 ```{r read anxiety model two}
 
-anxiety.two.class.out <- readModels("./MPlus_input_gmm/GAD/output/gad_GMM_piecewise_2_classes.out", 
+anxiety.two.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_2_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -291,7 +291,7 @@ BIC_one_two_compare$aBIC[1] - BIC_one_two_compare$aBIC[2]
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run three class model, eval=TRUE}
+```{r run three class model, eval=FALSE}
 runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_3_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -307,7 +307,7 @@ runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_3_classes.inp",
 
 ```{r read anxiety model three}
 
-anxiety.three.class.out <- readModels("./MPlus_input_gmm/GAD/output/gad_GMM_piecewise_3_classes.out", 
+anxiety.three.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_3_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -349,7 +349,7 @@ BIC_two_three_compare$aBIC[1] - BIC_two_three_compare$aBIC[2]
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run four class model, eval=TRUE}
+```{r run four class model, eval=FALSE}
 runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_4_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -365,7 +365,7 @@ runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_4_classes.inp",
 
 ```{r read anxiety model four}
 
-anxiety.four.class.out <- readModels("./MPlus_input_gmm/GAD/output/gad_GMM_piecewise_4_classes.out", 
+anxiety.four.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_4_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -424,7 +424,7 @@ runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_5_classes.inp",
 
 ```{r read anxiety model five}
 
-anxiety.five.class.out <- readModels("./MPlus_input_gmm/GAD/output/gad_GMM_piecewise_5_classes.out", 
+anxiety.five.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_5_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -483,7 +483,7 @@ runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_6_classes.inp",
 
 ```{r read anxiety model six}
 
-anxiety.six.class.out <- readModels("./MPlus_input_gmm/GAD/output/gad_GMM_piecewise_6_classes.out", 
+anxiety.six.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_6_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -541,7 +541,7 @@ runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_7_classes.inp",
 
 ```{r read anxiety model seven}
 
-anxiety.seven.class.out <- readModels("./MPlus_input_gmm/GAD/output/gad_GMM_piecewise_7_classes.out", 
+anxiety.seven.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_7_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -767,19 +767,19 @@ save_kable(class_allocation_2,
            file.path(save_file_path,"gad_gmm_class_allocation_numbers_2class.html"))
 
 save_kable(class_allocation_3,
-           file.path(save_file_path,"gad_gmm_class_allocation_numbers_3class"))
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_3class.html"))
 
 save_kable(class_allocation_4,
-           file.path(save_file_path,"gad_gmm_class_allocation_numbers_4class"))
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_4class.html"))
 
 save_kable(class_allocation_5,
-           file.path(save_file_path,"gad_gmm_class_allocation_numbers_5class"))
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_5class.html"))
 
 save_kable(class_allocation_6,
-           file.path(save_file_path,"gad_gmm_class_allocation_numbers_6class"))
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_6class.html"))
 
 save_kable(class_allocation_7,
-           file.path(save_file_path,"gad_gmm_class_allocation_numbers_7class"))
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_7class.html"))
 
 ```
 

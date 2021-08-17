@@ -213,7 +213,7 @@ Will run each class consecutively, to check model for clear indications of stopp
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run two class model, eval=TRUE}
+```{r run two class model, eval=FALSE}
 runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_2_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -242,7 +242,7 @@ depression.one.class.out <- readModels("./MPlus_input_lgcm/PHQ/phq_latentGrowthC
 
 ```{r read depression model two}
 
-depression.two.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_2_classes.out", 
+depression.two.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_2_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -291,7 +291,7 @@ BIC_one_two_compare$aBIC[1] - BIC_one_two_compare$aBIC[2]
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run three class model, eval=TRUE}
+```{r run three class model, eval=FALSE}
 runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_3_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -307,7 +307,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_3_classes.inp",
 
 ```{r read depression model three}
 
-depression.three.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_3_classes.out", 
+depression.three.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_3_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -349,7 +349,7 @@ BIC_two_three_compare$aBIC[1] - BIC_two_three_compare$aBIC[2]
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run four class model, eval=TRUE}
+```{r run four class model, eval=FALSE}
 runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_4_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -365,7 +365,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_4_classes.inp",
 
 ```{r read depression model four}
 
-depression.four.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_4_classes.out", 
+depression.four.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_4_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -408,7 +408,7 @@ BIC_three_four_compare$aBIC[1] - BIC_three_four_compare$aBIC[2]
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run five class model, eval=TRUE}
+```{r run five class model, eval=FALSE}
 runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_5_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -424,7 +424,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_5_classes.inp",
 
 ```{r read depression model five}
 
-depression.five.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_5_classes.out", 
+depression.five.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_5_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -483,7 +483,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_6_classes.inp",
 
 ```{r read depression model six}
 
-depression.six.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_6_classes.out", 
+depression.six.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_6_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -541,7 +541,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_7_classes.inp",
 
 ```{r read depression model seven}
 
-depression.seven.class.out <- readModels("./MPlus_input_gmm/PHQ/output/phq_GMM_piecewise_7_classes.out", 
+depression.seven.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_7_classes.out", 
                            recursive=FALSE)
 
 ```
@@ -769,19 +769,19 @@ save_kable(class_allocation_2,
            file.path(save_file_path,"phq_gmm_class_allocation_numbers_2class.html"))
 
 save_kable(class_allocation_3,
-           file.path(save_file_path,"phq_gmm_class_allocation_numbers_3class"))
+           file.path(save_file_path,"phq_gmm_class_allocation_numbers_3class.html"))
 
 save_kable(class_allocation_4,
-           file.path(save_file_path,"phq_gmm_class_allocation_numbers_4class"))
+           file.path(save_file_path,"phq_gmm_class_allocation_numbers_4class.html"))
 
 save_kable(class_allocation_5,
-           file.path(save_file_path,"phq_gmm_class_allocation_numbers_5class"))
+           file.path(save_file_path,"phq_gmm_class_allocation_numbers_5class.html"))
 
 save_kable(class_allocation_6,
-           file.path(save_file_path,"phq_gmm_class_allocation_numbers_6class"))
+           file.path(save_file_path,"phq_gmm_class_allocation_numbers_6class.html"))
 
 save_kable(class_allocation_7,
-           file.path(save_file_path,"phq_gmm_class_allocation_numbers_7class"))
+           file.path(save_file_path,"phq_gmm_class_allocation_numbers_7class.html"))
 
 ```
 
