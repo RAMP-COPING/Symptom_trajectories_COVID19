@@ -1,0 +1,21 @@
+---
+title: "Multinomial logistic regression predicting class membership for trajextories of GAD-7, PHQ-9 and MASQ-anhedonia"
+author: "K L Purves"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: hide
+
+html_notebook:
+  theme: cerulean
+toc: yes
+---
+

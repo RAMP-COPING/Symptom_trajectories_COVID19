@@ -283,64 +283,30 @@ border: 0;
 
 </head>
 <body>
-<table class="table" style="margin-left: auto; margin-right: auto;">
-<caption>Growth mixture modelling fit statistics for all models tested: GAD</caption>
+<table class="table table-striped" style>
+<caption>Counts and proportions of most likely class membership: Three class solution</caption>
  <thead>
   <tr>
-   <th style="text-align:left;"> Title </th>
-   <th style="text-align:center;"> Parameters </th>
-   <th style="text-align:center;"> Entropy </th>
-   <th style="text-align:center;"> AIC </th>
-   <th style="text-align:center;"> BIC </th>
-   <th style="text-align:center;"> aBIC </th>
-   <th style="text-align:center;"> LL </th>
+   <th style="text-align:left;"> Class </th>
+   <th style="text-align:left;"> Count </th>
+   <th style="text-align:left;"> Proportion </th>
   </tr>
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> Anxiety Symptoms in RAMP &amp; COPING 5 class solution </td>
-   <td style="text-align:center;"> 70 </td>
-   <td style="text-align:center;"> 0.781 </td>
-   <td style="text-align:center;"> 1633610 </td>
-   <td style="text-align:center;"> 1634214 </td>
-   <td style="text-align:center;"> 1633991 </td>
-   <td style="text-align:center;"> -816734.8 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 29921 </td>
+   <td style="text-align:left;"> 0.72 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Anxiety Symptoms in RAMP &amp; COPING 4 class solution </td>
-   <td style="text-align:center;"> 64 </td>
-   <td style="text-align:center;"> 0.802 </td>
-   <td style="text-align:center;"> 1637060 </td>
-   <td style="text-align:center;"> 1637612 </td>
-   <td style="text-align:center;"> 1637409 </td>
-   <td style="text-align:center;"> -818465.8 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 4192 </td>
+   <td style="text-align:left;"> 0.10 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Anxiety Symptoms in RAMP &amp; COPING 3 class solution </td>
-   <td style="text-align:center;"> 58 </td>
-   <td style="text-align:center;"> 0.809 </td>
-   <td style="text-align:center;"> 1641815 </td>
-   <td style="text-align:center;"> 1642316 </td>
-   <td style="text-align:center;"> 1642131 </td>
-   <td style="text-align:center;"> -820849.5 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Anxiety Symptoms in RAMP &amp; COPING 2 class solution </td>
-   <td style="text-align:center;"> 52 </td>
-   <td style="text-align:center;"> 0.858 </td>
-   <td style="text-align:center;"> 1646159 </td>
-   <td style="text-align:center;"> 1646608 </td>
-   <td style="text-align:center;"> 1646443 </td>
-   <td style="text-align:center;"> -823027.5 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Anxiety symptoms in RAMP and COPING piecewise trajectory With pairwise correlations </td>
-   <td style="text-align:center;"> 46 </td>
-   <td style="text-align:center;"> 1 </td>
-   <td style="text-align:center;"> 1658013 </td>
-   <td style="text-align:center;"> 1658410 </td>
-   <td style="text-align:center;"> 1658263 </td>
-   <td style="text-align:center;"> -828960.3 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 7332 </td>
+   <td style="text-align:left;"> 0.18 </td>
   </tr>
 </tbody>
 </table>

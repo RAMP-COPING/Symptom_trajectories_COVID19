@@ -1,0 +1,2293 @@
+Mplus VERSION 8.2 (Mac)
+MUTHEN & MUTHEN
+08/18/2021   5:32 AM
+
+INPUT INSTRUCTIONS
+
+  TITLE:
+  Anhedonia Symptoms in RAMP & COPING
+  3 class solution
+
+  DATA:
+    	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
+    	data_clean/masq/masq.clean_merged_total_scores_reduced.csv";
+
+  VARIABLE:
+  	NAMES ARE
+  		id masq_t3 masq_t4 masq_t5
+  		masq_t6 masq_t7 masq_t8 masq_t9 masq_t10 masq_t11
+  		masq_t12 masq_t13 masq_t14 masq_t15 masq_t16 masq_t17;
+  				
+  	USEVARIABLES ARE
+  		masq_t3 masq_t4 masq_t5
+  		masq_t6 masq_t7 masq_t8 masq_t9 masq_t10 masq_t11
+  		masq_t12 masq_t13 masq_t14 masq_t15 masq_t16 masq_t17;
+  		
+  	MISSING ARE ALL (-99);
+  	IDVARIABLE IS id;
+
+  	
+  	CLASSES = c (3);
+
+  ANALYSIS:
+  	
+        ESTIMATOR = MLR;
+        STARTS = 500 125;
+
+  	PROCESSORS = 2;
+  	TYPE = MIXTURE;
+
+
+  MODEL:
+
+   %OVERALL%
+
+  !knot refers to point at which trajectory changes direction
+  !it is the start point for a trajectory, which corresponds to
+  !the end of the previous trajectory
+
+  !Piece 1 covering 07 April 2020 - 16 June (lockdown 1)
+  !Lockdown One till first easing
+  !knot = baseline
+
+  	int lin1 | masq_t3@0 masq_t4@1 masq_t5@2
+      		 masq_t6@2 masq_t7@2 masq_t8@2 masq_t9@2
+      		 masq_t10@2 masq_t11@2 masq_t12@2 masq_t13@2
+      		 masq_t14@2 masq_t15@2 masq_t16@2 masq_t17@2;
+  	
+  !piece 2 covering 30 June 2020 (fup 6) to 20 Oct 2020 (fup 11)  	
+  !Summer easing of restrictions until start Lockdown 2.0
+  !Knot Follow up 5	
+      		
+      	int lin2 | masq_t3@0 masq_t4@0 masq_t5@0
+      		 masq_t6@1 masq_t7@2 masq_t8@3 masq_t9@4
+      		 masq_t10@6 masq_t11@8 masq_t12@8 masq_t13@8
+      		 masq_t14@8 masq_t15@8 masq_t16@8 masq_t17@8;
+  	
+  !Piece 3 covering 17 November 2020 (Fup12) to 9 February 2021 (Fup 15)
+  !Winter lockdowns until spring 2021 easing of restrictions
+  !Knot follow up 11
+      	int lin3 | masq_t3@0 masq_t4@0
+      		 masq_t5@0 masq_t6@0 masq_t7@0 masq_t8@0 masq_t9@0
+      		 masq_t10@0 masq_t11@0 masq_t12@2 masq_t13@4
+      		 masq_t14@6 masq_t15@8 masq_t16@8 masq_t17@8;
+      		
+  !Piece 4 covering  9 March 2021 (fup 16) to 6 April 2021 (fup 17)
+  !Spring 2021 easing of restrictions
+  !knot follow up 15
+      	
+      	int lin4 | masq_t3@0 masq_t4@0
+      		 masq_t5@0 masq_t6@0 masq_t7@0 masq_t8@0 masq_t9@0
+      		 masq_t10@0 masq_t11@0 masq_t12@0 masq_t13@0
+      		 masq_t14@0 masq_t15@0 masq_t16@2 masq_t17@4;
+      		
+  	
+  	lin1@0;
+  	lin4@0;
+  	
+  	int WITH lin1;
+  	int WITH lin2;
+  	int WITH lin3;
+  	int WITH lin4;
+  	
+  	lin1 WITH lin2;
+  	lin1 WITH lin3;
+  	lin1 WITH lin4;
+  	
+  	lin2 WITH lin3;
+  	lin2 WITH lin4;
+  	
+  	lin3 WITH lin4;
+  	
+     	masq_t3 - masq_t16 PWITH masq_t4 - masq_t17;
+      	
+  	
+  PLOT:
+  	TYPE = PLOT3;
+  	
+  	SERIES = masq_t3(0) masq_t4(1)
+      	masq_t5(2) masq_t6(3) masq_t7(4) masq_t8(5) masq_t9(6) masq_t10(8)
+      	masq_t11(10) masq_t12(12) masq_t13(14) masq_t14(16) masq_t15(18)
+      	masq_t16(20) masq_t17(22);
+  	
+  OUTPUT:
+  	STDYX
+     	!TECH11
+      	!TECH14
+      	RESIDUAL;
+
+  SAVEDATA:
+  	!FILE IS "gmm_masq_piece_3class_probs.dat";	
+  	!SAVE = CPROBABILITIES;
+
+
+
+*** WARNING in MODEL command
+  All continuous latent variable covariances involving LIN1 have been fixed to 0
+  because the variance of LIN1 is fixed at 0.
+*** WARNING in MODEL command
+  All continuous latent variable covariances involving LIN4 have been fixed to 0
+  because the variance of LIN4 is fixed at 0.
+*** WARNING
+  Data set contains cases with missing on all variables.
+  These cases were not included in the analysis.
+  Number of cases with missing on all variables:  4259
+   3 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+
+Anhedonia Symptoms in RAMP & COPING
+3 class solution
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                       32892
+
+Number of dependent variables                                   15
+Number of independent variables                                  0
+Number of continuous latent variables                            5
+Number of categorical latent variables                           1
+
+Observed dependent variables
+
+  Continuous
+   MASQ_T3     MASQ_T4     MASQ_T5     MASQ_T6     MASQ_T7     MASQ_T8
+   MASQ_T9     MASQ_T10    MASQ_T11    MASQ_T12    MASQ_T13    MASQ_T14
+   MASQ_T15    MASQ_T16    MASQ_T17
+
+Continuous latent variables
+   INT         LIN1        LIN2        LIN3        LIN4
+
+Categorical latent variables
+   C
+
+Variables with special functions
+
+  ID variable           ID
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-06
+    Relative loglikelihood change                        0.100D-06
+    Derivative                                           0.100D-05
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Random Starts Specifications
+  Number of initial stage random starts                        500
+  Number of final stage optimizations                          125
+  Number of initial stage iterations                            10
+  Initial stage convergence criterion                    0.100D+01
+  Random starts scale                                    0.500D+01
+  Random seed for generating random starts                       0
+
+Input data file(s)
+  /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/data_clean/masq/m
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns          5793
+     Number of y missing data patterns        5793
+     Number of u missing data patterns           0
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+ MASQ_T3        0.640
+ MASQ_T4        0.546         0.743
+ MASQ_T5        0.509         0.605         0.696
+ MASQ_T6        0.482         0.571         0.571         0.667
+ MASQ_T7        0.445         0.530         0.536         0.527         0.611
+ MASQ_T8        0.429         0.496         0.502         0.500         0.480
+ MASQ_T9        0.418         0.497         0.502         0.492         0.482
+ MASQ_T10       0.427         0.491         0.497         0.490         0.474
+ MASQ_T11       0.428         0.510         0.513         0.504         0.491
+ MASQ_T12       0.425         0.505         0.508         0.499         0.486
+ MASQ_T13       0.414         0.490         0.492         0.485         0.471
+ MASQ_T14       0.403         0.479         0.483         0.475         0.461
+ MASQ_T15       0.401         0.476         0.479         0.471         0.459
+ MASQ_T16       0.388         0.459         0.463         0.456         0.444
+ MASQ_T17       0.321         0.381         0.386         0.378         0.368
+
+
+           Covariance Coverage
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+ MASQ_T8        0.570
+ MASQ_T9        0.467         0.572
+ MASQ_T10       0.473         0.485         0.568
+ MASQ_T11       0.475         0.501         0.504         0.602
+ MASQ_T12       0.469         0.494         0.498         0.533         0.597
+ MASQ_T13       0.457         0.482         0.484         0.518         0.522
+ MASQ_T14       0.447         0.474         0.474         0.506         0.510
+ MASQ_T15       0.444         0.470         0.470         0.499         0.504
+ MASQ_T16       0.430         0.457         0.456         0.486         0.490
+ MASQ_T17       0.355         0.390         0.380         0.408         0.410
+
+
+           Covariance Coverage
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+ MASQ_T13       0.576
+ MASQ_T14       0.506         0.572
+ MASQ_T15       0.501         0.508         0.572
+ MASQ_T16       0.488         0.495         0.502         0.551
+ MASQ_T17       0.408         0.416         0.422         0.419         0.455
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     MASQ_T3              25.078      -0.207       0.000    0.19%      17.000     23.000     25.000
+           21043.000      75.790      -0.640      40.000    3.33%      28.000     34.000
+     MASQ_T4              25.392      -0.276       0.000    0.23%      17.000     23.000     26.000
+           24432.000      74.392      -0.623      40.000    2.92%      28.000     34.000
+     MASQ_T5              25.409      -0.271       0.000    0.28%      17.000     23.000     26.000
+           22879.000      76.611      -0.625      40.000    3.48%      28.000     34.000
+     MASQ_T6              25.617      -0.290       0.000    0.26%      18.000     24.000     26.000
+           21925.000      76.697      -0.639      40.000    3.90%      29.000     34.000
+     MASQ_T7              25.322      -0.280       0.000    0.31%      17.000     23.000     26.000
+           20081.000      80.441      -0.647      40.000    3.98%      29.000     34.000
+     MASQ_T8              25.267      -0.294       0.000    0.45%      17.000     23.000     26.000
+           18738.000      82.146      -0.645      40.000    4.17%      29.000     34.000
+     MASQ_T9              24.709      -0.216       0.000    0.34%      16.000     22.000     25.000
+           18826.000      81.294      -0.719      40.000    3.55%      28.000     33.000
+     MASQ_T10             25.396      -0.305       0.000    0.42%      17.000     23.000     26.000
+           18693.000      80.081      -0.611      40.000    4.07%      29.000     34.000
+     MASQ_T11             25.711      -0.326       0.000    0.32%      17.000     24.000     26.000
+           19794.000      78.098      -0.621      40.000    3.76%      29.000     34.000
+     MASQ_T12             26.657      -0.420       0.000    0.35%      19.000     25.000     28.000
+           19650.000      76.476      -0.514      40.000    4.88%      30.000     35.000
+     MASQ_T13             26.032      -0.360       0.000    0.31%      18.000     24.000     27.000
+           18955.000      76.821      -0.556      40.000    4.32%      29.000     34.000
+     MASQ_T14             27.804      -0.558       0.000    0.32%      20.000     26.000     29.000
+           18819.000      72.223      -0.295      40.000    6.23%      31.000     36.000
+     MASQ_T15             26.773      -0.432       0.000    0.31%      19.000     25.000     28.000
+           18807.000      75.319      -0.493      40.000    4.98%      30.000     35.000
+     MASQ_T16             26.573      -0.438       0.000    0.36%      19.000     25.000     28.000
+           18108.000      77.413      -0.492      40.000    4.76%      30.000     35.000
+     MASQ_T17             25.307      -0.285       0.000    0.43%      17.000     23.000     26.000
+           14960.000      79.320      -0.633      40.000    4.11%      29.000     34.000
+
+RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
+
+Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
+
+         -895938.632  268896           124
+         -895938.632  21132            351
+         -895938.632  915642           40
+         -895938.632  573096           20
+         -895938.632  369602           146
+         -895938.632  714455           476
+         -895938.632  781190           219
+         -895938.632  464179           106
+         -895938.632  175199           247
+         -895938.632  544048           87
+         -895938.632  699554           427
+         -895938.632  562716           300
+         -895938.632  724519           333
+         -895938.632  220454           288
+         -895938.632  127215           9
+         -895938.632  456213           160
+         -895938.632  797594           234
+         -895938.632  569131           26
+         -895938.632  51375            148
+         -895938.632  335485           496
+         -895938.632  534864           307
+         -895938.632  40340            188
+         -895938.632  140442           500
+         -895938.632  791396           243
+         -895938.632  701525           239
+         -895938.632  863691           481
+         -895938.632  391949           295
+         -895938.632  997222           229
+         -895938.632  514326           325
+         -895938.632  132336           362
+         -895938.632  534483           290
+         -895938.632  481835           57
+         -895938.632  535063           329
+         -895938.632  568859           49
+         -895938.632  278692           342
+         -895938.632  466971           109
+         -895938.632  507154           387
+         -895938.632  441191           361
+         -895938.632  422103           62
+         -895938.632  354395           486
+         -895938.632  354208           196
+         -895938.632  903369           134
+         -895938.632  185071           370
+         -895938.632  570782           193
+         -895938.632  53621            483
+         -895938.632  963053           43
+         -895938.632  939021           8
+         -895938.632  561664           392
+         -895938.632  741888           138
+         -895938.632  535804           111
+         -895938.632  626891           32
+         -895938.632  923437           398
+         -895938.632  404426           344
+         -895938.632  396795           323
+         -895938.632  462228           298
+         -895938.632  608496           4
+         -895938.632  165853           105
+         -896140.954  210870           383
+         -896140.954  965639           463
+         -896140.954  939709           112
+         -896140.954  748692           204
+         -896140.954  608460           244
+         -896151.040  960438           116
+         -896151.040  407168           44
+         -896151.040  798821           423
+         -896263.895  971693           470
+         -896263.895  648555           113
+         -896509.469  857799           315
+         -896509.469  782821           272
+         -896509.469  849670           347
+         -896509.469  61587            400
+         -896509.469  475420           71
+         -896509.469  875667           367
+         -896509.469  903420           5
+         -896509.469  471398           74
+         -896509.469  137377           397
+         -896509.469  784664           75
+         -896509.469  576220           115
+         -896509.469  372176           23
+         -896509.469  170118           238
+         -896509.469  345726           461
+         -896509.469  411615           171
+         -896509.469  263049           454
+         -896509.469  391179           78
+         -896509.469  637345           19
+         -896509.469  762461           425
+         -896509.469  602797           336
+         -896509.469  576726           280
+         -896509.469  752769           253
+         -896509.469  404510           442
+         -896509.469  226322           478
+         -896509.469  667250           318
+         -896559.248  392418           28
+         -896559.248  926797           406
+         -896559.248  232559           136
+         -896559.248  848331           137
+         -896559.248  533738           11
+         -896559.248  872743           374
+         -896559.248  414284           158
+         -896559.248  195763           358
+         -896559.248  22362            365
+         -896559.248  636396           168
+         -896559.248  311214           64
+         -896559.248  39136            226
+         -896559.248  195873           6
+         -896559.248  195353           225
+         -896559.248  414828           322
+         -896559.248  202790           198
+         -896599.674  50887            389
+         -896602.294  319144           176
+         -896602.294  437181           135
+         -896602.294  485256           371
+         -896602.294  928287           197
+         -896602.294  605161           409
+         -896602.294  27071            15
+         -896602.294  55115            408
+         -896602.294  539751           459
+         -896602.294  49221            254
+         -896602.294  584397           428
+         -896655.176  416250           390
+         -896655.176  387701           275
+         -896655.176  82357            339
+         -896655.176  34346            330
+         -896688.475  193569           440
+         -896688.475  499150           216
+
+
+
+THE BEST LOGLIKELIHOOD VALUE HAS BEEN REPLICATED.  RERUN WITH AT LEAST TWICE THE
+RANDOM STARTS TO CHECK THAT THE BEST LOGLIKELIHOOD IS STILL OBTAINED AND REPLICATED.
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       52
+
+Loglikelihood
+
+          H0 Value                     -895938.632
+          H0 Scaling Correction Factor      1.8794
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                 1791981.264
+          Bayesian (BIC)               1792418.116
+          Sample-Size Adjusted BIC     1792252.860
+            (n* = (n + 2) / 24)
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THE ESTIMATED MODEL
+
+    Latent
+   Classes
+
+       1       9726.01821          0.29570
+       2      21784.45229          0.66230
+       3       1381.52950          0.04200
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON ESTIMATED POSTERIOR PROBABILITIES
+
+    Latent
+   Classes
+
+       1       9726.01821          0.29570
+       2      21784.45229          0.66230
+       3       1381.52950          0.04200
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THEIR MOST LIKELY LATENT CLASS MEMBERSHIP
+
+Class Counts and Proportions
+
+    Latent
+   Classes
+
+       1             9049          0.27511
+       2            23086          0.70187
+       3              757          0.02301
+
+
+CLASSIFICATION QUALITY
+
+     Entropy                         0.658
+
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2        3
+
+    1   0.800    0.172    0.028
+    2   0.105    0.870    0.025
+    3   0.096    0.173    0.731
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2        3
+
+    1   0.744    0.248    0.007
+    2   0.072    0.922    0.006
+    3   0.183    0.417    0.401
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2        3
+
+    1      4.603    3.506    0.000
+    2      2.477    5.033    0.000
+    3     -0.786    0.040    0.000
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Latent Class 1
+
+ INT      |
+    MASQ_T3            1.000      0.000    999.000    999.000
+    MASQ_T4            1.000      0.000    999.000    999.000
+    MASQ_T5            1.000      0.000    999.000    999.000
+    MASQ_T6            1.000      0.000    999.000    999.000
+    MASQ_T7            1.000      0.000    999.000    999.000
+    MASQ_T8            1.000      0.000    999.000    999.000
+    MASQ_T9            1.000      0.000    999.000    999.000
+    MASQ_T10           1.000      0.000    999.000    999.000
+    MASQ_T11           1.000      0.000    999.000    999.000
+    MASQ_T12           1.000      0.000    999.000    999.000
+    MASQ_T13           1.000      0.000    999.000    999.000
+    MASQ_T14           1.000      0.000    999.000    999.000
+    MASQ_T15           1.000      0.000    999.000    999.000
+    MASQ_T16           1.000      0.000    999.000    999.000
+    MASQ_T17           1.000      0.000    999.000    999.000
+
+ LIN1     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            1.000      0.000    999.000    999.000
+    MASQ_T5            2.000      0.000    999.000    999.000
+    MASQ_T6            2.000      0.000    999.000    999.000
+    MASQ_T7            2.000      0.000    999.000    999.000
+    MASQ_T8            2.000      0.000    999.000    999.000
+    MASQ_T9            2.000      0.000    999.000    999.000
+    MASQ_T10           2.000      0.000    999.000    999.000
+    MASQ_T11           2.000      0.000    999.000    999.000
+    MASQ_T12           2.000      0.000    999.000    999.000
+    MASQ_T13           2.000      0.000    999.000    999.000
+    MASQ_T14           2.000      0.000    999.000    999.000
+    MASQ_T15           2.000      0.000    999.000    999.000
+    MASQ_T16           2.000      0.000    999.000    999.000
+    MASQ_T17           2.000      0.000    999.000    999.000
+
+ LIN2     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            1.000      0.000    999.000    999.000
+    MASQ_T7            2.000      0.000    999.000    999.000
+    MASQ_T8            3.000      0.000    999.000    999.000
+    MASQ_T9            4.000      0.000    999.000    999.000
+    MASQ_T10           6.000      0.000    999.000    999.000
+    MASQ_T11           8.000      0.000    999.000    999.000
+    MASQ_T12           8.000      0.000    999.000    999.000
+    MASQ_T13           8.000      0.000    999.000    999.000
+    MASQ_T14           8.000      0.000    999.000    999.000
+    MASQ_T15           8.000      0.000    999.000    999.000
+    MASQ_T16           8.000      0.000    999.000    999.000
+    MASQ_T17           8.000      0.000    999.000    999.000
+
+ LIN3     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           2.000      0.000    999.000    999.000
+    MASQ_T13           4.000      0.000    999.000    999.000
+    MASQ_T14           6.000      0.000    999.000    999.000
+    MASQ_T15           8.000      0.000    999.000    999.000
+    MASQ_T16           8.000      0.000    999.000    999.000
+    MASQ_T17           8.000      0.000    999.000    999.000
+
+ LIN4     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.000      0.000    999.000    999.000
+    MASQ_T13           0.000      0.000    999.000    999.000
+    MASQ_T14           0.000      0.000    999.000    999.000
+    MASQ_T15           0.000      0.000    999.000    999.000
+    MASQ_T16           2.000      0.000    999.000    999.000
+    MASQ_T17           4.000      0.000    999.000    999.000
+
+ INT      WITH
+    LIN1               0.000      0.000    999.000    999.000
+    LIN2              -1.083      0.081    -13.362      0.000
+    LIN3              -0.577      0.071     -8.170      0.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ LIN1     WITH
+    LIN2               0.000      0.000    999.000    999.000
+    LIN3               0.000      0.000    999.000    999.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ LIN2     WITH
+    LIN3              -0.077      0.007    -10.626      0.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ LIN3     WITH
+    LIN4               0.000      0.000    999.000    999.000
+
+ MASQ_T3  WITH
+    MASQ_T4            4.686      0.258     18.171      0.000
+
+ MASQ_T4  WITH
+    MASQ_T5            2.430      0.190     12.764      0.000
+
+ MASQ_T5  WITH
+    MASQ_T6            1.586      0.224      7.073      0.000
+
+ MASQ_T6  WITH
+    MASQ_T7            2.864      0.202     14.191      0.000
+
+ MASQ_T7  WITH
+    MASQ_T8            4.903      0.222     22.097      0.000
+
+ MASQ_T8  WITH
+    MASQ_T9            2.926      0.212     13.805      0.000
+
+ MASQ_T9  WITH
+    MASQ_T10           2.464      0.230     10.716      0.000
+
+ MASQ_T10 WITH
+    MASQ_T11           0.545      0.246      2.216      0.027
+
+ MASQ_T11 WITH
+    MASQ_T12          -0.150      0.229     -0.653      0.514
+
+ MASQ_T12 WITH
+    MASQ_T13           1.456      0.206      7.058      0.000
+
+ MASQ_T13 WITH
+    MASQ_T14           0.789      0.206      3.835      0.000
+
+ MASQ_T14 WITH
+    MASQ_T15          -0.604      0.265     -2.276      0.023
+
+ MASQ_T15 WITH
+    MASQ_T16           0.586      0.229      2.560      0.010
+
+ MASQ_T16 WITH
+    MASQ_T17           2.424      0.322      7.537      0.000
+
+ Means
+    INT               19.040      0.135    141.282      0.000
+    LIN1              -0.236      0.047     -5.070      0.000
+    LIN2              -0.005      0.022     -0.236      0.814
+    LIN3              -0.018      0.021     -0.872      0.383
+    LIN4              -0.287      0.030     -9.694      0.000
+
+ Intercepts
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.000      0.000    999.000    999.000
+    MASQ_T13           0.000      0.000    999.000    999.000
+    MASQ_T14           0.000      0.000    999.000    999.000
+    MASQ_T15           0.000      0.000    999.000    999.000
+    MASQ_T16           0.000      0.000    999.000    999.000
+    MASQ_T17           0.000      0.000    999.000    999.000
+
+ Variances
+    INT               37.309      0.833     44.764      0.000
+    LIN1               0.000      0.000    999.000    999.000
+    LIN2               0.241      0.008     29.528      0.000
+    LIN3               0.119      0.009     13.314      0.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ Residual Variances
+    MASQ_T3           20.881      0.427     48.931      0.000
+    MASQ_T4           16.794      0.287     58.534      0.000
+    MASQ_T5           13.969      0.305     45.727      0.000
+    MASQ_T6           14.191      0.306     46.360      0.000
+    MASQ_T7           16.974      0.298     56.949      0.000
+    MASQ_T8           18.320      0.315     58.118      0.000
+    MASQ_T9           20.213      0.331     61.139      0.000
+    MASQ_T10          18.347      0.330     55.657      0.000
+    MASQ_T11          13.765      0.338     40.694      0.000
+    MASQ_T12          15.812      0.313     50.496      0.000
+    MASQ_T13          16.439      0.291     56.569      0.000
+    MASQ_T14          14.908      0.324     45.958      0.000
+    MASQ_T15          12.028      0.387     31.068      0.000
+    MASQ_T16          15.137      0.347     43.669      0.000
+    MASQ_T17          17.608      0.582     30.250      0.000
+
+Latent Class 2
+
+ INT      |
+    MASQ_T3            1.000      0.000    999.000    999.000
+    MASQ_T4            1.000      0.000    999.000    999.000
+    MASQ_T5            1.000      0.000    999.000    999.000
+    MASQ_T6            1.000      0.000    999.000    999.000
+    MASQ_T7            1.000      0.000    999.000    999.000
+    MASQ_T8            1.000      0.000    999.000    999.000
+    MASQ_T9            1.000      0.000    999.000    999.000
+    MASQ_T10           1.000      0.000    999.000    999.000
+    MASQ_T11           1.000      0.000    999.000    999.000
+    MASQ_T12           1.000      0.000    999.000    999.000
+    MASQ_T13           1.000      0.000    999.000    999.000
+    MASQ_T14           1.000      0.000    999.000    999.000
+    MASQ_T15           1.000      0.000    999.000    999.000
+    MASQ_T16           1.000      0.000    999.000    999.000
+    MASQ_T17           1.000      0.000    999.000    999.000
+
+ LIN1     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            1.000      0.000    999.000    999.000
+    MASQ_T5            2.000      0.000    999.000    999.000
+    MASQ_T6            2.000      0.000    999.000    999.000
+    MASQ_T7            2.000      0.000    999.000    999.000
+    MASQ_T8            2.000      0.000    999.000    999.000
+    MASQ_T9            2.000      0.000    999.000    999.000
+    MASQ_T10           2.000      0.000    999.000    999.000
+    MASQ_T11           2.000      0.000    999.000    999.000
+    MASQ_T12           2.000      0.000    999.000    999.000
+    MASQ_T13           2.000      0.000    999.000    999.000
+    MASQ_T14           2.000      0.000    999.000    999.000
+    MASQ_T15           2.000      0.000    999.000    999.000
+    MASQ_T16           2.000      0.000    999.000    999.000
+    MASQ_T17           2.000      0.000    999.000    999.000
+
+ LIN2     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            1.000      0.000    999.000    999.000
+    MASQ_T7            2.000      0.000    999.000    999.000
+    MASQ_T8            3.000      0.000    999.000    999.000
+    MASQ_T9            4.000      0.000    999.000    999.000
+    MASQ_T10           6.000      0.000    999.000    999.000
+    MASQ_T11           8.000      0.000    999.000    999.000
+    MASQ_T12           8.000      0.000    999.000    999.000
+    MASQ_T13           8.000      0.000    999.000    999.000
+    MASQ_T14           8.000      0.000    999.000    999.000
+    MASQ_T15           8.000      0.000    999.000    999.000
+    MASQ_T16           8.000      0.000    999.000    999.000
+    MASQ_T17           8.000      0.000    999.000    999.000
+
+ LIN3     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           2.000      0.000    999.000    999.000
+    MASQ_T13           4.000      0.000    999.000    999.000
+    MASQ_T14           6.000      0.000    999.000    999.000
+    MASQ_T15           8.000      0.000    999.000    999.000
+    MASQ_T16           8.000      0.000    999.000    999.000
+    MASQ_T17           8.000      0.000    999.000    999.000
+
+ LIN4     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.000      0.000    999.000    999.000
+    MASQ_T13           0.000      0.000    999.000    999.000
+    MASQ_T14           0.000      0.000    999.000    999.000
+    MASQ_T15           0.000      0.000    999.000    999.000
+    MASQ_T16           2.000      0.000    999.000    999.000
+    MASQ_T17           4.000      0.000    999.000    999.000
+
+ INT      WITH
+    LIN1               0.000      0.000    999.000    999.000
+    LIN2              -1.083      0.081    -13.362      0.000
+    LIN3              -0.577      0.071     -8.170      0.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ LIN1     WITH
+    LIN2               0.000      0.000    999.000    999.000
+    LIN3               0.000      0.000    999.000    999.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ LIN2     WITH
+    LIN3              -0.077      0.007    -10.626      0.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ LIN3     WITH
+    LIN4               0.000      0.000    999.000    999.000
+
+ MASQ_T3  WITH
+    MASQ_T4            4.686      0.258     18.171      0.000
+
+ MASQ_T4  WITH
+    MASQ_T5            2.430      0.190     12.764      0.000
+
+ MASQ_T5  WITH
+    MASQ_T6            1.586      0.224      7.073      0.000
+
+ MASQ_T6  WITH
+    MASQ_T7            2.864      0.202     14.191      0.000
+
+ MASQ_T7  WITH
+    MASQ_T8            4.903      0.222     22.097      0.000
+
+ MASQ_T8  WITH
+    MASQ_T9            2.926      0.212     13.805      0.000
+
+ MASQ_T9  WITH
+    MASQ_T10           2.464      0.230     10.716      0.000
+
+ MASQ_T10 WITH
+    MASQ_T11           0.545      0.246      2.216      0.027
+
+ MASQ_T11 WITH
+    MASQ_T12          -0.150      0.229     -0.653      0.514
+
+ MASQ_T12 WITH
+    MASQ_T13           1.456      0.206      7.058      0.000
+
+ MASQ_T13 WITH
+    MASQ_T14           0.789      0.206      3.835      0.000
+
+ MASQ_T14 WITH
+    MASQ_T15          -0.604      0.265     -2.276      0.023
+
+ MASQ_T15 WITH
+    MASQ_T16           0.586      0.229      2.560      0.010
+
+ MASQ_T16 WITH
+    MASQ_T17           2.424      0.322      7.537      0.000
+
+ Means
+    INT               28.107      0.108    260.787      0.000
+    LIN1               0.608      0.031     19.431      0.000
+    LIN2               0.073      0.016      4.586      0.000
+    LIN3               0.230      0.014     16.640      0.000
+    LIN4              -0.367      0.021    -17.328      0.000
+
+ Intercepts
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.000      0.000    999.000    999.000
+    MASQ_T13           0.000      0.000    999.000    999.000
+    MASQ_T14           0.000      0.000    999.000    999.000
+    MASQ_T15           0.000      0.000    999.000    999.000
+    MASQ_T16           0.000      0.000    999.000    999.000
+    MASQ_T17           0.000      0.000    999.000    999.000
+
+ Variances
+    INT               37.309      0.833     44.764      0.000
+    LIN1               0.000      0.000    999.000    999.000
+    LIN2               0.241      0.008     29.528      0.000
+    LIN3               0.119      0.009     13.314      0.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ Residual Variances
+    MASQ_T3           20.881      0.427     48.931      0.000
+    MASQ_T4           16.794      0.287     58.534      0.000
+    MASQ_T5           13.969      0.305     45.727      0.000
+    MASQ_T6           14.191      0.306     46.360      0.000
+    MASQ_T7           16.974      0.298     56.949      0.000
+    MASQ_T8           18.320      0.315     58.118      0.000
+    MASQ_T9           20.213      0.331     61.139      0.000
+    MASQ_T10          18.347      0.330     55.657      0.000
+    MASQ_T11          13.765      0.338     40.694      0.000
+    MASQ_T12          15.812      0.313     50.496      0.000
+    MASQ_T13          16.439      0.291     56.569      0.000
+    MASQ_T14          14.908      0.324     45.958      0.000
+    MASQ_T15          12.028      0.387     31.068      0.000
+    MASQ_T16          15.137      0.347     43.669      0.000
+    MASQ_T17          17.608      0.582     30.250      0.000
+
+Latent Class 3
+
+ INT      |
+    MASQ_T3            1.000      0.000    999.000    999.000
+    MASQ_T4            1.000      0.000    999.000    999.000
+    MASQ_T5            1.000      0.000    999.000    999.000
+    MASQ_T6            1.000      0.000    999.000    999.000
+    MASQ_T7            1.000      0.000    999.000    999.000
+    MASQ_T8            1.000      0.000    999.000    999.000
+    MASQ_T9            1.000      0.000    999.000    999.000
+    MASQ_T10           1.000      0.000    999.000    999.000
+    MASQ_T11           1.000      0.000    999.000    999.000
+    MASQ_T12           1.000      0.000    999.000    999.000
+    MASQ_T13           1.000      0.000    999.000    999.000
+    MASQ_T14           1.000      0.000    999.000    999.000
+    MASQ_T15           1.000      0.000    999.000    999.000
+    MASQ_T16           1.000      0.000    999.000    999.000
+    MASQ_T17           1.000      0.000    999.000    999.000
+
+ LIN1     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            1.000      0.000    999.000    999.000
+    MASQ_T5            2.000      0.000    999.000    999.000
+    MASQ_T6            2.000      0.000    999.000    999.000
+    MASQ_T7            2.000      0.000    999.000    999.000
+    MASQ_T8            2.000      0.000    999.000    999.000
+    MASQ_T9            2.000      0.000    999.000    999.000
+    MASQ_T10           2.000      0.000    999.000    999.000
+    MASQ_T11           2.000      0.000    999.000    999.000
+    MASQ_T12           2.000      0.000    999.000    999.000
+    MASQ_T13           2.000      0.000    999.000    999.000
+    MASQ_T14           2.000      0.000    999.000    999.000
+    MASQ_T15           2.000      0.000    999.000    999.000
+    MASQ_T16           2.000      0.000    999.000    999.000
+    MASQ_T17           2.000      0.000    999.000    999.000
+
+ LIN2     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            1.000      0.000    999.000    999.000
+    MASQ_T7            2.000      0.000    999.000    999.000
+    MASQ_T8            3.000      0.000    999.000    999.000
+    MASQ_T9            4.000      0.000    999.000    999.000
+    MASQ_T10           6.000      0.000    999.000    999.000
+    MASQ_T11           8.000      0.000    999.000    999.000
+    MASQ_T12           8.000      0.000    999.000    999.000
+    MASQ_T13           8.000      0.000    999.000    999.000
+    MASQ_T14           8.000      0.000    999.000    999.000
+    MASQ_T15           8.000      0.000    999.000    999.000
+    MASQ_T16           8.000      0.000    999.000    999.000
+    MASQ_T17           8.000      0.000    999.000    999.000
+
+ LIN3     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           2.000      0.000    999.000    999.000
+    MASQ_T13           4.000      0.000    999.000    999.000
+    MASQ_T14           6.000      0.000    999.000    999.000
+    MASQ_T15           8.000      0.000    999.000    999.000
+    MASQ_T16           8.000      0.000    999.000    999.000
+    MASQ_T17           8.000      0.000    999.000    999.000
+
+ LIN4     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.000      0.000    999.000    999.000
+    MASQ_T13           0.000      0.000    999.000    999.000
+    MASQ_T14           0.000      0.000    999.000    999.000
+    MASQ_T15           0.000      0.000    999.000    999.000
+    MASQ_T16           2.000      0.000    999.000    999.000
+    MASQ_T17           4.000      0.000    999.000    999.000
+
+ INT      WITH
+    LIN1               0.000      0.000    999.000    999.000
+    LIN2              -1.083      0.081    -13.362      0.000
+    LIN3              -0.577      0.071     -8.170      0.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ LIN1     WITH
+    LIN2               0.000      0.000    999.000    999.000
+    LIN3               0.000      0.000    999.000    999.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ LIN2     WITH
+    LIN3              -0.077      0.007    -10.626      0.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ LIN3     WITH
+    LIN4               0.000      0.000    999.000    999.000
+
+ MASQ_T3  WITH
+    MASQ_T4            4.686      0.258     18.171      0.000
+
+ MASQ_T4  WITH
+    MASQ_T5            2.430      0.190     12.764      0.000
+
+ MASQ_T5  WITH
+    MASQ_T6            1.586      0.224      7.073      0.000
+
+ MASQ_T6  WITH
+    MASQ_T7            2.864      0.202     14.191      0.000
+
+ MASQ_T7  WITH
+    MASQ_T8            4.903      0.222     22.097      0.000
+
+ MASQ_T8  WITH
+    MASQ_T9            2.926      0.212     13.805      0.000
+
+ MASQ_T9  WITH
+    MASQ_T10           2.464      0.230     10.716      0.000
+
+ MASQ_T10 WITH
+    MASQ_T11           0.545      0.246      2.216      0.027
+
+ MASQ_T11 WITH
+    MASQ_T12          -0.150      0.229     -0.653      0.514
+
+ MASQ_T12 WITH
+    MASQ_T13           1.456      0.206      7.058      0.000
+
+ MASQ_T13 WITH
+    MASQ_T14           0.789      0.206      3.835      0.000
+
+ MASQ_T14 WITH
+    MASQ_T15          -0.604      0.265     -2.276      0.023
+
+ MASQ_T15 WITH
+    MASQ_T16           0.586      0.229      2.560      0.010
+
+ MASQ_T16 WITH
+    MASQ_T17           2.424      0.322      7.537      0.000
+
+ Means
+    INT               27.631      0.764     36.177      0.000
+    LIN1              -4.252      0.579     -7.348      0.000
+    LIN2               0.235      0.187      1.255      0.209
+    LIN3               1.258      0.135      9.338      0.000
+    LIN4              -2.521      0.238    -10.601      0.000
+
+ Intercepts
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.000      0.000    999.000    999.000
+    MASQ_T13           0.000      0.000    999.000    999.000
+    MASQ_T14           0.000      0.000    999.000    999.000
+    MASQ_T15           0.000      0.000    999.000    999.000
+    MASQ_T16           0.000      0.000    999.000    999.000
+    MASQ_T17           0.000      0.000    999.000    999.000
+
+ Variances
+    INT               37.309      0.833     44.764      0.000
+    LIN1               0.000      0.000    999.000    999.000
+    LIN2               0.241      0.008     29.528      0.000
+    LIN3               0.119      0.009     13.314      0.000
+    LIN4               0.000      0.000    999.000    999.000
+
+ Residual Variances
+    MASQ_T3           20.881      0.427     48.931      0.000
+    MASQ_T4           16.794      0.287     58.534      0.000
+    MASQ_T5           13.969      0.305     45.727      0.000
+    MASQ_T6           14.191      0.306     46.360      0.000
+    MASQ_T7           16.974      0.298     56.949      0.000
+    MASQ_T8           18.320      0.315     58.118      0.000
+    MASQ_T9           20.213      0.331     61.139      0.000
+    MASQ_T10          18.347      0.330     55.657      0.000
+    MASQ_T11          13.765      0.338     40.694      0.000
+    MASQ_T12          15.812      0.313     50.496      0.000
+    MASQ_T13          16.439      0.291     56.569      0.000
+    MASQ_T14          14.908      0.324     45.958      0.000
+    MASQ_T15          12.028      0.387     31.068      0.000
+    MASQ_T16          15.137      0.347     43.669      0.000
+    MASQ_T17          17.608      0.582     30.250      0.000
+
+Categorical Latent Variables
+
+ Means
+    C#1                1.952      0.113     17.214      0.000
+    C#2                2.758      0.115     23.980      0.000
+
+
+STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Latent Class 1
+
+ INT      |
+    MASQ_T3            0.801      0.005    168.596      0.000
+    MASQ_T4            0.830      0.004    208.963      0.000
+    MASQ_T5            0.853      0.003    247.457      0.000
+    MASQ_T6            0.868      0.004    230.037      0.000
+    MASQ_T7            0.856      0.005    172.620      0.000
+    MASQ_T8            0.853      0.006    134.872      0.000
+    MASQ_T9            0.841      0.008    110.256      0.000
+    MASQ_T10           0.853      0.011     80.168      0.000
+    MASQ_T11           0.871      0.014     62.344      0.000
+    MASQ_T12           0.892      0.012     72.813      0.000
+    MASQ_T13           0.919      0.011     83.022      0.000
+    MASQ_T14           0.963      0.011     89.063      0.000
+    MASQ_T15           1.019      0.012     88.392      0.000
+    MASQ_T16           0.977      0.011     89.825      0.000
+    MASQ_T17           0.948      0.012     80.993      0.000
+
+ LIN1     |
+    MASQ_T3          999.000    999.000    999.000    999.000
+    MASQ_T4          999.000    999.000    999.000    999.000
+    MASQ_T5          999.000    999.000    999.000    999.000
+    MASQ_T6          999.000    999.000    999.000    999.000
+    MASQ_T7          999.000    999.000    999.000    999.000
+    MASQ_T8          999.000    999.000    999.000    999.000
+    MASQ_T9          999.000    999.000    999.000    999.000
+    MASQ_T10         999.000    999.000    999.000    999.000
+    MASQ_T11         999.000    999.000    999.000    999.000
+    MASQ_T12         999.000    999.000    999.000    999.000
+    MASQ_T13         999.000    999.000    999.000    999.000
+    MASQ_T14         999.000    999.000    999.000    999.000
+    MASQ_T15         999.000    999.000    999.000    999.000
+    MASQ_T16         999.000    999.000    999.000    999.000
+    MASQ_T17         999.000    999.000    999.000    999.000
+
+ LIN2     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.070      0.001     50.645      0.000
+    MASQ_T7            0.138      0.003     53.791      0.000
+    MASQ_T8            0.206      0.004     55.809      0.000
+    MASQ_T9            0.270      0.005     58.058      0.000
+    MASQ_T10           0.411      0.007     59.178      0.000
+    MASQ_T11           0.560      0.010     58.710      0.000
+    MASQ_T12           0.573      0.010     60.042      0.000
+    MASQ_T13           0.590      0.010     60.255      0.000
+    MASQ_T14           0.619      0.011     58.193      0.000
+    MASQ_T15           0.655      0.012     53.124      0.000
+    MASQ_T16           0.628      0.012     53.265      0.000
+    MASQ_T17           0.609      0.012     51.425      0.000
+
+ LIN3     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.101      0.004     26.563      0.000
+    MASQ_T13           0.208      0.008     26.454      0.000
+    MASQ_T14           0.326      0.012     26.137      0.000
+    MASQ_T15           0.461      0.018     25.451      0.000
+    MASQ_T16           0.442      0.017     25.544      0.000
+    MASQ_T17           0.429      0.018     24.281      0.000
+
+ LIN4     |
+    MASQ_T3          999.000    999.000    999.000    999.000
+    MASQ_T4          999.000    999.000    999.000    999.000
+    MASQ_T5          999.000    999.000    999.000    999.000
+    MASQ_T6          999.000    999.000    999.000    999.000
+    MASQ_T7          999.000    999.000    999.000    999.000
+    MASQ_T8          999.000    999.000    999.000    999.000
+    MASQ_T9          999.000    999.000    999.000    999.000
+    MASQ_T10         999.000    999.000    999.000    999.000
+    MASQ_T11         999.000    999.000    999.000    999.000
+    MASQ_T12         999.000    999.000    999.000    999.000
+    MASQ_T13         999.000    999.000    999.000    999.000
+    MASQ_T14         999.000    999.000    999.000    999.000
+    MASQ_T15         999.000    999.000    999.000    999.000
+    MASQ_T16         999.000    999.000    999.000    999.000
+    MASQ_T17         999.000    999.000    999.000    999.000
+
+ INT      WITH
+    LIN1             999.000    999.000    999.000    999.000
+    LIN2              -0.361      0.027    -13.615      0.000
+    LIN3              -0.274      0.033     -8.262      0.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ LIN1     WITH
+    LIN2             999.000    999.000    999.000    999.000
+    LIN3             999.000    999.000    999.000    999.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ LIN2     WITH
+    LIN3              -0.455      0.026    -17.378      0.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ LIN3     WITH
+    LIN4             999.000    999.000    999.000    999.000
+
+ MASQ_T3  WITH
+    MASQ_T4            0.250      0.012     21.657      0.000
+
+ MASQ_T4  WITH
+    MASQ_T5            0.159      0.011     13.900      0.000
+
+ MASQ_T5  WITH
+    MASQ_T6            0.113      0.015      7.661      0.000
+
+ MASQ_T6  WITH
+    MASQ_T7            0.185      0.012     15.655      0.000
+
+ MASQ_T7  WITH
+    MASQ_T8            0.278      0.011     25.000      0.000
+
+ MASQ_T8  WITH
+    MASQ_T9            0.152      0.011     14.397      0.000
+
+ MASQ_T9  WITH
+    MASQ_T10           0.128      0.011     11.211      0.000
+
+ MASQ_T10 WITH
+    MASQ_T11           0.034      0.015      2.260      0.024
+
+ MASQ_T11 WITH
+    MASQ_T12          -0.010      0.016     -0.649      0.516
+
+ MASQ_T12 WITH
+    MASQ_T13           0.090      0.012      7.333      0.000
+
+ MASQ_T13 WITH
+    MASQ_T14           0.050      0.013      3.921      0.000
+
+ MASQ_T14 WITH
+    MASQ_T15          -0.045      0.021     -2.198      0.028
+
+ MASQ_T15 WITH
+    MASQ_T16           0.043      0.016      2.650      0.008
+
+ MASQ_T16 WITH
+    MASQ_T17           0.148      0.017      8.501      0.000
+
+ Means
+    INT                3.117      0.033     94.594      0.000
+    LIN1             999.000    999.000    999.000    999.000
+    LIN2              -0.011      0.046     -0.235      0.814
+    LIN3              -0.052      0.060     -0.873      0.383
+    LIN4             999.000    999.000    999.000    999.000
+
+ Intercepts
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.000      0.000    999.000    999.000
+    MASQ_T13           0.000      0.000    999.000    999.000
+    MASQ_T14           0.000      0.000    999.000    999.000
+    MASQ_T15           0.000      0.000    999.000    999.000
+    MASQ_T16           0.000      0.000    999.000    999.000
+    MASQ_T17           0.000      0.000    999.000    999.000
+
+ Variances
+    INT                1.000      0.000    999.000    999.000
+    LIN1             999.000    999.000    999.000    999.000
+    LIN2               1.000      0.000    999.000    999.000
+    LIN3               1.000      0.000    999.000    999.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ Residual Variances
+    MASQ_T3            0.359      0.008     47.181      0.000
+    MASQ_T4            0.310      0.007     47.032      0.000
+    MASQ_T5            0.272      0.006     46.327      0.000
+    MASQ_T6            0.286      0.006     48.560      0.000
+    MASQ_T7            0.333      0.006     55.011      0.000
+    MASQ_T8            0.357      0.006     55.706      0.000
+    MASQ_T9            0.383      0.007     57.525      0.000
+    MASQ_T10           0.357      0.008     45.702      0.000
+    MASQ_T11           0.280      0.009     29.633      0.000
+    MASQ_T12           0.337      0.009     39.249      0.000
+    MASQ_T13           0.372      0.007     52.056      0.000
+    MASQ_T14           0.370      0.007     55.883      0.000
+    MASQ_T15           0.335      0.009     37.653      0.000
+    MASQ_T16           0.388      0.007     51.911      0.000
+    MASQ_T17           0.424      0.009     44.889      0.000
+
+Latent Class 2
+
+ INT      |
+    MASQ_T3            0.801      0.005    168.596      0.000
+    MASQ_T4            0.830      0.004    208.963      0.000
+    MASQ_T5            0.853      0.003    247.457      0.000
+    MASQ_T6            0.868      0.004    230.037      0.000
+    MASQ_T7            0.856      0.005    172.620      0.000
+    MASQ_T8            0.853      0.006    134.872      0.000
+    MASQ_T9            0.841      0.008    110.256      0.000
+    MASQ_T10           0.853      0.011     80.168      0.000
+    MASQ_T11           0.871      0.014     62.344      0.000
+    MASQ_T12           0.892      0.012     72.813      0.000
+    MASQ_T13           0.919      0.011     83.022      0.000
+    MASQ_T14           0.963      0.011     89.063      0.000
+    MASQ_T15           1.019      0.012     88.392      0.000
+    MASQ_T16           0.977      0.011     89.825      0.000
+    MASQ_T17           0.948      0.012     80.993      0.000
+
+ LIN1     |
+    MASQ_T3          999.000    999.000    999.000    999.000
+    MASQ_T4          999.000    999.000    999.000    999.000
+    MASQ_T5          999.000    999.000    999.000    999.000
+    MASQ_T6          999.000    999.000    999.000    999.000
+    MASQ_T7          999.000    999.000    999.000    999.000
+    MASQ_T8          999.000    999.000    999.000    999.000
+    MASQ_T9          999.000    999.000    999.000    999.000
+    MASQ_T10         999.000    999.000    999.000    999.000
+    MASQ_T11         999.000    999.000    999.000    999.000
+    MASQ_T12         999.000    999.000    999.000    999.000
+    MASQ_T13         999.000    999.000    999.000    999.000
+    MASQ_T14         999.000    999.000    999.000    999.000
+    MASQ_T15         999.000    999.000    999.000    999.000
+    MASQ_T16         999.000    999.000    999.000    999.000
+    MASQ_T17         999.000    999.000    999.000    999.000
+
+ LIN2     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.070      0.001     50.645      0.000
+    MASQ_T7            0.138      0.003     53.791      0.000
+    MASQ_T8            0.206      0.004     55.809      0.000
+    MASQ_T9            0.270      0.005     58.058      0.000
+    MASQ_T10           0.411      0.007     59.178      0.000
+    MASQ_T11           0.560      0.010     58.710      0.000
+    MASQ_T12           0.573      0.010     60.042      0.000
+    MASQ_T13           0.590      0.010     60.255      0.000
+    MASQ_T14           0.619      0.011     58.193      0.000
+    MASQ_T15           0.655      0.012     53.124      0.000
+    MASQ_T16           0.628      0.012     53.265      0.000
+    MASQ_T17           0.609      0.012     51.425      0.000
+
+ LIN3     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.101      0.004     26.563      0.000
+    MASQ_T13           0.208      0.008     26.454      0.000
+    MASQ_T14           0.326      0.012     26.137      0.000
+    MASQ_T15           0.461      0.018     25.451      0.000
+    MASQ_T16           0.442      0.017     25.544      0.000
+    MASQ_T17           0.429      0.018     24.281      0.000
+
+ LIN4     |
+    MASQ_T3          999.000    999.000    999.000    999.000
+    MASQ_T4          999.000    999.000    999.000    999.000
+    MASQ_T5          999.000    999.000    999.000    999.000
+    MASQ_T6          999.000    999.000    999.000    999.000
+    MASQ_T7          999.000    999.000    999.000    999.000
+    MASQ_T8          999.000    999.000    999.000    999.000
+    MASQ_T9          999.000    999.000    999.000    999.000
+    MASQ_T10         999.000    999.000    999.000    999.000
+    MASQ_T11         999.000    999.000    999.000    999.000
+    MASQ_T12         999.000    999.000    999.000    999.000
+    MASQ_T13         999.000    999.000    999.000    999.000
+    MASQ_T14         999.000    999.000    999.000    999.000
+    MASQ_T15         999.000    999.000    999.000    999.000
+    MASQ_T16         999.000    999.000    999.000    999.000
+    MASQ_T17         999.000    999.000    999.000    999.000
+
+ INT      WITH
+    LIN1             999.000    999.000    999.000    999.000
+    LIN2              -0.361      0.027    -13.615      0.000
+    LIN3              -0.274      0.033     -8.262      0.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ LIN1     WITH
+    LIN2             999.000    999.000    999.000    999.000
+    LIN3             999.000    999.000    999.000    999.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ LIN2     WITH
+    LIN3              -0.455      0.026    -17.378      0.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ LIN3     WITH
+    LIN4             999.000    999.000    999.000    999.000
+
+ MASQ_T3  WITH
+    MASQ_T4            0.250      0.012     21.657      0.000
+
+ MASQ_T4  WITH
+    MASQ_T5            0.159      0.011     13.900      0.000
+
+ MASQ_T5  WITH
+    MASQ_T6            0.113      0.015      7.661      0.000
+
+ MASQ_T6  WITH
+    MASQ_T7            0.185      0.012     15.655      0.000
+
+ MASQ_T7  WITH
+    MASQ_T8            0.278      0.011     25.000      0.000
+
+ MASQ_T8  WITH
+    MASQ_T9            0.152      0.011     14.397      0.000
+
+ MASQ_T9  WITH
+    MASQ_T10           0.128      0.011     11.211      0.000
+
+ MASQ_T10 WITH
+    MASQ_T11           0.034      0.015      2.260      0.024
+
+ MASQ_T11 WITH
+    MASQ_T12          -0.010      0.016     -0.649      0.516
+
+ MASQ_T12 WITH
+    MASQ_T13           0.090      0.012      7.333      0.000
+
+ MASQ_T13 WITH
+    MASQ_T14           0.050      0.013      3.921      0.000
+
+ MASQ_T14 WITH
+    MASQ_T15          -0.045      0.021     -2.198      0.028
+
+ MASQ_T15 WITH
+    MASQ_T16           0.043      0.016      2.650      0.008
+
+ MASQ_T16 WITH
+    MASQ_T17           0.148      0.017      8.501      0.000
+
+ Means
+    INT                4.602      0.065     70.591      0.000
+    LIN1             999.000    999.000    999.000    999.000
+    LIN2               0.150      0.034      4.439      0.000
+    LIN3               0.665      0.044     15.135      0.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ Intercepts
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.000      0.000    999.000    999.000
+    MASQ_T13           0.000      0.000    999.000    999.000
+    MASQ_T14           0.000      0.000    999.000    999.000
+    MASQ_T15           0.000      0.000    999.000    999.000
+    MASQ_T16           0.000      0.000    999.000    999.000
+    MASQ_T17           0.000      0.000    999.000    999.000
+
+ Variances
+    INT                1.000      0.000    999.000    999.000
+    LIN1             999.000    999.000    999.000    999.000
+    LIN2               1.000      0.000    999.000    999.000
+    LIN3               1.000      0.000    999.000    999.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ Residual Variances
+    MASQ_T3            0.359      0.008     47.181      0.000
+    MASQ_T4            0.310      0.007     47.032      0.000
+    MASQ_T5            0.272      0.006     46.327      0.000
+    MASQ_T6            0.286      0.006     48.560      0.000
+    MASQ_T7            0.333      0.006     55.011      0.000
+    MASQ_T8            0.357      0.006     55.706      0.000
+    MASQ_T9            0.383      0.007     57.525      0.000
+    MASQ_T10           0.357      0.008     45.702      0.000
+    MASQ_T11           0.280      0.009     29.633      0.000
+    MASQ_T12           0.337      0.009     39.249      0.000
+    MASQ_T13           0.372      0.007     52.056      0.000
+    MASQ_T14           0.370      0.007     55.883      0.000
+    MASQ_T15           0.335      0.009     37.653      0.000
+    MASQ_T16           0.388      0.007     51.911      0.000
+    MASQ_T17           0.424      0.009     44.889      0.000
+
+Latent Class 3
+
+ INT      |
+    MASQ_T3            0.801      0.005    168.596      0.000
+    MASQ_T4            0.830      0.004    208.963      0.000
+    MASQ_T5            0.853      0.003    247.457      0.000
+    MASQ_T6            0.868      0.004    230.037      0.000
+    MASQ_T7            0.856      0.005    172.620      0.000
+    MASQ_T8            0.853      0.006    134.872      0.000
+    MASQ_T9            0.841      0.008    110.256      0.000
+    MASQ_T10           0.853      0.011     80.168      0.000
+    MASQ_T11           0.871      0.014     62.344      0.000
+    MASQ_T12           0.892      0.012     72.813      0.000
+    MASQ_T13           0.919      0.011     83.022      0.000
+    MASQ_T14           0.963      0.011     89.063      0.000
+    MASQ_T15           1.019      0.012     88.392      0.000
+    MASQ_T16           0.977      0.011     89.825      0.000
+    MASQ_T17           0.948      0.012     80.993      0.000
+
+ LIN1     |
+    MASQ_T3          999.000    999.000    999.000    999.000
+    MASQ_T4          999.000    999.000    999.000    999.000
+    MASQ_T5          999.000    999.000    999.000    999.000
+    MASQ_T6          999.000    999.000    999.000    999.000
+    MASQ_T7          999.000    999.000    999.000    999.000
+    MASQ_T8          999.000    999.000    999.000    999.000
+    MASQ_T9          999.000    999.000    999.000    999.000
+    MASQ_T10         999.000    999.000    999.000    999.000
+    MASQ_T11         999.000    999.000    999.000    999.000
+    MASQ_T12         999.000    999.000    999.000    999.000
+    MASQ_T13         999.000    999.000    999.000    999.000
+    MASQ_T14         999.000    999.000    999.000    999.000
+    MASQ_T15         999.000    999.000    999.000    999.000
+    MASQ_T16         999.000    999.000    999.000    999.000
+    MASQ_T17         999.000    999.000    999.000    999.000
+
+ LIN2     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.070      0.001     50.645      0.000
+    MASQ_T7            0.138      0.003     53.791      0.000
+    MASQ_T8            0.206      0.004     55.809      0.000
+    MASQ_T9            0.270      0.005     58.058      0.000
+    MASQ_T10           0.411      0.007     59.178      0.000
+    MASQ_T11           0.560      0.010     58.710      0.000
+    MASQ_T12           0.573      0.010     60.042      0.000
+    MASQ_T13           0.590      0.010     60.255      0.000
+    MASQ_T14           0.619      0.011     58.193      0.000
+    MASQ_T15           0.655      0.012     53.124      0.000
+    MASQ_T16           0.628      0.012     53.265      0.000
+    MASQ_T17           0.609      0.012     51.425      0.000
+
+ LIN3     |
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.101      0.004     26.563      0.000
+    MASQ_T13           0.208      0.008     26.454      0.000
+    MASQ_T14           0.326      0.012     26.137      0.000
+    MASQ_T15           0.461      0.018     25.451      0.000
+    MASQ_T16           0.442      0.017     25.544      0.000
+    MASQ_T17           0.429      0.018     24.281      0.000
+
+ LIN4     |
+    MASQ_T3          999.000    999.000    999.000    999.000
+    MASQ_T4          999.000    999.000    999.000    999.000
+    MASQ_T5          999.000    999.000    999.000    999.000
+    MASQ_T6          999.000    999.000    999.000    999.000
+    MASQ_T7          999.000    999.000    999.000    999.000
+    MASQ_T8          999.000    999.000    999.000    999.000
+    MASQ_T9          999.000    999.000    999.000    999.000
+    MASQ_T10         999.000    999.000    999.000    999.000
+    MASQ_T11         999.000    999.000    999.000    999.000
+    MASQ_T12         999.000    999.000    999.000    999.000
+    MASQ_T13         999.000    999.000    999.000    999.000
+    MASQ_T14         999.000    999.000    999.000    999.000
+    MASQ_T15         999.000    999.000    999.000    999.000
+    MASQ_T16         999.000    999.000    999.000    999.000
+    MASQ_T17         999.000    999.000    999.000    999.000
+
+ INT      WITH
+    LIN1             999.000    999.000    999.000    999.000
+    LIN2              -0.361      0.027    -13.615      0.000
+    LIN3              -0.274      0.033     -8.262      0.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ LIN1     WITH
+    LIN2             999.000    999.000    999.000    999.000
+    LIN3             999.000    999.000    999.000    999.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ LIN2     WITH
+    LIN3              -0.455      0.026    -17.378      0.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ LIN3     WITH
+    LIN4             999.000    999.000    999.000    999.000
+
+ MASQ_T3  WITH
+    MASQ_T4            0.250      0.012     21.657      0.000
+
+ MASQ_T4  WITH
+    MASQ_T5            0.159      0.011     13.900      0.000
+
+ MASQ_T5  WITH
+    MASQ_T6            0.113      0.015      7.661      0.000
+
+ MASQ_T6  WITH
+    MASQ_T7            0.185      0.012     15.655      0.000
+
+ MASQ_T7  WITH
+    MASQ_T8            0.278      0.011     25.000      0.000
+
+ MASQ_T8  WITH
+    MASQ_T9            0.152      0.011     14.397      0.000
+
+ MASQ_T9  WITH
+    MASQ_T10           0.128      0.011     11.211      0.000
+
+ MASQ_T10 WITH
+    MASQ_T11           0.034      0.015      2.260      0.024
+
+ MASQ_T11 WITH
+    MASQ_T12          -0.010      0.016     -0.649      0.516
+
+ MASQ_T12 WITH
+    MASQ_T13           0.090      0.012      7.333      0.000
+
+ MASQ_T13 WITH
+    MASQ_T14           0.050      0.013      3.921      0.000
+
+ MASQ_T14 WITH
+    MASQ_T15          -0.045      0.021     -2.198      0.028
+
+ MASQ_T15 WITH
+    MASQ_T16           0.043      0.016      2.650      0.008
+
+ MASQ_T16 WITH
+    MASQ_T17           0.148      0.017      8.501      0.000
+
+ Means
+    INT                4.524      0.122     37.128      0.000
+    LIN1             999.000    999.000    999.000    999.000
+    LIN2               0.478      0.379      1.264      0.206
+    LIN3               3.644      0.476      7.656      0.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ Intercepts
+    MASQ_T3            0.000      0.000    999.000    999.000
+    MASQ_T4            0.000      0.000    999.000    999.000
+    MASQ_T5            0.000      0.000    999.000    999.000
+    MASQ_T6            0.000      0.000    999.000    999.000
+    MASQ_T7            0.000      0.000    999.000    999.000
+    MASQ_T8            0.000      0.000    999.000    999.000
+    MASQ_T9            0.000      0.000    999.000    999.000
+    MASQ_T10           0.000      0.000    999.000    999.000
+    MASQ_T11           0.000      0.000    999.000    999.000
+    MASQ_T12           0.000      0.000    999.000    999.000
+    MASQ_T13           0.000      0.000    999.000    999.000
+    MASQ_T14           0.000      0.000    999.000    999.000
+    MASQ_T15           0.000      0.000    999.000    999.000
+    MASQ_T16           0.000      0.000    999.000    999.000
+    MASQ_T17           0.000      0.000    999.000    999.000
+
+ Variances
+    INT                1.000      0.000    999.000    999.000
+    LIN1             999.000    999.000    999.000    999.000
+    LIN2               1.000      0.000    999.000    999.000
+    LIN3               1.000      0.000    999.000    999.000
+    LIN4             999.000    999.000    999.000    999.000
+
+ Residual Variances
+    MASQ_T3            0.359      0.008     47.181      0.000
+    MASQ_T4            0.310      0.007     47.032      0.000
+    MASQ_T5            0.272      0.006     46.327      0.000
+    MASQ_T6            0.286      0.006     48.560      0.000
+    MASQ_T7            0.333      0.006     55.011      0.000
+    MASQ_T8            0.357      0.006     55.706      0.000
+    MASQ_T9            0.383      0.007     57.525      0.000
+    MASQ_T10           0.357      0.008     45.702      0.000
+    MASQ_T11           0.280      0.009     29.633      0.000
+    MASQ_T12           0.337      0.009     39.249      0.000
+    MASQ_T13           0.372      0.007     52.056      0.000
+    MASQ_T14           0.370      0.007     55.883      0.000
+    MASQ_T15           0.335      0.009     37.653      0.000
+    MASQ_T16           0.388      0.007     51.911      0.000
+    MASQ_T17           0.424      0.009     44.889      0.000
+
+
+R-SQUARE
+
+Class 1
+
+    Observed                                        Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    MASQ_T3            0.641      0.008     84.298      0.000
+    MASQ_T4            0.690      0.007    104.482      0.000
+    MASQ_T5            0.728      0.006    123.728      0.000
+    MASQ_T6            0.714      0.006    121.076      0.000
+    MASQ_T7            0.667      0.006    109.998      0.000
+    MASQ_T8            0.643      0.006    100.279      0.000
+    MASQ_T9            0.617      0.007     92.485      0.000
+    MASQ_T10           0.643      0.008     82.155      0.000
+    MASQ_T11           0.720      0.009     76.187      0.000
+    MASQ_T12           0.663      0.009     77.179      0.000
+    MASQ_T13           0.628      0.007     87.874      0.000
+    MASQ_T14           0.630      0.007     95.066      0.000
+    MASQ_T15           0.665      0.009     74.895      0.000
+    MASQ_T16           0.612      0.007     82.051      0.000
+    MASQ_T17           0.576      0.009     60.994      0.000
+
+Class 2
+
+    Observed                                        Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    MASQ_T3            0.641      0.008     84.298      0.000
+    MASQ_T4            0.690      0.007    104.482      0.000
+    MASQ_T5            0.728      0.006    123.728      0.000
+    MASQ_T6            0.714      0.006    121.076      0.000
+    MASQ_T7            0.667      0.006    109.998      0.000
+    MASQ_T8            0.643      0.006    100.279      0.000
+    MASQ_T9            0.617      0.007     92.485      0.000
+    MASQ_T10           0.643      0.008     82.155      0.000
+    MASQ_T11           0.720      0.009     76.187      0.000
+    MASQ_T12           0.663      0.009     77.179      0.000
+    MASQ_T13           0.628      0.007     87.874      0.000
+    MASQ_T14           0.630      0.007     95.066      0.000
+    MASQ_T15           0.665      0.009     74.895      0.000
+    MASQ_T16           0.612      0.007     82.051      0.000
+    MASQ_T17           0.576      0.009     60.994      0.000
+
+Class 3
+
+    Observed                                        Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    MASQ_T3            0.641      0.008     84.298      0.000
+    MASQ_T4            0.690      0.007    104.482      0.000
+    MASQ_T5            0.728      0.006    123.728      0.000
+    MASQ_T6            0.714      0.006    121.076      0.000
+    MASQ_T7            0.667      0.006    109.998      0.000
+    MASQ_T8            0.643      0.006    100.279      0.000
+    MASQ_T9            0.617      0.007     92.485      0.000
+    MASQ_T10           0.643      0.008     82.155      0.000
+    MASQ_T11           0.720      0.009     76.187      0.000
+    MASQ_T12           0.663      0.009     77.179      0.000
+    MASQ_T13           0.628      0.007     87.874      0.000
+    MASQ_T14           0.630      0.007     95.066      0.000
+    MASQ_T15           0.665      0.009     74.895      0.000
+    MASQ_T16           0.612      0.007     82.051      0.000
+    MASQ_T17           0.576      0.009     60.994      0.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.140E-04
+       (ratio of smallest to largest eigenvalue)
+
+
+RESIDUAL OUTPUT
+
+
+     ESTIMATED MODEL AND RESIDUALS (OBSERVED - ESTIMATED) FOR CLASS 1
+
+
+           Model Estimated Means
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+               19.040        18.804        18.568        18.563        18.557
+
+
+           Model Estimated Means
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+               18.552        18.547        18.536        18.526        18.489
+
+
+           Model Estimated Means
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+               18.453        18.417        18.381        17.807        17.233
+
+
+           Residuals for Means
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+               -0.284        -0.013        -0.057        -0.049        -0.482
+
+
+           Residuals for Means
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+               -0.691        -1.134        -0.459        -0.251         0.334
+
+
+           Residuals for Means
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+               -0.607         0.770        -0.767        -0.123        -0.314
+
+
+           Model Estimated Covariances
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+ MASQ_T3       58.190
+ MASQ_T4       41.994        54.103
+ MASQ_T5       37.309        39.738        51.278
+ MASQ_T6       36.226        36.226        37.812        49.575
+ MASQ_T7       35.143        35.143        35.143        37.405        50.914
+ MASQ_T8       34.060        34.060        34.060        33.699        38.242
+ MASQ_T9       32.977        32.977        32.977        32.857        32.737
+ MASQ_T10      30.811        30.811        30.811        31.173        31.534
+ MASQ_T11      28.646        28.646        28.646        29.489        30.331
+ MASQ_T12      27.492        27.492        27.492        28.181        28.870
+ MASQ_T13      26.338        26.338        26.338        26.873        27.408
+ MASQ_T14      25.184        25.184        25.184        25.565        25.946
+ MASQ_T15      24.030        24.030        24.030        24.257        24.484
+ MASQ_T16      24.030        24.030        24.030        24.257        24.484
+ MASQ_T17      24.030        24.030        24.030        24.257        24.484
+
+
+           Model Estimated Covariances
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+ MASQ_T8       51.297
+ MASQ_T9       35.543        52.710
+ MASQ_T10      31.896        34.721        51.327
+ MASQ_T11      31.174        32.017        34.248        49.153
+ MASQ_T12      29.558        30.247        31.625        32.853        46.905
+ MASQ_T13      27.942        28.477        29.547        30.616        30.639
+ MASQ_T14      26.326        26.707        27.468        28.230        27.273
+ MASQ_T15      24.710        24.937        25.390        25.843        25.364
+ MASQ_T16      24.710        24.937        25.390        25.843        25.364
+ MASQ_T17      24.710        24.937        25.390        25.843        25.364
+
+
+           Model Estimated Covariances
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+ MASQ_T13      44.189
+ MASQ_T14      27.106        40.269
+ MASQ_T15      24.884        23.801        35.954
+ MASQ_T16      24.884        24.405        24.511        39.062
+ MASQ_T17      24.884        24.405        23.925        26.349        41.533
+
+
+           Residuals for Covariances
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+ MASQ_T3       -1.341
+ MASQ_T4       -5.228         2.678
+ MASQ_T5       -3.428        -3.569         3.732
+ MASQ_T6       -5.417        -4.443        -2.016         4.599
+ MASQ_T7       -8.660        -6.726        -3.276        -2.199         4.692
+ MASQ_T8       -8.800        -6.703        -3.781         0.321        -1.130
+ MASQ_T9      -11.691        -7.067        -7.173        -5.973        -4.951
+ MASQ_T10      -9.589        -7.105        -5.907        -3.974        -4.132
+ MASQ_T11      -9.253        -5.373        -5.531        -5.492        -4.349
+ MASQ_T12      -8.121        -4.604        -4.297        -3.230        -2.667
+ MASQ_T13     -11.290        -7.503        -6.469        -4.854        -5.028
+ MASQ_T14     -11.402        -7.255        -6.916        -3.974        -3.623
+ MASQ_T15     -10.384        -6.999        -6.045        -5.032        -3.637
+ MASQ_T16     -10.762        -7.142        -5.633        -4.293        -3.296
+ MASQ_T17     -17.854        -9.915        -9.849        -8.999        -7.117
+
+
+           Residuals for Covariances
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+ MASQ_T8        5.495
+ MASQ_T9       -2.569         0.462
+ MASQ_T10       0.607        -3.293         3.949
+ MASQ_T11      -2.182        -3.290        -2.418         5.098
+ MASQ_T12      -0.601        -2.888        -0.199         0.639         6.036
+ MASQ_T13      -2.567        -4.509        -2.442        -1.033         0.138
+ MASQ_T14      -1.017        -3.474        -1.099        -2.327         1.428
+ MASQ_T15      -2.070        -4.309        -3.039        -2.597        -1.684
+ MASQ_T16      -0.484        -2.835        -0.898        -1.366         1.124
+ MASQ_T17      -5.154        -5.813        -2.657        -4.558        -2.339
+
+
+           Residuals for Covariances
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+ MASQ_T13       3.248
+ MASQ_T14      -0.253         5.965
+ MASQ_T15      -2.693         0.301         2.198
+ MASQ_T16      -0.866         0.919         0.721         4.779
+ MASQ_T17      -2.788        -0.359        -1.527         0.996         1.621
+
+
+     ESTIMATED MODEL AND RESIDUALS (OBSERVED - ESTIMATED) FOR CLASS 2
+
+
+           Model Estimated Means
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+               28.107        28.715        29.324        29.397        29.471
+
+
+           Model Estimated Means
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+               29.544        29.617        29.764        29.911        30.370
+
+
+           Model Estimated Means
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+               30.829        31.289        31.748        31.015        30.281
+
+
+           Residuals for Means
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+               -0.185        -0.123        -0.237        -0.001        -0.205
+
+
+           Residuals for Means
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+               -0.301        -0.947        -0.444        -0.295         0.241
+
+
+           Residuals for Means
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+               -0.747         0.557        -0.682        -0.061        -0.485
+
+
+           Model Estimated Covariances
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+ MASQ_T3       58.190
+ MASQ_T4       41.994        54.103
+ MASQ_T5       37.309        39.738        51.278
+ MASQ_T6       36.226        36.226        37.812        49.575
+ MASQ_T7       35.143        35.143        35.143        37.405        50.914
+ MASQ_T8       34.060        34.060        34.060        33.699        38.242
+ MASQ_T9       32.977        32.977        32.977        32.857        32.737
+ MASQ_T10      30.811        30.811        30.811        31.173        31.534
+ MASQ_T11      28.646        28.646        28.646        29.489        30.331
+ MASQ_T12      27.492        27.492        27.492        28.181        28.870
+ MASQ_T13      26.338        26.338        26.338        26.873        27.408
+ MASQ_T14      25.184        25.184        25.184        25.565        25.946
+ MASQ_T15      24.030        24.030        24.030        24.257        24.484
+ MASQ_T16      24.030        24.030        24.030        24.257        24.484
+ MASQ_T17      24.030        24.030        24.030        24.257        24.484
+
+
+           Model Estimated Covariances
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+ MASQ_T8       51.297
+ MASQ_T9       35.543        52.710
+ MASQ_T10      31.896        34.721        51.327
+ MASQ_T11      31.174        32.017        34.248        49.153
+ MASQ_T12      29.558        30.247        31.625        32.853        46.905
+ MASQ_T13      27.942        28.477        29.547        30.616        30.639
+ MASQ_T14      26.326        26.707        27.468        28.230        27.273
+ MASQ_T15      24.710        24.937        25.390        25.843        25.364
+ MASQ_T16      24.710        24.937        25.390        25.843        25.364
+ MASQ_T17      24.710        24.937        25.390        25.843        25.364
+
+
+           Model Estimated Covariances
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+ MASQ_T13      44.189
+ MASQ_T14      27.106        40.269
+ MASQ_T15      24.884        23.801        35.954
+ MASQ_T16      24.884        24.405        24.511        39.062
+ MASQ_T17      24.884        24.405        23.925        26.349        41.533
+
+
+           Residuals for Covariances
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+ MASQ_T3        0.196
+ MASQ_T4       -8.389        -1.557
+ MASQ_T5       -5.388        -8.095        -1.516
+ MASQ_T6      -10.270        -9.026        -4.174        -1.450
+ MASQ_T7      -14.078       -12.104        -5.711        -2.627        -0.622
+ MASQ_T8      -13.143       -13.275        -7.322        -0.570        -0.586
+ MASQ_T9      -20.280       -14.597        -9.887        -7.228        -4.487
+ MASQ_T10     -13.376       -11.719        -8.091        -5.962        -4.403
+ MASQ_T11     -15.173       -12.899       -10.037        -8.253        -7.229
+ MASQ_T12     -14.446       -13.898        -9.345        -7.463        -7.382
+ MASQ_T13     -16.542       -13.413       -10.433        -8.100        -6.492
+ MASQ_T14     -19.871       -17.814       -12.961       -11.399        -8.563
+ MASQ_T15     -19.074       -15.742       -12.254        -9.647        -7.641
+ MASQ_T16     -21.096       -17.549       -13.506       -10.367        -8.942
+ MASQ_T17     -31.740       -22.986       -19.115       -18.308       -15.226
+
+
+           Residuals for Covariances
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+ MASQ_T8       -0.254
+ MASQ_T9       -2.834        -0.124
+ MASQ_T10      -0.609        -2.354        -1.394
+ MASQ_T11      -4.713        -5.702        -3.670        -1.693
+ MASQ_T12      -6.760        -5.962        -3.380        -4.327        -3.756
+ MASQ_T13      -6.073        -5.806        -4.981        -5.083        -1.648
+ MASQ_T14      -9.182        -7.860        -6.046        -8.319        -6.069
+ MASQ_T15      -9.065        -6.525        -6.044        -5.177        -5.986
+ MASQ_T16      -9.773        -7.765        -4.730        -8.407        -6.332
+ MASQ_T17     -15.527       -11.319        -9.385       -14.010       -11.148
+
+
+           Residuals for Covariances
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+ MASQ_T13      -0.909
+ MASQ_T14      -3.050        -5.898
+ MASQ_T15      -3.783        -3.744        -0.188
+ MASQ_T16      -5.524        -3.867        -1.719        -1.366
+ MASQ_T17      -9.546        -6.132        -5.834        -2.582         0.921
+
+
+     ESTIMATED MODEL AND RESIDUALS (OBSERVED - ESTIMATED) FOR CLASS 3
+
+
+           Model Estimated Means
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+               27.631        23.379        19.127        19.362        19.597
+
+
+           Model Estimated Means
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+               19.831        20.066        20.536        21.005        23.521
+
+
+           Model Estimated Means
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+               26.037        28.553        31.069        26.027        20.984
+
+
+           Residuals for Means
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+               -0.493         0.372         0.382        -0.131        -0.821
+
+
+           Residuals for Means
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+               -1.069        -1.185        -0.715        -0.052         0.561
+
+
+           Residuals for Means
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+               -0.859         1.145        -1.095        -0.246        -0.397
+
+
+           Model Estimated Covariances
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+ MASQ_T3       58.190
+ MASQ_T4       41.994        54.103
+ MASQ_T5       37.309        39.738        51.278
+ MASQ_T6       36.226        36.226        37.812        49.575
+ MASQ_T7       35.143        35.143        35.143        37.405        50.914
+ MASQ_T8       34.060        34.060        34.060        33.699        38.242
+ MASQ_T9       32.977        32.977        32.977        32.857        32.737
+ MASQ_T10      30.811        30.811        30.811        31.173        31.534
+ MASQ_T11      28.646        28.646        28.646        29.489        30.331
+ MASQ_T12      27.492        27.492        27.492        28.181        28.870
+ MASQ_T13      26.338        26.338        26.338        26.873        27.408
+ MASQ_T14      25.184        25.184        25.184        25.565        25.946
+ MASQ_T15      24.030        24.030        24.030        24.257        24.484
+ MASQ_T16      24.030        24.030        24.030        24.257        24.484
+ MASQ_T17      24.030        24.030        24.030        24.257        24.484
+
+
+           Model Estimated Covariances
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+ MASQ_T8       51.297
+ MASQ_T9       35.543        52.710
+ MASQ_T10      31.896        34.721        51.327
+ MASQ_T11      31.174        32.017        34.248        49.153
+ MASQ_T12      29.558        30.247        31.625        32.853        46.905
+ MASQ_T13      27.942        28.477        29.547        30.616        30.639
+ MASQ_T14      26.326        26.707        27.468        28.230        27.273
+ MASQ_T15      24.710        24.937        25.390        25.843        25.364
+ MASQ_T16      24.710        24.937        25.390        25.843        25.364
+ MASQ_T17      24.710        24.937        25.390        25.843        25.364
+
+
+           Model Estimated Covariances
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+ MASQ_T13      44.189
+ MASQ_T14      27.106        40.269
+ MASQ_T15      24.884        23.801        35.954
+ MASQ_T16      24.884        24.405        24.511        39.062
+ MASQ_T17      24.884        24.405        23.925        26.349        41.533
+
+
+           Residuals for Covariances
+              MASQ_T3       MASQ_T4       MASQ_T5       MASQ_T6       MASQ_T7
+              ________      ________      ________      ________      ________
+ MASQ_T3        4.208
+ MASQ_T4      -16.631         8.492
+ MASQ_T5       -9.077        -5.812         4.056
+ MASQ_T6      -19.637       -15.105        -4.942         2.135
+ MASQ_T7      -26.873       -16.196        -7.041        -8.529         4.247
+ MASQ_T8      -24.548       -17.048        -8.388        -7.836        -8.138
+ MASQ_T9      -32.139       -19.413        -9.534       -13.319        -9.121
+ MASQ_T10     -26.497       -18.275        -8.322       -11.002        -9.554
+ MASQ_T11     -27.385       -15.061       -11.231       -12.278       -14.888
+ MASQ_T12     -34.006       -16.351        -7.892        -7.538        -5.193
+ MASQ_T13     -43.912       -21.665        -8.071        -7.940        -8.583
+ MASQ_T14     -46.595       -28.223       -13.129       -12.577       -14.979
+ MASQ_T15     -47.868       -28.786       -11.633       -14.329       -11.171
+ MASQ_T16     -42.026       -20.962       -10.207        -8.104        -8.577
+ MASQ_T17     -29.329       -13.689       -11.559       -15.348        -9.660
+
+
+           Residuals for Covariances
+              MASQ_T8       MASQ_T9       MASQ_T10      MASQ_T11      MASQ_T12
+              ________      ________      ________      ________      ________
+ MASQ_T8        5.604
+ MASQ_T9       -4.440         4.401
+ MASQ_T10      -9.355        -6.599         8.565
+ MASQ_T11     -12.402        -9.647        -2.798         8.205
+ MASQ_T12      -9.041        -8.811        -5.082        -3.440        12.086
+ MASQ_T13     -11.937       -12.046       -13.517       -11.177        -2.038
+ MASQ_T14     -15.970       -12.642       -18.450       -12.698        -4.841
+ MASQ_T15     -13.054       -10.883       -13.895       -12.928       -13.895
+ MASQ_T16     -12.177        -7.814        -9.929       -11.672       -10.069
+ MASQ_T17      -9.375        -3.971       -11.879       -12.828       -10.555
+
+
+           Residuals for Covariances
+              MASQ_T13      MASQ_T14      MASQ_T15      MASQ_T16      MASQ_T17
+              ________      ________      ________      ________      ________
+ MASQ_T13      11.226
+ MASQ_T14      -8.313        -0.083
+ MASQ_T15     -20.009       -16.630        -0.070
+ MASQ_T16     -14.914       -12.440        -8.594        11.233
+ MASQ_T17      -9.752        -6.587       -13.811        -5.224         9.101
+
+
+SAMPLE STATISTICS FOR ESTIMATED FACTOR SCORES
+
+
+     SAMPLE STATISTICS
+
+
+           Means
+              INT           LIN1          LIN2          LIN3          LIN4
+              ________      ________      ________      ________      ________
+               25.406         0.155         0.057         0.200        -0.434
+
+
+           Means
+              C_INT         C_LIN1        C_LIN2        C_LIN3        C_LIN4
+              ________      ________      ________      ________      ________
+               25.312         0.264         0.057         0.191        -0.394
+
+
+           Covariances
+              INT           LIN1          LIN2          LIN3          LIN4
+              ________      ________      ________      ________      ________
+ INT           47.453
+ LIN1           1.814         0.400
+ LIN2          -0.470        -0.007         0.091
+ LIN3          -0.135        -0.079        -0.009         0.057
+ LIN4          -0.044         0.141        -0.009        -0.044         0.070
+ C_INT         47.711         1.773        -0.474        -0.139        -0.060
+ C_LIN1         1.849         0.439        -0.007        -0.076         0.151
+ C_LIN2        -0.441        -0.007         0.090        -0.009        -0.009
+ C_LIN3        -0.012        -0.075        -0.008         0.059        -0.047
+ C_LIN4        -0.137         0.150        -0.009        -0.045         0.076
+
+
+           Covariances
+              C_INT         C_LIN1        C_LIN2        C_LIN3        C_LIN4
+              ________      ________      ________      ________      ________
+ C_INT         48.273
+ C_LIN1         1.646         0.621
+ C_LIN2        -0.435        -0.008         0.092
+ C_LIN3         0.008        -0.082        -0.007         0.071
+ C_LIN4        -0.223         0.213        -0.011        -0.060         0.108
+
+
+           Correlations
+              INT           LIN1          LIN2          LIN3          LIN4
+              ________      ________      ________      ________      ________
+ INT            1.000
+ LIN1           0.416         1.000
+ LIN2          -0.226        -0.037         1.000
+ LIN3          -0.082        -0.521        -0.121         1.000
+ LIN4          -0.024         0.841        -0.112        -0.700         1.000
+ C_INT          0.997         0.403        -0.226        -0.083        -0.033
+ C_LIN1         0.341         0.880        -0.028        -0.401         0.724
+ C_LIN2        -0.212        -0.035         0.993        -0.123        -0.114
+ C_LIN3        -0.007        -0.443        -0.105         0.924        -0.663
+ C_LIN4        -0.061         0.722        -0.091        -0.574         0.872
+
+
+           Correlations
+              C_INT         C_LIN1        C_LIN2        C_LIN3        C_LIN4
+              ________      ________      ________      ________      ________
+ C_INT          1.000
+ C_LIN1         0.301         1.000
+ C_LIN2        -0.207        -0.033         1.000
+ C_LIN3         0.004        -0.389        -0.087         1.000
+ C_LIN4        -0.098         0.823        -0.111        -0.680         1.000
+
+
+PLOT INFORMATION
+
+The following plots are available:
+
+  Histograms (sample values, estimated factor scores, estimated values, residuals)
+  Scatterplots (sample values, estimated factor scores, estimated values, residuals)
+  Sample means
+  Estimated means, medians, modes, and percentiles
+  Sample and estimated means
+  Latent variable distribution plots
+  Observed individual values
+  Estimated individual values
+  Estimated means and observed individual values
+  Estimated means and estimated individual values
+  Estimated overall and class-specific distributions
+
+     Beginning Time:  05:32:48
+        Ending Time:  12:27:50
+       Elapsed Time:  06:55:02
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2018 Muthen & Muthen

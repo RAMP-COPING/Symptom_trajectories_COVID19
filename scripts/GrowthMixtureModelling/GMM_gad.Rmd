@@ -184,7 +184,7 @@ options(scipen = 999)
 
 
 ***colour paletttes and plot label list***
-RAMP colours (first) from website and second is a generated left tetradic (rectangular) colour complement of the RAMP logo green for contrast and complement. 
+RAMP colours (first two) and then a complementary palette of distinguishable colours that seem to be distinguishable in the case of colourblindness too [see this website to simulate the colours under different colour blindness conditions](https://coolors.co/4ed1b7-f6c66a-3066be-d90368-1b2d2a-4c2e05-c98686)
 ```{r colour palette, include=FALSE}
 
 pres.palette <- c("#4ED1B7", "#F6C66A", "#3066BE", "#D90368","#1B2D2A",  "#4C2E05","#C98686") 
@@ -407,7 +407,7 @@ BIC_three_four_compare$aBIC[1] - BIC_three_four_compare$aBIC[2]
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run five class model, eval=TRUE}
+```{r run five class model, eval=FALSE}
 runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_5_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -461,7 +461,7 @@ BIC_four_five_compare$aBIC[1] - BIC_four_five_compare$aBIC[2]
 ```
 
 
-## six classes
+ ## six classes
 
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
