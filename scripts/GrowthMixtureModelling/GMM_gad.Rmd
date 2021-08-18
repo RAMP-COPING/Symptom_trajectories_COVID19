@@ -52,7 +52,7 @@ In order to avoid a global maxima/local solution problem (log likelihood depends
 **Step 2. Assess overall fit of the selected model to ensure it is the best and most parsimonious solution**
 * We will ensure there is no evidence for the local maxima problem by rerunning the analysis using the top two seeds from the replicated best log likelihood from the original analysis using OPTSEED in a new Mplus input file. We will check that the best log likelihood from this output matches that from the previous output. We will include TECH11 output in this MPLUS run to output the Vuong-Lo-Mendell-Rubin Likelihood ratios test comparing the best fit model to the earlier fit model
 
-* We will run a second analysis using OPTSEED to be even more sure there is no evidence for the local maxima problem by rerunning the analysis using the top two seeds from the replicated best log likelihood from the original analysis in a new Mplus input file. We will check that the best log likelihood from this output matches that from the previous output. We will include TECH14 output in this MPLUS run to output the Bootstrapped Likelihood ratios test (BLRT) comparing the best fit model to the earlier nested model.
+* We will run a second analysis using OPTSEED to be even more sure there is no evidence for the local maxima problem by rerunning the analysis using the top two seeds from the replicated best log likelihood from the original analysis in a new Mplus input file. We will check that the best log likelihood from this output matches that from the previous output. We will include TECH14 output in this MPLUS run to output the Bootstrapped Likelihood ratios test (BLRT) comparing the best fit model to the earlier nested model. ***NOTE: Mplus forum suggests BLRT p-values often remain at 0 even when an unreasonable number of classes  is tested. Given this, may consider not running this if computational time is unfeasible ***
 
 This step wise procedure should save time whilst ensuring we select the optimal model and obtain unbiased estimates. [see this webnote for a description of the step wise procedure](https://www.statmodel.com/examples/webnotes/webnote14.pdf).
 
@@ -187,9 +187,8 @@ options(scipen = 999)
 RAMP colours (first) from website and second is a generated left tetradic (rectangular) colour complement of the RAMP logo green for contrast and complement. 
 ```{r colour palette, include=FALSE}
 
-pres.palette <- c("#4ED1B7", "#F6C66A", "#6564DB", "#481620",  "#3B413C","#061A40","#D90368") 
+pres.palette <- c("#4ED1B7", "#F6C66A", "#3066BE", "#D90368","#1B2D2A",  "#4C2E05","#C98686") 
 
-prev.pres.palette<-c("#4590B8", "#4D68D1", "#D14D68", "#D1B74D", "#68D14D", "#B74DD1", "#D1754D")
 
 timepoint_list <- c("7th April 2020","19th May 2020","2nd June 2020","16th June 2020","30th June 2020",
                     "14th July 2020", "28th July 2020","25th August 2020","22nd September 2020","20th October 2020",
@@ -633,7 +632,8 @@ justSummaries <- rbind(justSummariesGMM,justSummarieslgcm) %>%
   arrange(BIC)
 
 summary_table <- justSummaries %>%
-  kbl(caption ="Growth mixture modelling fit statistics for all models tested: GAD") %>%
+  kbl(caption ="Growth mixture modelling fit statistics for all models tested: GAD",
+        align='lcccccc') %>%
   kable_styling()
 
 summary_table

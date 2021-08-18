@@ -1,0 +1,142 @@
+Mplus VERSION 8.2 (Mac)
+MUTHEN & MUTHEN
+08/18/2021   5:32 AM
+
+INPUT INSTRUCTIONS
+
+  TITLE:
+  Anhedonia Symptoms in RAMP & COPING
+  3 class solution
+
+  DATA:
+    	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
+    	data_clean/masq/masq.clean_merged_total_scores_reduced.csv";
+
+  VARIABLE:
+  	NAMES ARE
+  		id masq_t3 masq_t4 masq_t5
+  		masq_t6 masq_t7 masq_t8 masq_t9 masq_t10 masq_t11
+  		masq_t12 masq_t13 masq_t14 masq_t15 masq_t16 masq_t17;
+  				
+  	USEVARIABLES ARE
+  		masq_t3 masq_t4 masq_t5
+  		masq_t6 masq_t7 masq_t8 masq_t9 masq_t10 masq_t11
+  		masq_t12 masq_t13 masq_t14 masq_t15 masq_t16 masq_t17;
+  		
+  	MISSING ARE ALL (-99);
+  	IDVARIABLE IS id;
+
+  	
+  	CLASSES = c (3);
+
+  ANALYSIS:
+  	
+        ESTIMATOR = MLR;
+        STARTS = 500 125;
+
+  	PROCESSORS = 2;
+  	TYPE = MIXTURE;
+
+
+  MODEL:
+
+   %OVERALL%
+
+  !knot refers to point at which trajectory changes direction
+  !it is the start point for a trajectory, which corresponds to
+  !the end of the previous trajectory
+
+  !Piece 1 covering 07 April 2020 - 16 June (lockdown 1)
+  !Lockdown One till first easing
+  !knot = baseline
+
+  	int lin1 | masq_t3@0 masq_t4@1 masq_t5@2
+      		 masq_t6@2 masq_t7@2 masq_t8@2 masq_t9@2
+      		 masq_t10@2 masq_t11@2 masq_t12@2 masq_t13@2
+      		 masq_t14@2 masq_t15@2 masq_t16@2 masq_t17@2;
+  	
+  !piece 2 covering 30 June 2020 (fup 6) to 20 Oct 2020 (fup 11)  	
+  !Summer easing of restrictions until start Lockdown 2.0
+  !Knot Follow up 5	
+      		
+      	int lin2 | masq_t3@0 masq_t4@0 masq_t5@0
+      		 masq_t6@1 masq_t7@2 masq_t8@3 masq_t9@4
+      		 masq_t10@6 masq_t11@8 masq_t12@8 masq_t13@8
+      		 masq_t14@8 masq_t15@8 masq_t16@8 masq_t17@8;
+  	
+  !Piece 3 covering 17 November 2020 (Fup12) to 9 February 2021 (Fup 15)
+  !Winter lockdowns until spring 2021 easing of restrictions
+  !Knot follow up 11
+      	int lin3 | masq_t3@0 masq_t4@0
+      		 masq_t5@0 masq_t6@0 masq_t7@0 masq_t8@0 masq_t9@0
+      		 masq_t10@0 masq_t11@0 masq_t12@2 masq_t13@4
+      		 masq_t14@6 masq_t15@8 masq_t16@8 masq_t17@8;
+      		
+  !Piece 4 covering  9 March 2021 (fup 16) to 6 April 2021 (fup 17)
+  !Spring 2021 easing of restrictions
+  !knot follow up 15
+      	
+      	int lin4 | masq_t3@0 masq_t4@0
+      		 masq_t5@0 masq_t6@0 masq_t7@0 masq_t8@0 masq_t9@0
+      		 masq_t10@0 masq_t11@0 masq_t12@0 masq_t13@0
+      		 masq_t14@0 masq_t15@0 masq_t16@2 masq_t17@4;
+      		
+  	
+  	lin1@0;
+  	lin4@0;
+  	
+  	int WITH lin1;
+  	int WITH lin2;
+  	int WITH lin3;
+  	int WITH lin4;
+  	
+  	lin1 WITH lin2;
+  	lin1 WITH lin3;
+  	lin1 WITH lin4;
+  	
+  	lin2 WITH lin3;
+  	lin2 WITH lin4;
+  	
+  	lin3 WITH lin4;
+  	
+     	masq_t3 - masq_t16 PWITH masq_t4 - masq_t17;
+      	
+  	
+  PLOT:
+  	TYPE = PLOT3;
+  	
+  	SERIES = masq_t3(0) masq_t4(1)
+      	masq_t5(2) masq_t6(3) masq_t7(4) masq_t8(5) masq_t9(6) masq_t10(8)
+      	masq_t11(10) masq_t12(12) masq_t13(14) masq_t14(16) masq_t15(18)
+      	masq_t16(20) masq_t17(22);
+  	
+  OUTPUT:
+  	STDYX
+     	!TECH11
+      	!TECH14
+      	RESIDUAL;
+
+  SAVEDATA:
+  	!FILE IS "gmm_masq_piece_3class_probs.dat";	
+  	!SAVE = CPROBABILITIES;
+
+
+
+*** WARNING in MODEL command
+  All continuous latent variable covariances involving LIN1 have been fixed to 0
+  because the variance of LIN1 is fixed at 0.
+*** WARNING in MODEL command
+  All continuous latent variable covariances involving LIN4 have been fixed to 0
+  because the variance of LIN4 is fixed at 0.
+*** WARNING
+  Data set contains cases with missing on all variables.
+  These cases were not included in the analysis.
+  Number of cases with missing on all variables:  4259
+   3 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+
+Anhedonia Symptoms in RAMP & COPING
+3 class solution
+
