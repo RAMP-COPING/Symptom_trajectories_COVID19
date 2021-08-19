@@ -1299,6 +1299,12 @@ masq.clean <- masq.merged %>%
          -startDate)
 
 names(masq.clean)
+
+
+masq.recode %>%
+  na_if(-77) %>%
+  group_by(sample) %>%
+    summarise(mean= mean(masq.pandemic_felt_optimistic_.Wave_03, na.rm = T) )
 ```
 
 # create sum scores
@@ -1324,9 +1330,53 @@ masq.recode <- masq.clean %>%
   
 ```
 
-```{r check recode}
+check items before and then after recoding numbers for randomly selected items to make sure the direction is correct
+
+```{r check recode before}
+
+masq.clean %>%
+  group_by(sample) %>%
+  freq(masq.pandemic_lot_felt_energy_.Wave_0) 
+
+## check some item averages from baseline to compare against qualtrics output
+masq.clean %>%
+  na_if(-77) %>%
+  group_by(sample) %>%
+  summarise(mean= mean(masq.pandemic_lot_felt_energy_.Wave_03, na.rm = T) )
+
+masq.clean %>%
+  na_if(-77) %>%
+  group_by(sample) %>%
+    summarise(mean= mean(masq.pandemic_felt_like_i_accomplished_a_lot_.Wave_03, na.rm = T) )
+
+masq.clean %>%
+  na_if(-77) %>%
+  group_by(sample) %>%
+    summarise(mean= mean(masq.pandemic_felt_optimistic_.Wave_03, na.rm = T) )
+
+```
+
+after recode numbers for randomly selected item
+```{r check recode after}
+
 masq.recode %>%
-  freq(masq.pandemic_lot_felt_energy_.Wave_0)
+  group_by(sample) %>%
+  freq(masq.pandemic_lot_felt_energy_.Wave_03) 
+
+## check some item averages from baseline to compare against qualtrics 
+
+masq.recode %>%
+  group_by(sample) %>%
+  summarise(mean= mean(masq.pandemic_lot_felt_energy_.Wave_0, na.rm = T) )
+
+masq.recode %>%
+  group_by(sample) %>%
+    summarise(mean= mean(masq.pandemic_felt_like_i_accomplished_a_lot_.Wave_03, na.rm = T) )
+
+masq.recode %>%
+  group_by(sample) %>%
+    summarise(mean= mean(masq.pandemic_felt_optimistic_.Wave_03, na.rm = T) )
+
 ```
 
 ## create total score parameter info

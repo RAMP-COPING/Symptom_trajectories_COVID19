@@ -1307,30 +1307,37 @@ save_file_path <- file.path(dirname(dirname(getwd())),"output/Trajectory_plots/G
 # save all trajectory plots
 ggsave(
   filename=file.path(save_file_path,"gad_oneclass_trajectory.png"),
-  plot =growth_curves_oneclass)
+  plot =growth_curves_oneclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"gad_twoclass_trajectory.png"),
-  plot =growth_curves_twoclass)
+  plot =growth_curves_twoclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"gad_threeclass_trajectory.png"),
-  plot =growth_curves_threeclass)
+  plot =growth_curves_threeclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"gad_fourclass_trajectory.png"),
-  plot =growth_curves_fourclass)
+  plot =growth_curves_fourclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"gad_fiveclass_trajectory.png"),
-  plot =growth_curves_fiveclass)
+  plot =growth_curves_fiveclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"gad_sixclass_trajectory.png"),
-  plot =growth_curves_sixclass)
+  plot =growth_curves_sixclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"gad_sevenclass_trajectory.png"),
-  plot =growth_curves_sevenclass)
+  plot =growth_curves_sevenclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ```

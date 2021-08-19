@@ -111,5 +111,5 @@ OUTPUT:
     	RESIDUAL;
 
 SAVEDATA:
-	!FILE IS "gmm_masq_piece_5class_probs.dat";	
-	!SAVE = CPROBABILITIES;
+	FILE IS "gmm_masq_piece_5class_probs.dat";	
+	SAVE = CPROBABILITIES;

@@ -348,7 +348,7 @@ BIC_two_three_compare$aBIC[1] - BIC_two_three_compare$aBIC[2]
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run four class model, eval=TRUE}
+```{r run four class model, eval=FALSE}
 runModels("./MPlus_input_gmm/MASQ/masq_GMM_piecewise_4_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -1299,30 +1299,37 @@ save_file_path <- file.path(dirname(dirname(getwd())),"output/Trajectory_plots/M
 # save all trajectory plots
 ggsave(
   filename=file.path(save_file_path,"anhedonia_oneclass_trajectory.png"),
-  plot =growth_curves_oneclass)
+  plot =growth_curves_oneclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_twoclass_trajectory.png"),
-  plot =growth_curves_twoclass)
+  plot =growth_curves_twoclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_threeclass_trajectory.png"),
-  plot =growth_curves_threeclass)
+  plot =growth_curves_threeclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_fourclass_trajectory.png"),
-  plot =growth_curves_fourclass)
+  plot =growth_curves_fourclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_fiveclass_trajectory.png"),
-  plot =growth_curves_fiveclass)
+  plot =growth_curves_fiveclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_sixclass_trajectory.png"),
-  plot =growth_curves_sixclass)
+  plot =growth_curves_sixclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_sevenclass_trajectory.png"),
-  plot =growth_curves_sevenclass)
+  plot =growth_curves_sevenclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
 
 ```
