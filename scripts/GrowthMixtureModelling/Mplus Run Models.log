@@ -1,9 +1,7 @@
-------Begin Mplus Model Run: 19Aug2021 10:54:49------
+------Begin Mplus Model Run: 19Aug2021 12:11:39------
 Run options:
 	Recursive (run models in subdirectories): FALSE
 	Show output on console: TRUE
 	Replace existing outfile: never
 ------
-Skipping model because output file already exists for: /Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/Symptom_trajectories_COVID19/scripts/GrowthMixtureModelling/MPlus_input_gmm/PHQ/phq_GMM_piecewise_3_classes.inp
-
-------End Mplus Model Run: 19Aug2021 10:54:53------
+Currently running model: phq_GMM_piecewise_6_classes.inp

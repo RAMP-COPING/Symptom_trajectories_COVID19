@@ -596,7 +596,8 @@ read all GMM models
 ```{r read all models} 
 
 anxiety.all.out <- readModels("./MPlus_input_gmm/GAD/output", 
-                           recursive=FALSE)
+                           recursive=FALSE,
+                           what = c("summaries","class_counts"))
 
 ```
 
@@ -1341,3 +1342,8 @@ ggsave(
   width = 14, height = 10, dpi = 150, units = "in")
 
 ```
+# Optimal Class Model: Descriptives
+
+## Means and Variances of Intercept, Slopes
+
+## Estimated model means

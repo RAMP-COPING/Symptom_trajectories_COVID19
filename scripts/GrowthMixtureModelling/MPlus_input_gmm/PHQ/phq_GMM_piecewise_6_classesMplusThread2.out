@@ -1,0 +1,139 @@
+Mplus VERSION 8.2 (Mac)
+MUTHEN & MUTHEN
+08/19/2021  12:11 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE:
+  Depression Symptoms in RAMP & COPING
+  6 class solution
+
+  DATA:
+    	FILE IS "/Users/kirstin/Dropbox/SGDP/RAMP/Projects/LongitudinalCommon/
+    	data_clean/phq/phq.clean_merged_total_scores_reduced.csv";
+
+  VARIABLE:
+  	NAMES ARE
+  		id phq_t0 phq_t3 phq_t4 phq_t5
+  		phq_t6 phq_t7 phq_t8 phq_t9 phq_t10 phq_t11
+  		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16 phq_t17;
+  				
+  	USEVARIABLES ARE
+  		phq_t0 phq_t3 phq_t4 phq_t5
+  		phq_t6 phq_t7 phq_t8 phq_t9 phq_t10 phq_t11
+  		phq_t12 phq_t13 phq_t14 phq_t15 phq_t16 phq_t17;
+  		
+  	MISSING ARE ALL (-99);
+  	IDVARIABLE IS id;
+
+  	
+  	CLASSES = c (6);
+
+  ANALYSIS:
+  	
+        ESTIMATOR = MLR;
+        STARTS = 500 125;
+
+  	PROCESSORS = 2;
+  	TYPE = MIXTURE;
+
+
+  MODEL:
+
+   %OVERALL%
+
+  !knot refers to point at which trajectory changes direction
+  !it is the start point for a trajectory, which corresponds to
+  !the end of the previous trajectory
+
+  !Piece 1 covering 07 April 2020 - 16 June (lockdown 1)
+  !Lockdown One till first easing
+  !knot = baseline
+
+  	int lin1 | phq_t0@0 phq_t3@3 phq_t4@4
+      		 phq_t5@5 phq_t6@5 phq_t7@5 phq_t8@5 phq_t9@5
+      		 phq_t10@5 phq_t11@5 phq_t12@5 phq_t13@5
+      		 phq_t14@5 phq_t15@5 phq_t16@5 phq_t17@5;
+  	
+  !piece 2 covering 30 June 2020 (fup 6) to 20 Oct 2020 (fup 11)  	
+  !Summer easing of restrictions until start Lockdown 2.0
+  !Knot Follow up 5	
+      		
+      	int lin2 | phq_t0@0 phq_t3@0 phq_t4@0
+      		 phq_t5@0 phq_t6@1 phq_t7@2 phq_t8@3 phq_t9@4
+      		 phq_t10@6 phq_t11@8 phq_t12@8 phq_t13@8
+      		 phq_t14@8 phq_t15@8 phq_t16@8 phq_t17@8;
+  	
+  !Piece 3 covering 17 November 2020 (Fup12) to 9 February 2021 (Fup 15)
+  !Winter lockdowns until spring 2021 easing of restrictions
+  !Knot follow up 11
+      	int lin3 | phq_t0@0 phq_t3@0 phq_t4@0
+      		 phq_t5@0 phq_t6@0 phq_t7@0 phq_t8@0 phq_t9@0
+      		 phq_t10@0 phq_t11@0 phq_t12@2 phq_t13@4
+      		 phq_t14@6 phq_t15@8 phq_t16@8 phq_t17@8;
+      		
+  !Piece 4 covering  9 March 2021 (fup 16) to 6 April 2021 (fup 17)
+  !Spring 2021 easing of restrictions
+  !knot follow up 15
+      	
+      	int lin4 | phq_t0@0 phq_t3@0 phq_t4@0
+      		 phq_t5@0 phq_t6@0 phq_t7@0 phq_t8@0 phq_t9@0
+      		 phq_t10@0 phq_t11@0 phq_t12@0 phq_t13@0
+      		 phq_t14@0 phq_t15@0 phq_t16@2 phq_t17@4;
+      		
+  	
+  	lin4@0;
+  	
+  	int WITH lin1;
+  	int WITH lin2;
+  	int WITH lin3;
+  	int WITH lin4;
+  	
+  	lin1 WITH lin2;
+  	lin1 WITH lin3;
+  	lin1 WITH lin4;
+  	
+  	lin2 WITH lin3;
+  	lin2 WITH lin4;
+  	
+  	lin3 WITH lin4;
+  	
+     	phq_t0 - phq_t16 PWITH phq_t3 - phq_t17;
+      	
+  	
+  PLOT:
+  	TYPE = PLOT3;
+  	
+
+  	SERIES = phq_t0(0) phq_t3(3) phq_t4(4)
+      	phq_t5(5) phq_t6(6) phq_t7(7) phq_t8(8) phq_t9(9) phq_t10(11)
+      	phq_t11(13) phq_t12(15) phq_t13(17) phq_t14(19) phq_t15(21)
+      	phq_t16(23) phq_t17(25);
+  	
+  OUTPUT:
+  	STDYX
+     	!TECH11
+      	!TECH14
+      	RESIDUAL;
+
+  SAVEDATA:
+  	!FILE IS "gmm_phq_piece_6class_probs.dat";	
+  	!SAVE = CPROBABILITIES;
+
+
+
+*** WARNING in MODEL command
+  All continuous latent variable covariances involving LIN4 have been fixed to 0
+  because the variance of LIN4 is fixed at 0.
+*** WARNING
+  Data set contains cases with missing on all variables.
+  These cases were not included in the analysis.
+  Number of cases with missing on all variables:  10410
+   2 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+
+Depression Symptoms in RAMP & COPING
+6 class solution
+

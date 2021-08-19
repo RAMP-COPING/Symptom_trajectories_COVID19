@@ -407,7 +407,7 @@ BIC_three_four_compare$aBIC[1] - BIC_three_four_compare$aBIC[2]
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run five class model, eval=TRUE}
+```{r run five class model, eval=FALSE}
 runModels("./MPlus_input_gmm/MASQ/masq_GMM_piecewise_5_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -424,7 +424,8 @@ runModels("./MPlus_input_gmm/MASQ/masq_GMM_piecewise_5_classes.inp",
 ```{r read anhedonia model five}
 
 anhedonia.five.class.out <- readModels("./MPlus_input_gmm/MASQ/masq_GMM_piecewise_5_classes.out", 
-                           recursive=FALSE)
+                           recursive=FALSE,
+                           what=c("summaries","gh5"))
 
 ```
 
@@ -596,7 +597,8 @@ read all GMM models
 ```{r read all models} 
 
 anhedonia.all.out <- readModels("./MPlus_input_gmm/MASQ/output", 
-                           recursive=FALSE)
+                           recursive=FALSE,
+                           what = c("summaries","class_counts"))
 
 ```
 
@@ -1333,3 +1335,9 @@ ggsave(
   width = 14, height = 10, dpi = 150, units = "in")
 
 ```
+
+# Optimal Class Model: Descriptives
+
+## Means and Variances of Intercept, Slopes
+
+## Estimated model means
