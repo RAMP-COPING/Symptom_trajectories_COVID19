@@ -1,7 +1,7 @@
-------Begin Mplus Model Run: 19Aug2021 12:11:39------
+------Begin Mplus Model Run: 20Aug2021 06:31:21------
 Run options:
 	Recursive (run models in subdirectories): FALSE
 	Show output on console: TRUE
 	Replace existing outfile: never
 ------
-Currently running model: phq_GMM_piecewise_6_classes.inp
+Currently running model: phq_GMM_piecewise_7_classes.inp

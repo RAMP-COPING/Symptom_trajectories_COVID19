@@ -19,4 +19,20 @@ html_notebook:
 toc: yes
 ---
 
-#
+# Summary
+
+#Set up
+
+require(nnet) - package , multinom function
+
+
+##read in class probability and predictor data
+
+# PHQ
+
+# GAD
+
+# MASQ
+
+
+

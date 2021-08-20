@@ -40,20 +40,6 @@ We will then perform a second analysis, where we group all minoritsed ethnic com
 
 We hope that by performing this analysis in both ways, we will be able to fully consider the possible impact of experiences of all ethnic communities on anxiety, depression and anhedonia trajectories throughout the pandemic. 
 
-
-*Disorders of interest*
-MDD and other depressive disorders
-Anxiety, nerves or generalised anxiety disorder
-Social anxiety
-Specific phobia
-Agoraphobia/panic disorder/panic attacks
-OCD (& OCD-related disorders e.g., skin picking?)
-PTSD
-Bipolar
-Eating disorders (Anorexia, BE-type EDs)
-Personality disorder: Clusters A, B, and C
-No-diagnosis group
-
 # Setup
 
 ```{r}
@@ -74,10 +60,6 @@ if(!require(summarytools)){
   install.packages("summarytools")
   library(summarytools)
 }
-if(!require(ggplot2)){
-  install.packages("ggplot2")
-  library(ggplot2)
-}
 
 if(!require(psych)){
   install.packages("psych")
@@ -92,16 +74,6 @@ if(!require(tidyverse)){
 if(!require(kableExtra)){
   install.packages("kableExtra")
   library(kableExtra)
-}
-
-if(!require(modeest)){
-  install.packages("modeest")
-  library(modeest)
-}
-
-if(!require(eeptools)){
-  install.packages("eeptools")
-  library(eeptools)
 }
 
 if(!require(dplyr)){
@@ -457,24 +429,25 @@ personality_disorders_table
 
  mental_health_controls_table
 ```
+### Save summary tables
 
 ```{r save kable}
 
-save_file_age <- file.path(dirname(dirname(getwd())),"output/age_summary_table.html")
-save_file_gender <- file.path(dirname(dirname(getwd())),"output/gender_summary_table.html")
-save_file_employment_prepandemic <- file.path(dirname(dirname(getwd())),"output/employment_prepandemic_summary_table.html")
-save_file_employment_change <- file.path(dirname(dirname(getwd())),"output/employment_change_summary_table.html")
-save_file_ethnicity <- file.path(dirname(dirname(getwd())),"output/ethnicity_summary_table.html")
-save_file_ethnicity_clustered <- file.path(dirname(dirname(getwd())),"output/ethnicity_clustered_summary_table.html")
-save_file_keyworker <- file.path(dirname(dirname(getwd())),"output/keyworker_summary_table.html")
-save_file_anxiety <- file.path(dirname(dirname(getwd())),"output/anxiety_disorder_summary_table.html")
-save_file_depression <- file.path(dirname(dirname(getwd())),"output/depressive_disorder_summary_table.html")
-save_file_ocd <- file.path(dirname(dirname(getwd())),"output/OCD_summary_table.html")
-save_file_psychosis <- file.path(dirname(dirname(getwd())),"output/psychosis_summary_table.html")
-save_file_bipolar <- file.path(dirname(dirname(getwd())),"output/bipolar_disorder_summary_table.html")
-save_file_personality <- file.path(dirname(dirname(getwd())),"output/personality_disorder_summary_table.html")
-save_file_ed <- file.path(dirname(dirname(getwd())),"output/eating_disorder_summary_table.html")
-save_file_controls <- file.path(dirname(dirname(getwd())),"output/mental_health_controls_summary_table.html")
+save_file_age <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/age_summary_table.html")
+save_file_gender <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/gender_summary_table.html")
+save_file_employment_prepandemic <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/employment_prepandemic_summary_table.html")
+save_file_employment_change <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/employment_change_summary_table.html")
+save_file_ethnicity <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/ethnicity_summary_table.html")
+save_file_ethnicity_clustered <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/ethnicity_clustered_summary_table.html")
+save_file_keyworker <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/keyworker_summary_table.html")
+save_file_anxiety <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/anxiety_disorder_summary_table.html")
+save_file_depression <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/depressive_disorder_summary_table.html")
+save_file_ocd <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/OCD_summary_table.html")
+save_file_psychosis <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/psychosis_summary_table.html")
+save_file_bipolar <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/bipolar_disorder_summary_table.html")
+save_file_personality <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/personality_disorder_summary_table.html")
+save_file_ed <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/eating_disorder_summary_table.html")
+save_file_controls <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/mental_health_controls_summary_table.html")
 
 
 save_kable(age_table ,
