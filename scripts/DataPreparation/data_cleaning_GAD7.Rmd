@@ -2382,7 +2382,7 @@ pretty_table
 ```
 ```{r save kable}
 
-save_file <- file.path(dirname(dirname(getwd())),"output/gad.all_waves_summary_table.html")
+save_file <- file.path(dirname(dirname(getwd())),"output/outcome_variable_summary_tables/gad.all_waves_summary_table.html")
 
 save_kable(pretty_table,
            save_file)

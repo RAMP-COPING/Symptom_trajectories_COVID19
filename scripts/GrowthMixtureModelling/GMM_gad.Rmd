@@ -1,0 +1,1352 @@
+---
+title: "Run Growth Mixture Modelling for RAMP & COPING longitudinal analyses of common mental health symptoms: GAD"
+author: "K L Purves"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: hide
+
+html_notebook:
+  theme: cerulean
+toc: yes
+---
+
+# Introduction
+
+## background
+This workbook centralises analyses of the GAD-7 total scores longitudinal analyses in the RAMP and COPING samples - identifying sub classes in overall trajectories of anxiety symptoms over the first year of the COVID-19 pandemic (Growth Mixture Modelling; GMM). This corresponds with analytic step 2 in the pre-registration for project ["Moderators of symptom trajectories of anxiety and anxiety during the COVID-19 pandemic"](https://osf.io/jvca5/).
+
+The exploratory approach attempts to decompose heterogeneous trajectories into distinct subclasses. 
+
+Variance was constrained to zero for the 4th linear trajectory as this is only estimated using two time points, and cannot converge otherwise. variances for each intercept and slope were freely estimated for all sub groups.  
+
+Best fit model from the 1 class lgcm performed (relating to step 1 in the pre-registration) was a piecewise model, with each inflection point dictated by an imposition or easing of lockdown restrictions, allowing for residuals to correlate between contiguous time points.
+
+
+## Analytic steps
+
+**global MPlus** 
+All models will be run using Robust Full Information Maximum Likelihood estimation (MLR in MPlus) to account for missing data (assumed missing at random) robust to skewing of the data. 
+
+In order to avoid a global maxima/local solution problem (log likelihood depends on starting values used, thus could have a false maximum or sub-optimal model) we will use multiple random sets of starting values, and ensure the highest log likelihood is replicated at least twice (using OPTSEED in MPlus). In practice, we will use 500 random sets of starting values, and carry forward the 125 values with the highest log likelihood to final stage optimisations. This will be set using STARTS = 500 125 in Mplus input scripts.  This should ensure global maxima are achieved, whilst balancing computational requirements. 
+
+***note: in our pre-registration we specified STARTS 1000 250, however this proved computationally impossible. Thus we ran with half the number of random starts. Providing these replicate, we will still perform two further replications of the best likelihood from our selected model using OPTSEED to ensure there is no evidence for the local maxima problem***
+
+**Step 1. Test a k + 1 class model, starting with k=1 (2 classes tested), of the best fit latent growth curve model established in step 1 (lgcm) until any of the following conditions are met:**   
+
+* Indices of model fit show a deterioration in fit according to the BIC relative to a model with fewer classes. The first model (2 class) will be compared to the lgcm (1 class), and so forth.
+* The model no longer converges due to complexity   
+* We exceed 7 classes (this is the maximum number of classes that would be practically useful and logically interpretable). 
+* If the BIC continues to decrease up until 7 classes, then the best model will be ascertained by first examining the proportion of the sample that has been allocated to the smallest trajectory group. If this is < 1%, then the previous class solution will be preferred. 
+* If BIC decreases up until 7 class solution, and all classes contain > 1% of the data, then the best model will be selected by creating a scree plot of BIC values. the model that falls at the inflection point (or the point of diminishing gains) will be selected (see pre registration for citations).
+* if inflection point remains ambiguous, then remaining fit indices will be compared globally to select between two similar models. The model with the highest entropy will be selected preferentially. If entropy is equivalent, then model which has better fit on the most number of fit indices (described below) will be selected. 
+
+**Step 2. Assess overall fit of the selected model to ensure it is the best and most parsimonious solution**
+* We will ensure there is no evidence for the local maxima problem by rerunning the analysis using the top two seeds from the replicated best log likelihood from the original analysis using OPTSEED in a new Mplus input file. We will check that the best log likelihood from this output matches that from the previous output. We will include TECH11 output in this MPLUS run to output the Vuong-Lo-Mendell-Rubin Likelihood ratios test comparing the best fit model to the earlier fit model
+
+* We will run a second analysis using OPTSEED to be even more sure there is no evidence for the local maxima problem by rerunning the analysis using the top two seeds from the replicated best log likelihood from the original analysis in a new Mplus input file. We will check that the best log likelihood from this output matches that from the previous output. We will include TECH14 output in this MPLUS run to output the Bootstrapped Likelihood ratios test (BLRT) comparing the best fit model to the earlier nested model. ***NOTE: Mplus forum suggests BLRT p-values often remain at 0 even when an unreasonable number of classes  is tested. Given this, may consider not running this if computational time is unfeasible ***
+
+This step wise procedure should save time whilst ensuring we select the optimal model and obtain unbiased estimates. [see this webnote for a description of the step wise procedure](https://www.statmodel.com/examples/webnotes/webnote14.pdf).
+
+* assuming model selection was unambiguous, assess model fit indices globally to ensure all indicators are reasonable   
+* assuming above is true, check smallest group has >1% of the sample
+* assess parsimony of the model. Does it divide one trajectory into two which only differ in intercept?
+* Assess entropy. If less than <0.8, ensure appropriate discussion of this limitation of class assignment. Consider impact of accuracy of class assignment on any subsequent predictive steps 
+
+## fit indices that will be used to identify the best model
+See pre registration for detailed description of all outcomes.
+
+* Bayesian Information Criterion (BIC). Decisions of best model will be primarily based on this. Smaller value = better fit
+* Aikaike Information Criterion (AIC). Smaller value = better fit
+* Likelihood ratio test (LRT) P > 0.05 indicates better model
+
+# Setup
+
+```{r}
+# clear global environment
+remove(list = ls())
+```
+
+***note: some of the install and update processes require command line verification in the console. If you are running this script for the first time and it does not proceed, open and check the console***
+
+```{r setup, include=FALSE}
+
+# Install / load packages
+
+if(!require(knitr)){
+  install.packages("knitr")
+  library(knitr)
+}
+
+if(!require(summarytools)){
+  install.packages("summarytools")
+  library(summarytools)
+}
+
+if(!require(data.table)){
+  install.packages("data.table")
+  library(data.table)
+}
+
+
+if(!require(kableExtra)){
+  install.packages("kableExtra")
+  library(kableExtra)
+}
+
+if(!require(glue)){
+  install.packages("glue")
+  library(glue)
+}
+
+if(!require(MplusAutomation)){
+  install.packages("MplusAutomation")
+  library(MplusAutomation)
+}
+
+
+
+if(!require(texreg)){
+  install.packages("texreg")
+  library(texreg)
+}
+
+if(!require(relimp)){
+  install.packages("relimp")
+  library(relimp)
+}
+
+if(!require(BiocManager)){
+  install.packages("BiocManager")
+  library(BiocManager)
+}
+
+if(!require(rhdf5)){
+  BiocManager::install("rhdf5")
+  library(rhdf5)
+}
+
+if(!require(plyr)){
+  install.packages("plyr")
+  library(plyr)
+}
+
+
+if(!require(tidyverse)){
+  install.packages("tidyverse")
+  library(tidyverse)
+}
+
+
+if(!require(kableExtra)){
+  install.packages("kableExtra")
+  library(kableExtra)
+}
+
+
+if(!require(lmtest)){
+  install.packages("lmtest")
+  library(lmtest)
+}
+
+
+
+
+## global workbook settings
+
+
+knitr::opts_chunk$set(results = 'asis',      
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE, 
+                      warning = FALSE,
+                      echo = TRUE,
+                      fig.height = 5,
+                      fig.width = 10,
+                      fig.align = "center")
+
+st_options(plain.ascii = FALSE,       
+            style = "rmarkdown",      
+            footnote = NA,            
+            subtitle.emphasis = FALSE)                         
+
+
+options(scipen = 999)
+```
+
+
+***colour paletttes and plot label list***
+RAMP colours (first two) and then a complementary palette of distinguishable colours that seem to be distinguishable in the case of colourblindness too [see this website to simulate the colours under different colour blindness conditions](https://coolors.co/4ed1b7-f6c66a-3066be-d90368-1b2d2a-4c2e05-c98686)
+```{r colour palette, include=FALSE}
+
+pres.palette <- c("#4ED1B7", "#F6C66A", "#3066BE", "#D90368","#1B2D2A",  "#4C2E05","#C98686") 
+
+
+timepoint_list <- c("7th April 2020","19th May 2020","2nd June 2020","16th June 2020","30th June 2020",
+                    "14th July 2020", "28th July 2020","25th August 2020","22nd September 2020","20th October 2020",
+                    "17th November 2020","15th December 2020","12th January 2021","9th February 2021",
+                    "9th March 2021", "6th April 2021")
+
+timepoint_list_anh <- c("19th May 2020","2nd June 2020","16th June 2020","30th June 2020",
+                    "14th July 2020", "28th July 2020","25th August 2020","22nd September 2020","20th October 2020",
+                    "17th November 2020","15th December 2020","12th January 2021","9th February 2021",
+                    "9th March 2021", "6th April 2021")
+
+```
+
+
+# Step 1: run a K+1 class analysis {.tabset}
+
+Will run each class consecutively, to check model for clear indications of stopping points defined above. 
+
+## Two classes
+
+### run model
+note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
+
+```{r run two class model, eval=FALSE}
+runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_2_classes.inp", 
+          recursive = FALSE,
+          showOutput=TRUE,
+          replaceOutfile="never"
+          )
+```
+
+
+### Evaluate model {.tabset}
+
+#### Compare BIC of current and previous model
+
+
+##### call in data from previous model
+
+```{r read anxiety model}
+
+anxiety.one.class.out <- readModels("./MPlus_input_lgcm/GAD/gad_latentGrowthCurve_piecewise_wPairwise_correlations.out", 
+                           recursive=FALSE)
+
+```
+
+
+
+##### call in data from current model
+
+```{r read anxiety model two}
+
+anxiety.two.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_2_classes.out", 
+                           recursive=FALSE)
+
+```
+
+
+##### extract BIC 
+
+```{r extract bic from one class}
+justBIC_one_class <- anxiety.one.class.out$summaries  %>%
+  select(c("Title",  "BIC", "aBIC")) %>%
+  arrange(BIC)
+
+```
+
+```{r extract bic from two class}
+justBIC_two_class <- anxiety.two.class.out$summaries  %>%
+  select(c("Title",  "BIC", "aBIC")) %>%
+  arrange(BIC)
+
+```
+
+##### compare
+
+```{r create BIC table and compare one vs two}
+
+BIC_one_two_compare <- rbind(justBIC_one_class,
+                         justBIC_two_class)
+
+BIC_one_two_compare
+```
+
+Difference in BIC
+```{r compare difference one vs two}
+
+BIC_one_two_compare$BIC[1] - BIC_one_two_compare$BIC[2]
+```
+
+Difference in sample size adjusted BIC
+```{r compare difference one vs two adjusted}
+
+BIC_one_two_compare$aBIC[1] - BIC_one_two_compare$aBIC[2]
+```
+
+## Three classes
+
+### run model
+note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
+
+```{r run three class model, eval=FALSE}
+runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_3_classes.inp", 
+          recursive = FALSE,
+          showOutput=TRUE,
+          replaceOutfile="never")
+```
+
+
+### Evaluate model {.tabset}
+
+#### Compare BIC of current and previous model
+
+##### call in data from current model
+
+```{r read anxiety model three}
+
+anxiety.three.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_3_classes.out", 
+                           recursive=FALSE)
+
+```
+
+
+##### extract BIC 
+
+```{r extract bic from three class}
+justBIC_three_class <- anxiety.three.class.out$summaries  %>%
+  select(c("Title",  "BIC", "aBIC")) %>%
+  arrange(BIC)
+
+```
+
+##### compare
+
+```{r create BIC table and compare two vs three}
+
+BIC_two_three_compare <- rbind(justBIC_two_class,
+                         justBIC_three_class)
+BIC_two_three_compare
+```
+
+Difference in BIC
+```{r compare difference two vs three}
+
+BIC_two_three_compare$BIC[1] - BIC_two_three_compare$BIC[2]
+```
+
+Difference in sample size adjusted BIC
+```{r compare difference two vs three adjusted}
+
+BIC_two_three_compare$aBIC[1] - BIC_two_three_compare$aBIC[2]
+```
+
+
+## four classes
+
+### run model
+note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
+
+```{r run four class model, eval=FALSE}
+runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_4_classes.inp", 
+          recursive = FALSE,
+          showOutput=TRUE,
+          replaceOutfile="never")
+```
+
+
+### Evaluate model {.tabset}
+
+#### Compare BIC of current and previous model
+
+##### call in data from current model
+
+```{r read anxiety model four}
+
+anxiety.four.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_4_classes.out", 
+                           recursive=FALSE)
+
+```
+
+
+##### extract BIC 
+
+```{r extract bic from four class}
+justBIC_four_class <- anxiety.four.class.out$summaries  %>%
+  select(c("Title",  "BIC", "aBIC")) %>%
+  arrange(BIC)
+
+```
+
+##### compare
+
+```{r create BIC table and compare three vs four}
+
+BIC_three_four_compare <- rbind(justBIC_three_class,
+                         justBIC_four_class)
+
+BIC_three_four_compare
+```
+
+Difference in BIC
+```{r compare difference three vs four}
+
+BIC_three_four_compare$BIC[1] - BIC_three_four_compare$BIC[2]
+```
+
+Difference in sample size adjusted BIC
+```{r compare difference three vs four adjusted}
+
+BIC_three_four_compare$aBIC[1] - BIC_three_four_compare$aBIC[2]
+```
+
+
+## five classes
+
+### run model
+note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
+
+```{r run five class model, eval=FALSE}
+runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_5_classes.inp", 
+          recursive = FALSE,
+          showOutput=TRUE,
+          replaceOutfile="never")
+```
+
+
+### Evaluate model {.tabset}
+
+#### Compare BIC of current and previous model
+
+##### call in data from current model
+
+```{r read anxiety model five}
+
+anxiety.five.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_5_classes.out", 
+                           recursive=FALSE)
+
+```
+
+
+##### extract BIC 
+
+```{r extract bic from five class}
+justBIC_five_class <- anxiety.five.class.out$summaries  %>%
+  select(c("Title",  "BIC", "aBIC")) %>%
+  arrange(BIC)
+
+```
+
+##### compare
+
+```{r create BIC table and compare four vs five}
+
+BIC_four_five_compare <- rbind(justBIC_four_class,
+                         justBIC_five_class)
+
+BIC_four_five_compare
+```
+
+Difference in BIC
+```{r compare difference four vs five}
+
+BIC_four_five_compare$BIC[1] - BIC_four_five_compare$BIC[2]
+```
+
+Difference in sample size adjusted BIC
+```{r compare difference four vs five adjusted}
+
+BIC_four_five_compare$aBIC[1] - BIC_four_five_compare$aBIC[2]
+```
+
+
+ ## six classes
+
+### run model
+note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
+
+```{r run six class model, eval=TRUE}
+runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_6_classes.inp", 
+          recursive = FALSE,
+          showOutput=TRUE,
+          replaceOutfile="never")
+```
+
+
+### Evaluate model {.tabset}
+
+#### Compare BIC of current and previous model
+
+##### call in data from current model
+
+```{r read anxiety model six}
+
+anxiety.six.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_6_classes.out", 
+                           recursive=FALSE)
+
+```
+
+
+##### extract BIC 
+
+```{r extract bic from six class}
+justBIC_six_class <- anxiety.six.class.out$summaries  %>%
+  select(c("Title",  "BIC", "aBIC")) %>%
+  arrange(BIC)
+
+```
+
+##### compare
+
+```{r create BIC table and compare five vs six}
+
+BIC_five_six_compare <- rbind(justBIC_five_class,
+                         justBIC_six_class)
+
+BIC_five_six_compare
+```
+
+Difference in BIC
+```{r compare difference five vs six}
+
+BIC_five_six_compare$BIC[1] - BIC_five_six_compare$BIC[2]
+```
+
+Difference in sample size adjusted BIC
+```{r compare difference five vs six adjusted}
+
+BIC_five_six_compare$aBIC[1] - BIC_five_six_compare$aBIC[2]
+```
+
+## seven classes
+
+### run model
+note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
+
+```{r run seven class model, eval=TRUE}
+runModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_7_classes.inp", 
+          recursive = FALSE,
+          showOutput=TRUE,
+          replaceOutfile="never")
+```
+
+
+### Evaluate model {.tabset}
+
+#### Compare BIC of current and previous model
+
+##### call in data from current model
+
+```{r read anxiety model seven}
+
+anxiety.seven.class.out <- readModels("./MPlus_input_gmm/GAD/gad_GMM_piecewise_7_classes.out", 
+                           recursive=FALSE)
+
+```
+
+
+##### extract BIC 
+
+```{r extract bic from seven class}
+justBIC_seven_class <- anxiety.seven.class.out$summaries  %>%
+  select(c("Title",  "BIC", "aBIC")) %>%
+  arrange(BIC)
+
+```
+
+##### compare
+
+```{r create BIC table and compare six vs seven}
+
+BIC_six_seven_compare <- rbind(justBIC_six_class,
+                         justBIC_seven_class)
+
+BIC_six_seven_compare
+```
+
+Difference in BIC
+```{r compare difference six vs seven}
+
+BIC_six_seven_compare$BIC[1] - BIC_six_seven_compare$BIC[2]
+```
+
+Difference in sample size adjusted BIC
+```{r compare difference six vs seven adjusted}
+
+BIC_six_seven_compare$aBIC[1] - BIC_six_seven_compare$aBIC[2]
+```
+
+
+
+# Step 2: Assess overall fit of the selected model
+
+## Check for local maxima problem (replicate best log likelihood) and perform Likelihood ratio tests
+
+run optseed with TECH 11
+run optseed again with TECH 14
+
+
+
+# Supplementary tables and figures
+
+## fit indices for all models run
+
+read all GMM models
+```{r read all models} 
+
+anxiety.all.out <- readModels("./MPlus_input_gmm/GAD/output", 
+                           recursive=FALSE,
+                           what = c("summaries","class_counts"))
+
+```
+
+extract relevant summaries from GMM and 1 class lgcm
+
+```{r extract gmm summaries}
+justSummariesGMM <- do.call("rbind.fill",
+  sapply(anxiety.all.out ,"[", "summaries")) %>%
+  select(c("Title", "Parameters",  "Entropy", "AIC", "BIC","aBIC", "LL")) %>%
+  arrange(BIC)
+```
+
+extract the same from the one trajectory lgcm
+
+```{r extract all sums from one trajectory}
+
+justSummarieslgcm <- anxiety.one.class.out$summaries %>%
+  select(c("Title", "Parameters", "AIC", "BIC","aBIC", "LL")) %>%
+  arrange(BIC)
+
+justSummarieslgcm$Entropy <- "1"
+
+justSummarieslgcm <- justSummarieslgcm %>%
+  relocate(Entropy, .after=Parameters)
+
+```
+
+And bind these together to print in a nice table
+
+```{r build pretty summary table}
+
+justSummaries <- rbind(justSummariesGMM,justSummarieslgcm) %>%
+  arrange(BIC)
+
+summary_table <- justSummaries %>%
+  kbl(caption ="Growth mixture modelling fit statistics for all models tested: GAD",
+        align='lcccccc') %>%
+  kable_styling()
+
+summary_table
+```
+
+## Class counts for each model run
+
+Particularly need to make sure that the selected model has >1% of the sample in the smallest class.
+
+2 class
+```{r two class most likely counts}
+
+class_allocation_2 <- anxiety.all.out$gad_GMM_piecewise_2_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Two class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_2_classes.out$class_counts$mostLikely)))) %>%
+  kable_styling(position = "left",
+                "striped")
+
+class_allocation_2
+```
+
+3 class
+```{r three class most likely counts}
+
+class_allocation_3 <-anxiety.all.out$gad_GMM_piecewise_3_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Three class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_3_classes.out$class_counts$mostLikely)))) %>%
+  kable_styling(position = "left",
+                "striped")
+
+class_allocation_3
+```
+
+4 class
+```{r four class most likely counts}
+class_allocation_4 <- anxiety.all.out$gad_GMM_piecewise_4_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Four class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_4_classes.out$class_counts$mostLikely)))) %>%
+  kable_styling(position = "left",
+                "striped")
+
+class_allocation_4
+```
+
+5 class
+```{r five class most likely counts}
+class_allocation_5 <- anxiety.all.out$gad_GMM_piecewise_5_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Five class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_5_classes.out$class_counts$mostLikely)))) %>%
+  kable_styling(position = "left",
+                "striped")
+
+class_allocation_5
+```
+
+6 class
+```{r six class most likely counts}
+class_allocation_6 <-anxiety.all.out$gad_GMM_piecewise_6_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Six class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_6_classes.out$class_counts$mostLikely)))) %>%
+  kable_styling(position = "left",
+                "striped")
+
+class_allocation_6
+```
+
+7 class
+```{r seven class most likely counts}
+class_allocation_7 <-anxiety.all.out$gad_GMM_piecewise_7_classes.out$class_counts$mostLikely %>%
+  kbl(caption = "Counts and proportions of most likely class membership: Seven class solution",
+        align='lll',
+        digits = 2,
+        col.names = str_to_title(gsub("[.]", " ", names(anxiety.all.out$gad_GMM_piecewise_7_classes.out$class_counts$mostLikely)))) %>%
+  kable_styling(position = "left",
+                "striped")
+
+class_allocation_7
+```
+
+
+
+### add LRT output these as a column to our table and print again
+
+## BIC scree plot
+
+```{r all BIC scree}
+
+# reorder the title column by BIC for plotting
+justSummaries$Title <-  reorder(justSummaries$Title, -justSummaries$BIC)
+
+BIC_scree_plot <- ggplot() +
+  geom_line(data =justSummaries,
+        aes(x = Title, y = BIC,group=1)) +
+  scale_x_discrete(name="k+1 class model",labels=c("Latent growth curve (One class)","Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model")) +
+  geom_point(data = justSummaries,
+        aes(x = Title, y = BIC,group=1), show.legend = F) +
+  labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
+       subtitle="Anxiety symptoms (GAD-7)",
+         y ="BIC") +
+  theme(panel.background = element_blank(),
+        axis.text.x = element_text(angle = 90)) 
+
+BIC_scree_plot 
+
+```
+
+## Save supplementary tables and figures
+
+```{r save supp tables and figures}
+# set up folder reference
+save_file_path <- file.path(dirname(dirname(getwd())),"output/supplementary_tables_figures/GAD/")
+
+# save summary table
+save_kable(summary_table,
+           file.path(save_file_path,"gad_gmm_allModelsfitStatistics.html"))
+
+# save BIC scree
+ggsave(
+  filename=file.path(save_file_path,"gad_BIC_scree_plot.png"),
+  plot =BIC_scree_plot)
+    
+# save class proportion data tables
+save_kable(class_allocation_2,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_2class.html"))
+
+save_kable(class_allocation_3,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_3class.html"))
+
+save_kable(class_allocation_4,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_4class.html"))
+
+save_kable(class_allocation_5,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_5class.html"))
+
+save_kable(class_allocation_6,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_6class.html"))
+
+save_kable(class_allocation_7,
+           file.path(save_file_path,"gad_gmm_class_allocation_numbers_7class.html"))
+
+```
+
+# Plots {.tabset}
+
+## One classes
+
+```{r Format latent growth curves data, include=FALSE}
+
+dat_plot_curves_1<-data.frame(matrix(nrow=16, ncol=2))
+
+colnames(dat_plot_curves_1)<-c("Group","Observed")
+
+dat_plot_curves_1$Group<- anxiety.one.class.out$gh5$means_and_variances_data$y_estimated_means$values
+dat_plot_curves_1$Observed<- anxiety.one.class.out$gh5$means_and_variances_data$y_observed_means$values
+
+dat_plot_curves_1$timepoint<-c(0:15) 
+
+dat_plot_curves_1<-dat_plot_curves_1%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Group","Observed")))
+
+dat_plot_curves_1 <- dat_plot_curves_1 %>%
+  mutate(Type = case_when(Model == "Observed"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed"~ "Piecewise",
+                          Model == "Group"~ "Piecewise"
+                          ))
+
+```
+
+
+
+```{r Growth Curve Forms One class}
+
+growth_curves_oneclass <- ggplot() +
+  geom_line(data = dat_plot_curves_1,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_plot_curves_1,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="GAD-7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,21), breaks=seq(0, 21, 1)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+ geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=21, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
+  theme(panel.grid.major.y = element_blank(),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_oneclass
+
+
+
+```
+
+## Two classes
+
+```{r Format latent growth curves data two class, include=FALSE}
+
+dat_plot_curves_two<-data.frame(matrix(nrow=16, ncol=4))
+
+colnames(dat_plot_curves_two)<-c("Class1","Class2","Observed1", "Observed2")
+
+dat_plot_curves_two$Class1<- anxiety.two.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_two$Class2<- anxiety.two.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_two$Observed1<- anxiety.two.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_two$Observed2<- anxiety.two.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+
+
+dat_plot_curves_two$timepoint<-c(0:15) 
+
+dat_plot_curves_two<-dat_plot_curves_two%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Observed1","Observed2")))
+
+dat_plot_curves_two <- dat_plot_curves_two %>%
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2"
+                          ))
+```
+
+
+
+```{r Growth Curve Forms two class}
+
+growth_curves_twoclass <- ggplot() +
+  geom_line(data = dat_plot_curves_two,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_plot_curves_two,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="GAD-7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,21), breaks=seq(0,21, 1)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=21, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
+  theme(panel.grid.major.y = element_blank(),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_twoclass
+
+
+
+```
+
+
+## three classes
+
+```{r Format latent growth curves data three class, include=FALSE}
+
+dat_plot_curves_three<-data.frame(matrix(nrow=16, ncol=6))
+
+colnames(dat_plot_curves_three)<-c("Class1","Class2","Class3",
+                                   "Observed1", "Observed2","Observed3")
+
+dat_plot_curves_three$Class1<- anxiety.three.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_three$Class2<- anxiety.three.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_three$Class3<- anxiety.three.class.out$gh5$means_and_variances_data$y_estimated_means$values[,3]
+
+dat_plot_curves_three$Observed1<- anxiety.three.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_three$Observed2<- anxiety.three.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+dat_plot_curves_three$Observed3<- anxiety.three.class.out$gh5$means_and_variances_data$y_observed_means$values[,3]
+
+dat_plot_curves_three$timepoint<-c(0:15) 
+
+dat_plot_curves_three<-dat_plot_curves_three%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Observed1","Observed2","Observed3")))
+
+dat_plot_curves_three <- dat_plot_curves_three %>%
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          Model == "Observed3"~ "Observed",  
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Observed3"~ "Class3",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2",
+                          Model == "Class3"~ "Class3"
+                          ))
+```
+
+
+
+```{r Growth Curve Forms three class}
+
+growth_curves_threeclass <- ggplot() +
+  geom_line(data = dat_plot_curves_three,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_plot_curves_three,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="GAD-7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,21), breaks=seq(0,21, 1)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=21, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
+  theme(panel.grid.major.y = element_blank(),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_threeclass
+
+```
+
+## four classes
+
+```{r Format latent growth curves data four class, include=FALSE}
+
+dat_plot_curves_four<-data.frame(matrix(nrow=16, ncol=8))
+
+colnames(dat_plot_curves_four)<-c("Class1","Class2","Class3","Class4",
+                                   "Observed1", "Observed2","Observed3","Observed4")
+
+dat_plot_curves_four$Class1<- anxiety.four.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_four$Class2<- anxiety.four.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_four$Class3<- anxiety.four.class.out$gh5$means_and_variances_data$y_estimated_means$values[,3]
+dat_plot_curves_four$Class4<- anxiety.four.class.out$gh5$means_and_variances_data$y_estimated_means$values[,4]
+
+dat_plot_curves_four$Observed1<- anxiety.four.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_four$Observed2<- anxiety.four.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+dat_plot_curves_four$Observed3<- anxiety.four.class.out$gh5$means_and_variances_data$y_observed_means$values[,3]
+dat_plot_curves_four$Observed4<- anxiety.four.class.out$gh5$means_and_variances_data$y_observed_means$values[,4]
+
+dat_plot_curves_four$timepoint<-c(0:15) 
+
+dat_plot_curves_four<-dat_plot_curves_four%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Observed1","Observed2","Observed3","Observed4")))
+
+dat_plot_curves_four <- dat_plot_curves_four %>%
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          Model == "Observed3"~ "Observed",
+                          Model == "Observed4"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Observed3"~ "Class3",
+                          Model == "Observed4"~ "Class4",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2",
+                          Model == "Class3"~ "Class3",
+                          Model == "Class4"~ "Class4"
+                          ))
+```
+
+
+
+```{r Growth Curve Forms four class}
+
+growth_curves_fourclass <- ggplot() +
+  geom_line(data = dat_plot_curves_four,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_plot_curves_four,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="GAD-7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,21), breaks=seq(0,21, 1)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=21, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
+  theme(panel.grid.major.y = element_blank(),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_fourclass
+
+```
+
+## five classes
+
+```{r Format latent growth curves data five class, include=FALSE}
+
+dat_plot_curves_five<-data.frame(matrix(nrow=16, ncol=10))
+
+colnames(dat_plot_curves_five)<-c("Class1","Class2","Class3","Class4",
+                                  "Class5",
+                                   "Observed1", "Observed2","Observed3","Observed4",
+                                  "Observed5")
+
+dat_plot_curves_five$Class1<- anxiety.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_five$Class2<- anxiety.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_five$Class3<- anxiety.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[,3]
+dat_plot_curves_five$Class4<- anxiety.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[,4]
+dat_plot_curves_five$Class5<- anxiety.five.class.out$gh5$means_and_variances_data$y_estimated_means$values[,5]
+
+dat_plot_curves_five$Observed1<- anxiety.five.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_five$Observed2<- anxiety.five.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+dat_plot_curves_five$Observed3<- anxiety.five.class.out$gh5$means_and_variances_data$y_observed_means$values[,3]
+dat_plot_curves_five$Observed4<- anxiety.five.class.out$gh5$means_and_variances_data$y_observed_means$values[,4]
+dat_plot_curves_five$Observed5<- anxiety.five.class.out$gh5$means_and_variances_data$y_observed_means$values[,5]
+
+dat_plot_curves_five$timepoint<-c(0:15) 
+
+dat_plot_curves_five<-dat_plot_curves_five%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Class5","Observed1","Observed2","Observed3","Observed4","Observed5")))
+
+dat_plot_curves_five <- dat_plot_curves_five %>%
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          Model == "Observed3"~ "Observed",
+                          Model == "Observed4"~ "Observed",
+                          Model == "Observed5"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Observed3"~ "Class3",
+                          Model == "Observed4"~ "Class4",
+                          Model == "Observed5"~ "Class5",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2",
+                          Model == "Class3"~ "Class3",
+                          Model == "Class4"~ "Class4",
+                          Model == "Class5"~ "Class5"
+                          ))
+```
+
+
+
+```{r Growth Curve Forms five class}
+
+growth_curves_fiveclass <- ggplot() +
+  geom_line(data = dat_plot_curves_five,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_plot_curves_five,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="GAD-7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,21), breaks=seq(0,21, 1)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=21, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
+  theme(panel.grid.major.y = element_blank(),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_fiveclass
+
+```
+
+## six classes
+
+```{r Format latent growth curves data six class, include=FALSE}
+
+dat_plot_curves_six<-data.frame(matrix(nrow=16, ncol=12))
+
+colnames(dat_plot_curves_six)<-c("Class1","Class2","Class3","Class4",
+                                  "Class5","Class6",
+                                   "Observed1", "Observed2","Observed3","Observed4",
+                                  "Observed5","Observed6")
+
+dat_plot_curves_six$Class1<- anxiety.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_six$Class2<- anxiety.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_six$Class3<- anxiety.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,3]
+dat_plot_curves_six$Class4<- anxiety.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,4]
+dat_plot_curves_six$Class5<- anxiety.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,5]
+dat_plot_curves_six$Class6<- anxiety.six.class.out$gh5$means_and_variances_data$y_estimated_means$values[,6]
+
+
+dat_plot_curves_six$Observed1<- anxiety.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_six$Observed2<- anxiety.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+dat_plot_curves_six$Observed3<- anxiety.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,3]
+dat_plot_curves_six$Observed4<- anxiety.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,4]
+dat_plot_curves_six$Observed5<- anxiety.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,5]
+dat_plot_curves_six$Observed6<- anxiety.six.class.out$gh5$means_and_variances_data$y_observed_means$values[,6]
+
+
+dat_plot_curves_six$timepoint<-c(0:15) 
+
+dat_plot_curves_six<-dat_plot_curves_six%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Class5","Class6","Observed1","Observed2","Observed3","Observed4","Observed5","Observed6")))
+
+dat_plot_curves_six <- dat_plot_curves_six %>%
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          Model == "Observed3"~ "Observed",
+                          Model == "Observed4"~ "Observed",
+                          Model == "Observed5"~ "Observed",
+                          Model == "Observed6"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Observed3"~ "Class3",
+                          Model == "Observed4"~ "Class4",
+                          Model == "Observed5"~ "Class5",
+                          Model == "Observed6"~ "Class6",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2",
+                          Model == "Class3"~ "Class3",
+                          Model == "Class4"~ "Class4",
+                          Model == "Class5"~ "Class5",
+                          Model == "Class6"~ "Class6"
+                          ))
+```
+
+
+
+```{r Growth Curve Forms six class}
+
+growth_curves_sixclass <- ggplot() +
+  geom_line(data = dat_plot_curves_six,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_plot_curves_six,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="GAD-7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,21), breaks=seq(0,21, 1)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_sixclass
+
+```
+## seven classes
+
+```{r Format latent growth curves data seven class, include=FALSE}
+
+dat_plot_curves_seven<-data.frame(matrix(nrow=16, ncol=14))
+
+colnames(dat_plot_curves_seven)<-c("Class1","Class2","Class3","Class4",
+                                  "Class5","Class6","Class7",
+                                   "Observed1", "Observed2","Observed3","Observed4",
+                                  "Observed5","Observed6","Observed7")
+
+dat_plot_curves_seven$Class1<- anxiety.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,1] 
+dat_plot_curves_seven$Class2<- anxiety.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,2]
+dat_plot_curves_seven$Class3<- anxiety.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,3]
+dat_plot_curves_seven$Class4<- anxiety.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,4]
+dat_plot_curves_seven$Class5<- anxiety.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,5]
+dat_plot_curves_seven$Class6<- anxiety.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,6]
+dat_plot_curves_seven$Class7<- anxiety.seven.class.out$gh5$means_and_variances_data$y_estimated_means$values[,7]
+
+
+dat_plot_curves_seven$Observed1<- anxiety.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,1]
+dat_plot_curves_seven$Observed2<- anxiety.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,2]
+dat_plot_curves_seven$Observed3<- anxiety.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,3]
+dat_plot_curves_seven$Observed4<- anxiety.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,4]
+dat_plot_curves_seven$Observed5<- anxiety.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,5]
+dat_plot_curves_seven$Observed6<- anxiety.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,6]
+dat_plot_curves_seven$Observed7<- anxiety.seven.class.out$gh5$means_and_variances_data$y_observed_means$values[,7]
+
+
+dat_plot_curves_seven$timepoint<-c(0:15) 
+
+dat_plot_curves_seven<-dat_plot_curves_seven%>%pivot_longer(-timepoint, names_to = "Model", values_to = "score")%>%mutate(Model = factor(Model, levels = c("Class1","Class2","Class3","Class4","Class5","Class6","Class7","Observed1","Observed2","Observed3","Observed4","Observed5","Observed6","Observed7")))
+
+dat_plot_curves_seven <- dat_plot_curves_seven %>%
+  mutate(Type = case_when(Model == "Observed1"~ "Observed",
+                          Model == "Observed2"~ "Observed",
+                          Model == "Observed3"~ "Observed",
+                          Model == "Observed4"~ "Observed",
+                          Model == "Observed5"~ "Observed",
+                          Model == "Observed6"~ "Observed",
+                          Model == "Observed7"~ "Observed",
+                          TRUE ~ "Estimated"),
+         Model = case_when(Model == "Observed1"~ "Class1",
+                          Model == "Observed2"~ "Class2",
+                          Model == "Observed3"~ "Class3",
+                          Model == "Observed4"~ "Class4",
+                          Model == "Observed5"~ "Class5",
+                          Model == "Observed6"~ "Class6",
+                          Model == "Observed7"~ "Class7",
+                          Model == "Class1"~ "Class1",
+                          Model == "Class2"~ "Class2",
+                          Model == "Class3"~ "Class3",
+                          Model == "Class4"~ "Class4",
+                          Model == "Class5"~ "Class5",
+                          Model == "Class6"~ "Class6",
+                          Model == "Class7"~ "Class7"
+                          ))
+```
+
+
+
+```{r Growth Curve Forms seven class}
+
+growth_curves_sevenclass <- ggplot() +
+  geom_line(data = dat_plot_curves_seven,
+        aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
+  geom_point(data = dat_plot_curves_seven,
+        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+  scale_color_manual(values = pres.palette) +
+  labs(x = "Follow up time point", y ="GAD-7 Score") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,21), breaks=seq(0,21, 1)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+                   labels = timepoint_list) +
+  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=21, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=5, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=10, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=15, linetype="dashed", color = "grey") +
+  theme(panel.grid.major.y = element_blank(),
+        axis.text = element_text(colour="black", size = 14),
+        axis.title = element_text(colour="black", size = 16),
+        axis.text.x = element_text(angle = 90,
+        hjust=1),
+        legend.key = element_blank(),
+        legend.text = element_text(colour = "black", size = 11),
+        panel.background = element_blank()) 
+
+growth_curves_sevenclass
+
+```
+
+## Save all plots for manuscript or supplementary figures
+
+```{r save trajectory figures}
+# set up folder reference
+save_file_path <- file.path(dirname(dirname(getwd())),"output/Trajectory_plots/GAD/")
+
+# save all trajectory plots
+ggsave(
+  filename=file.path(save_file_path,"gad_oneclass_trajectory.png"),
+  plot =growth_curves_oneclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
+
+ggsave(
+  filename=file.path(save_file_path,"gad_twoclass_trajectory.png"),
+  plot =growth_curves_twoclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
+
+ggsave(
+  filename=file.path(save_file_path,"gad_threeclass_trajectory.png"),
+  plot =growth_curves_threeclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
+
+ggsave(
+  filename=file.path(save_file_path,"gad_fourclass_trajectory.png"),
+  plot =growth_curves_fourclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
+
+ggsave(
+  filename=file.path(save_file_path,"gad_fiveclass_trajectory.png"),
+  plot =growth_curves_fiveclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
+
+ggsave(
+  filename=file.path(save_file_path,"gad_sixclass_trajectory.png"),
+  plot =growth_curves_sixclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
+
+ggsave(
+  filename=file.path(save_file_path,"gad_sevenclass_trajectory.png"),
+  plot =growth_curves_sevenclass, 
+  width = 14, height = 10, dpi = 150, units = "in")
+
+```
+# Optimal Class Model: Descriptives
+
+## Means and Variances of Intercept, Slopes
+
+## Estimated model means
