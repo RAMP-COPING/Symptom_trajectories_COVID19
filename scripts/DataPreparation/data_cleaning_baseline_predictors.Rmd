@@ -241,13 +241,22 @@ masq_merged <- left_join(masq_mplus, all_predictors)
 
 ```{r save mplus files}
 
-saveRDS(phq_merged, file.path(clean_data, "/phq/phq.mplus_matched_predictors.csv"))
-saveRDS(gad_merged, file.path(clean_data, "/gad/gad.mplus_matched_predictors.csv"))
-saveRDS(masq_merged, file.path(clean_data, "/masq/masq.mplus_matched_predictors.csv"))
+saveRDS(phq_merged, file.path(clean_data, "/phq/phq.mplus_matched_predictors.rds"))
+saveRDS(gad_merged, file.path(clean_data, "/gad/gad.mplus_matched_predictors.rds"))
+saveRDS(masq_merged, file.path(clean_data, "/masq/masq.mplus_matched_predictors.rds"))
 
 ```
 
-# summary tables for predictors 
+# summary tables for predictors (for those who have data for at least one predictor)
+
+This will represent our true sample. Others may have completed cosnent or one item, but not actually completed any questionnaires. Represents the actual sample for our trajectory analyses too as people who have no data on any predictor will not have any data for any wave of gad, phq or masq. 
+
+First drop everyone who is NA on all variables
+
+```{r drop all NAS}
+
+phq_merged <- phq_merged[!apply(is.na(phq_merged[,3:17]), 1, all),]
+```
 
 ```{r make kable table age}
 

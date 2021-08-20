@@ -739,9 +739,12 @@ justSummaries$Title <-  reorder(justSummaries$Title, -justSummaries$BIC)
 BIC_scree_plot <- ggplot() +
   geom_line(data =justSummaries,
         aes(x = Title, y = BIC,group=1)) +
+  scale_x_discrete(name="k+1 class model",labels=c("Latent growth curve (One class)","Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model")) +
   geom_point(data = justSummaries,
         aes(x = Title, y = BIC,group=1), show.legend = F) +
-  labs(x = "Model", y ="BIC") +
+  labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
+       subtitle="Anhedonia (MASQ CD-anhedonia)",
+         y ="BIC") +
   theme(panel.background = element_blank(),
         axis.text.x = element_text(angle = 90)) 
 
