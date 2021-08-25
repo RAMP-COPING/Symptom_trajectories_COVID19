@@ -6,7 +6,7 @@ output:
   html_document:
     df_print: paged
     toc: yes
-    toc_depth: 3
+    toc_depth: 2
     toc_float:
       collapsed: false
     number_sections: false
@@ -524,7 +524,7 @@ BIC_five_six_compare$aBIC[1] - BIC_five_six_compare$aBIC[2]
 ### run model
 note, make sure eval=false in this block in final version to ensure script can be knitted even on a computer without mplus.
 
-```{r run seven class model, eval=TRUE}
+```{r run seven class model, eval=FALSE}
 runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_7_classes.inp", 
           recursive = FALSE,
           showOutput=TRUE,
@@ -541,8 +541,7 @@ runModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_7_classes.inp",
 ```{r read depression model seven}
 
 depression.seven.class.out <- readModels("./MPlus_input_gmm/PHQ/phq_GMM_piecewise_7_classes.out", 
-                           recursive=FALSE,
-                           what = c("summaries","class_counts"))
+                           recursive=FALSE)
 
 ```
 
@@ -731,7 +730,7 @@ class_allocation_7
 
 ### add LRT output these as a column to our table and print again
 
-## BIC scree plot
+5## BIC scree plot
 
 ```{r all BIC scree}
 
@@ -741,7 +740,8 @@ justSummaries$Title <-  reorder(justSummaries$Title, -justSummaries$BIC)
 BIC_scree_plot <- ggplot() +
   geom_line(data =justSummaries,
         aes(x = Title, y = BIC,group=1)) +
-  scale_x_discrete(name="k+1 class model",labels=c("Latent growth curve (One class)","Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model","Six class growth mixture model")) +
+  scale_y_continuous(limits =c(1745000,1772500), breaks = seq(1745000,1772500,by=2500)) +
+  scale_x_discrete(name="k+1 class model",labels=c("Latent growth curve (One class)","Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model","Six class growth mixture model","Seven class growth mixture model")) +
   geom_point(data = justSummaries,
         aes(x = Title, y = BIC,group=1), show.legend = F) +
   labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
@@ -1224,6 +1224,7 @@ growth_curves_sixclass <- ggplot() +
 growth_curves_sixclass
 
 ```
+
 ## seven classes
 
 ```{r Format latent growth curves data seven class, include=FALSE}
@@ -1297,13 +1298,13 @@ growth_curves_sevenclass <- ggplot() +
   scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 1)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
                    labels = timepoint_list) +
+  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
+  geom_hline(yintercept=27, linetype="dashed", color = "grey") +
   geom_hline(yintercept=5, linetype="dashed", color = "grey") +
   geom_hline(yintercept=10, linetype="dashed", color = "grey") +
   geom_hline(yintercept=15, linetype="dashed", color = "grey") +
   geom_hline(yintercept=20, linetype="dashed", color = "grey") +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
+  theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
         axis.text.x = element_text(angle = 90,
