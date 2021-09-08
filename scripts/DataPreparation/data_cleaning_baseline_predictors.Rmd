@@ -129,7 +129,6 @@ all_predictors <- fourcohort %>%
          psychotic_disorders_numeric,
          mhd.personality_disorder_numeric,
          mhd.bipolar_disorder_numeric,
-         control_numeric,
          key_worker_numeric,
          employment_prior_covid_numeric,
          employment_change_numeric) %>%
@@ -189,9 +188,6 @@ all_predictors <- fourcohort %>%
          bipolar_disorders =  recode(mhd.bipolar_disorder_numeric,
                                      "0" = "No bipolar disorder",
                                      "1" = "Bipolar disorder"),
-         mental_health_controls =  recode(control_numeric,
-                                     "0" = "No mental health diagnosis",
-                                     "1" = "Any mental health disorder"),
          key_worker =  recode(key_worker_numeric,
                                      "0" = "Not a key worker",
                                      "1" = "Government defined key worker"),
@@ -219,8 +215,7 @@ all_predictors <- fourcohort %>%
          obsessive_compulsive_disorders,
          psychotic_disorders,
          personality_disorders,
-         bipolar_disorders,
-         mental_health_controls)
+         bipolar_disorders)
          
 ```
 
@@ -255,10 +250,10 @@ First drop everyone who is NA on all variables
 
 ```{r drop all NAS}
 
-phq_merged <- phq_merged[!apply(is.na(phq_merged[,3:17]), 1, all),]
+phq_merged <- phq_merged[!apply(is.na(phq_merged[,3:16]), 1, all),]
 ```
 
-```{r make kable table age}
+```{r make kable table age phq}
 
 age_table <-  freq(phq_merged$age) %>%
   kable(caption = "Frequency table for age in combined cohort (maximum n)",
@@ -270,7 +265,7 @@ age_table <-  freq(phq_merged$age) %>%
 age_table 
 ```
 
-```{r make kable table age}
+```{r make kable table gender}
 
 gender_table <-  freq(phq_merged$gender) %>%
   kable(caption = "Frequency table for gender in combined cohort (maximum n)",
@@ -332,7 +327,7 @@ employment_change_table <-  freq(phq_merged$employment_change) %>%
 employment_change_table 
 ```
 
-```{r make kable table employment prior covid}
+```{r make kable table employment keyworker}
 
 key_worker_table <-  freq(phq_merged$key_worker) %>%
   kable(caption = "Frequency table for keyworker status to covid in combined cohort (maximum n)",
@@ -428,16 +423,6 @@ bipolar_disorders_table
 personality_disorders_table 
 ```
 
-```{r}
- mental_health_controls_table <-  freq(phq_merged$mental_health_controls) %>%
-  kable(caption = "Frequency table for mental health controls in combined cohort (maximum n)",
-        booktabs = T,
-        digits = 2) %>%
-  kable_styling() %>%
-  row_spec(0,bold=T,background = "grey",font_size = 16)
-
- mental_health_controls_table
-```
 ### Save summary tables
 
 ```{r save kable}
@@ -456,7 +441,7 @@ save_file_psychosis <- file.path(dirname(dirname(getwd())),"output/baseline_pred
 save_file_bipolar <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/bipolar_disorder_summary_table.html")
 save_file_personality <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/personality_disorder_summary_table.html")
 save_file_ed <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/eating_disorder_summary_table.html")
-save_file_controls <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/mental_health_controls_summary_table.html")
+
 
 
 save_kable(age_table ,
@@ -501,8 +486,7 @@ save_kable(personality_disorders_table ,
 save_kable(eating_disorder_table ,
            save_file_ed)
 
-save_kable(mental_health_controls_table,
-           save_file_controls)
+
 
 ```
 

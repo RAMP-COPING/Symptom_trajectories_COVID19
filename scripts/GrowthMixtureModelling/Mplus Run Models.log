@@ -1,9 +1,10 @@
-------Begin Mplus Model Run: 23Aug2021 13:23:56------
+------Begin Mplus Model Run: 07Sep2021 13:05:44------
 Run options:
-	Recursive (run models in subdirectories): FALSE
+	Recursive (run models in subdirectories): TRUE
 	Show output on console: TRUE
-	Replace existing outfile: never
+	Replace existing outfile: always
 ------
-Currently running model: masq_GMM_piecewise_7_classes.inp
+Currently running model: masq_GMM_piecewise_5_classes_OPTSEED_TECH11.inp
+Currently running model: masq_GMM_piecewise_5_classes_OPTSEED_TECH14.inp
 
-------End Mplus Model Run: 24Aug2021 15:17:21------
+------End Mplus Model Run: 07Sep2021 14:56:12------

@@ -1362,8 +1362,22 @@ ggsave(
 
 ```
 
-# Optimal Class Model: Descriptives
+# Optimal Class Model
 
 ## Means and Variances of Intercept, Slopes
 
 ## Estimated model means
+
+## run OPTSEED replication steo 1 and two. 
+
+This will also get LRT output and class probability data
+
+Top replicated log likelihood to run optseed is: 521575
+
+```{r run optseed model}
+
+runModels("./MPlus_input_gmm/PHQ/OPTSEED_replications/", 
+          recursive = TRUE,
+          showOutput=TRUE)
+
+```
