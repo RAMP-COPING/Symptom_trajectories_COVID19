@@ -490,6 +490,8 @@ save_kable(eating_disorder_table ,
 
 ```
 
-
-
+# create combined summary table for paper (for those who have data for at least one predictor)
+```{r create combined summary table for paper}
+age_table
+```
 
