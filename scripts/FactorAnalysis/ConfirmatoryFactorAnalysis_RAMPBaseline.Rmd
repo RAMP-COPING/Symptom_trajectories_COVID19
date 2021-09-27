@@ -72,7 +72,6 @@ if(!require(reshape2)){
   library(reshape2)
 }
 
-
 # if(!require(geom_text)){
 #   install.packages("geom_text")
 #   library(geom_text)
@@ -184,12 +183,15 @@ check the correlations between all items
 
 ```{r check item correlation}
 
-cormat <- round(cor(!is.na(cfa_data.clean[,2:27])),2)
+cormat <- round(cor(cfa_data.clean[,2:27],use="complete.obs"),2) #removed !is.na function and added 'use="complete.obs"' instead - correlations worryingly high with !is.na version
 
 upper_tri <- get_upper_tri(cormat)
 
 # Melt the correlation matrix
 melted_cormat <- melt(upper_tri, na.rm = TRUE)
+
+#shortened labels for correlation plot
+coord_plot_labels <- c("GAD7: Anxious", "GAD7: Difficulty controlling worrying","GAD7: Worrying too much", "GAD7: Trouble relaxing", "GAD7: Restlessness","GAD7: Irritable","GAD7: Feeling afraid", "PHQ9: Anhedonia", "PHQ9: Depressed mood", "PHQ9: Sleep change", "PHQ9: Little energy", "PHQ9: Weight or appetite problems", "PHQ9: Worthlessness", "PHQ9: Concentration problems", "PHQ9: Motor problems", "PHQ9: Suicide ideation", "MASQ-AD: Successful", "MASQ-AD: Happy", "MASQ-AD: Optimistic", "MASQ-AD: Fun", "MASQ-AD: Accomplished", "MASQ-AD: Looking forward", "MASQ-AD: Talkative", "MASQ-AD: Lively", "MASQ-AD: Full of energy", "MASQ-AD: Good")
 
 # Create a ggheatmap
 ggheatmap <- ggplot(melted_cormat, aes(Var2, Var1, fill = value))+
@@ -198,14 +200,14 @@ ggheatmap <- ggplot(melted_cormat, aes(Var2, Var1, fill = value))+
    midpoint = 0, limit = c(-1,1), space = "Lab", 
     name="Pearson\nCorrelation") +
   theme_minimal()+ # minimal theme
- theme(axis.text.x = element_text(angle = 45, vjust = 1, 
-    size = 12, hjust = 1))+
+ theme(axis.text.x = element_text(angle = 90, vjust = 1, 
+    size = 8, hjust = 1))+
+  scale_x_discrete(label=coord_plot_labels) +
+  scale_y_discrete(label=coord_plot_labels) +
  coord_fixed()
 
-
-
-ggheatmap + 
-geom_text(aes(Var2, Var1, label = value), color = "black", size = 4) +
+ggheatmap <- ggheatmap + 
+geom_text(aes(Var2, Var1, label = value), color = "black", size = 1.5) +
 theme(
   axis.title.x = element_blank(),
   axis.title.y = element_blank(),
@@ -221,6 +223,9 @@ theme(
 
 
 print(ggheatmap)
+
+ggsave(filename=file.path(dirname(dirname(getwd())),"output/supplementary_tables_figures/CFA_correlations.png"),
+       plot=ggheatmap)
 ```
 
 All basically very highly correlated. check lowest correlation between two item pairs:

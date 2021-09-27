@@ -749,6 +749,22 @@ BIC_scree_plot <- ggplot() +
 
 BIC_scree_plot 
 
+#create scree plot without 1-class model
+
+BIC_scree_plot2 <- ggplot() +
+  geom_line(data =justSummaries[1:6,],
+        aes(x = Title, y = BIC,group=1)) +
+  scale_x_discrete(name="k+1 class model",labels=c("Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model","Six class growth mixture model","Seven class growth mixture model")) +
+  geom_point(data = justSummaries[1:6,],
+        aes(x = Title, y = BIC,group=1), show.legend = F) +
+  labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
+       subtitle="Anxiety symptoms (GAD-7)",
+         y ="BIC") +
+  theme(panel.background = element_blank(),
+        axis.text.x = element_text(angle = 90)) 
+
+BIC_scree_plot2
+
 ```
 
 ## Save supplementary tables and figures
@@ -765,6 +781,11 @@ save_kable(summary_table,
 ggsave(
   filename=file.path(save_file_path,"gad_BIC_scree_plot.png"),
   plot =BIC_scree_plot)
+
+ggsave(
+  filename=file.path(save_file_path,"gad_BIC_scree_plot-start-at-two.png"),
+  plot =BIC_scree_plot2)
+
     
 # save class proportion data tables
 save_kable(class_allocation_2,
