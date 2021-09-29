@@ -21,7 +21,7 @@ toc: yes
 
 # Background
 ## Overview
-We perform multinomial logistic regressions using the *multinom* function from the **nnet** package to predict latent class membership (most likely trajectory assignment) in our best GMM model for each symptom measure (anxiety, GAD-7; depression, PHQ-9; anhedonia, MASQ CD anhedonia subscale). 
+We perform multinomial logistic regressions using the *multinom* function from the **nnet** package to predict latent class membership (most likely trajectory assignment) in our best GMM model for each symptom measure (anxiety, GAD-7; depression, PHQ-9; anhedonia, MASQ AD anhedonia subscale). 
 
 ## Description of best model for each symptom measure
 
@@ -29,63 +29,69 @@ See GMM notebooks and [pre-registration](https://osf.io/jvca5/) for a descriptio
 
 ### Depression (PHQ-9)
 
-A 4 class model was selected. 
+A 4 class model was selected, based on the following rationale (criteria set in the pre-registration)
 
-**reasons here. Have inserted a place holder of the 5 class model as this is looking best so far. Replace this image with the figure for the best model when that has been identified**
+1. Increasing the number of classes led to reductions in BIC and AIC. 
+2. Models identifying classes with <1% of the total sample should be discarded: this did not occur in any models.
+3. Visual inspection of scree plots of BIC values: inflection point observed at 4-class model (i.e., the slope of change in BIC from class 3 to class 4 was steeper than the slope of change from class 4 to class 5). From this, the models at, or immediately after, the inflection point could be selected (4-class or 5-class).
+4. The 4-class model had a higher entropy, so this model was selected. 
 
-![best fit model for trajectories of symptoms of depression over one year of the pandemic](../../output/Trajectory_plots/PHQ/phq_fourclass_trajectory.png "Five class GMM for depression symptoms")
+![best fit model for trajectories of symptoms of depression over one year of the pandemic](../../output/Trajectory_plots/PHQ/phq_fourclass_trajectory.png "Four class GMM for depression symptoms")
 
 We interpret each class as follows:
 
-**Class 1 (green line):**
+**Class 1 (green line): high stable (10%; n=4341)**
 
-**Class 2 (green line):**
+**Class 2 (yellow line): low stable (60%; n=25364)**
 
-**Class 3 (green line):**
+**Class 3 (blue line): increasing, then decreasing (17%, n=6977)**
 
-**Class 4 (green line):**
-
-**Class 5 (green line):**
+**Class 4 (red line): variable (13%, n=5324)**
 
 
 ### Anxiety (GAD-7)
-A 4 class model was selected. 
 
+A 4 class model was selected, based on the following rationale (criteria set in the pre-registration)
 
-![best fit model for trajectories of symptoms of anxiety over one year of the pandemic](../../output/Trajectory_plots/GAD/gad_fourclass_trajectory.png "Five class GMM for anxiety symptoms")
+1. Increasing the number of classes led to reductions in BIC and AIC. 
+2. Models identifying classes with <1% of the total sample should be discarded: this did not occur in any models.
+3. Visual inspection of scree plots of BIC values: inflection point observed at 4-class model (i.e., the slope of change in BIC from class 3 to class 4 was steeper than the slope of change from class 4 to class 5). From this, the models at, or immediately after, the inflection point could be selected (4-class or 5-class).
+4. The 4-class model had a higher entropy, so this model was selected. 
+
+![best fit model for trajectories of symptoms of anxiety over one year of the pandemic](../../output/Trajectory_plots/GAD/gad_fourclass_trajectory.png "Four class GMM for anxiety symptoms")
 
 We interpret each class as follows:
 
-**Class 1 (green line):**
+**Class 1 (green line): low stable (69%; n=28640)**
 
-**Class 2 (green line):**
+**Class 2 (yellow line): high stable (15%; n=6064)**
 
-**Class 3 (green line):**
+**Class 3 (green line): variable (9%; n=3854)**
 
-**Class 4 (green line):**
-
-**Class 5 (green line):**
-
+**Class 4 (red line): increasing, then decreasing (7%; n=2887)**
 
 ### Anhedonia (MASQ)
 
-A x class model was selected. 
+A 5 class model was selected, based on the following rationale (criteria set in the pre-registration)
 
-**reasons here. Have inserted a place holder of the 5 class model as this is looking best so far. Replace this image with the figure for the best model when that has been identified**
+1. Increasing the number of classes led to reductions in BIC and AIC. 
+2. Models identifying classes with <1% of the total sample should be discarded: this occurred for 6- and 7-class models.
+3. Visual inspection of scree plots of BIC values: inflection point observed at 4-class model (i.e., the slope of change in BIC from class 3 to class 4 was steeper than the slope of change from class 4 to class 5). From this, the models at, or immediately after, the inflection point could be selected (4-class or 5-class).
+4. The 5-class model had a higher entropy, so this model was selected.
 
 ![best fit model for trajectories of anhedonia over one year of the pandemic](../../output/Trajectory_plots/MASQ/anhedonia_fiveclass_trajectory.png "Five class GMM for anhedonia")
 
 We interpret each class as follows:
 
-**Class 1 (green line):**
+**Class 1 (green line): variable3 (2%; n=562)**
 
-**Class 2 (green line):**
+**Class 2 (yellow line): low stable (27%; n=8791)**
 
-**Class 3 (green line):**
+**Class 3 (blue line): high stable (67%; n=22099)**
 
-**Class 4 (green line):**
+**Class 4 (red line): variable1 (2%; n=781)**
 
-**Class 5 (green line):**
+**Class 5 (black line): variable2 (2%; n=659)**
 
 
 ## Description of selected predictors
