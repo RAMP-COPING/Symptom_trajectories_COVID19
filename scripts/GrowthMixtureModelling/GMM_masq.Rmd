@@ -86,10 +86,10 @@ if(!require(knitr)){
   library(knitr)
 }
 
-if(!require(summarytools)){
-  install.packages("summarytools")
-  library(summarytools)
-}
+#if(!require(summarytools)){
+#  install.packages("summarytools")
+#}
+##  library(summarytools)
 
 if(!require(data.table)){
   install.packages("data.table")
@@ -173,10 +173,10 @@ knitr::opts_chunk$set(results = 'asis',
                       fig.width = 10,
                       fig.align = "center")
 
-st_options(plain.ascii = FALSE,       
-            style = "rmarkdown",      
-            footnote = NA,            
-            subtitle.emphasis = FALSE)                         
+#st_options(plain.ascii = FALSE,       
+#            style = "rmarkdown",      
+#            footnote = NA,            
+#            subtitle.emphasis = FALSE)                         
 
 
 options(scipen = 999)
@@ -195,7 +195,7 @@ timepoint_list <- c("7 Apr '20","19 May '20","2 Jun '20","16 Jun '20","30 Jun '2
                     "17 Nov '20","15 Dec '20","12 Jan '21","9 Feb '21",
                     "9 Mar '21", "6 Apr '21")
 
-timepoint_list_anh <- c("19 May '20","2 Jun '20","16 Jun '20","30 Jun '20",
+timepoint_list_anh <- c("7 Apr '20", "19 May '20","2 Jun '20","16 Jun '20","30 Jun '20",
                     "14 Jul '20", "28 Jul '20","25 Aug '20","22 Sep '20","20 Oct '20",
                     "17 Nov '20","15 Dec '20","12 Jan '21","9 Feb '21",
                     "9 Mar '21", "6 Apr '21")
@@ -739,14 +739,14 @@ justSummaries$Title <-  reorder(justSummaries$Title, -justSummaries$BIC)
 BIC_scree_plot <- ggplot() +
   geom_line(data =justSummaries,
         aes(x = Title, y = BIC,group=1)) +
-  scale_x_discrete(name="k+1 class model",labels=c("Latent growth curve (One class)","Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model","Six class growth mixture model","Seven class growth mixture model")) +
+  scale_x_discrete(name="Growth mixture model type",labels=c("One class","Two class","Three class","Four class","Five class","Six class","Seven class")) +
   geom_point(data = justSummaries,
         aes(x = Title, y = BIC,group=1), show.legend = F) +
   labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
        subtitle="Anhedonia (MASQ-AD)",
          y ="BIC") +
   theme(panel.background = element_blank(),
-        axis.text.x = element_text(angle = 45)) 
+        axis.text.x = element_text(angle = 0), axis.text = element_text(size = 15), axis.title=element_text(size=16,face="bold")) 
 
 BIC_scree_plot 
 
@@ -755,14 +755,14 @@ BIC_scree_plot
 BIC_scree_plot2 <- ggplot() +
   geom_line(data =justSummaries[1:6,],
         aes(x = Title, y = BIC,group=1)) +
-  scale_x_discrete(name="k+1 class model",labels=c("Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model","Six class growth mixture model","Seven class growth mixture model")) +
+  scale_x_discrete(name="Growth mixture model type",labels=c("Two class","Three class","Four class","Five class","Six class","Seven class")) +
   geom_point(data = justSummaries[1:6,],
         aes(x = Title, y = BIC,group=1), show.legend = F) +
   labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
        subtitle="Anhedonia (MASQ-AD)",
          y ="BIC") +
   theme(panel.background = element_blank(),
-        axis.text.x = element_text(angle = 45)) 
+        axis.text.x = element_text(angle = 0), axis.text = element_text(size = 10), axis.title=element_text(size=12,face="bold"), plot.title = element_text(size=10)) 
 
 BIC_scree_plot2
 
@@ -784,8 +784,10 @@ ggsave(
   plot =BIC_scree_plot)
 
 ggsave(
-  filename=file.path(save_file_path,"masq_BIC_scree_plot-start-at-two.png"),
+  filename=file.path(save_file_path,"masq_BIC_scree_plot-start-at-two.png"), width = 8, height = 4, dpi = 120, units = "in", device='png',
   plot =BIC_scree_plot2)
+
+
 
     
 # save class proportion data tables
@@ -1024,44 +1026,86 @@ dat_plot_curves_four <- dat_plot_curves_four %>%
                           Model == "Observed3"~ "Observed",
                           Model == "Observed4"~ "Observed",
                           TRUE ~ "Estimated"),
-         Model = case_when(Model == "Observed1"~ "Class1",
-                          Model == "Observed2"~ "Class2",
-                          Model == "Observed3"~ "Class3",
-                          Model == "Observed4"~ "Class4",
-                          Model == "Class1"~ "Class1",
-                          Model == "Class2"~ "Class2",
-                          Model == "Class3"~ "Class3",
-                          Model == "Class4"~ "Class4"
+         Model = case_when(Model == "Observed1"~ "Class 1 (2%)",
+                          Model == "Observed2"~ "Class 2 (68%)",
+                          Model == "Observed3"~ "Class 3 (27%)",
+                          Model == "Observed4"~ "Class 4 (4%)",
+                          Model == "Class1"~ "Class 1 (2%)",
+                          Model == "Class2"~ "Class 2 (68%)",
+                          Model == "Class3"~ "Class 3 (27%)",
+                          Model == "Class4"~ "Class 4 (4%)"
                           ))
+
+
+
+
+extra_rows <- dat_plot_curves_four %>%
+  filter(timepoint == 0)
+
+extra_rows$score <- NA
+extra_rows$timepoint <- -1
+
+dat_plot_curves_four <- rbind(extra_rows,dat_plot_curves_four)
 ```
 
 
 
 ```{r Growth Curve Forms four class}
 
+pres.palette2 <- c("#3066BE","#4ED1B7","#F6C66A","#D90368")
+
+#change date to be accurate
+dat_plot_curves_four$timepoint <- 
+  c(0,0,0,0,0,0,0,0,
+    1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,
+    2,2,2,2,2,2,2,2,
+    2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,
+    3,3,3,3,3,3,3,3,
+    3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.5,
+    4,4,4,4,4,4,4,4,
+    5,5,5,5,5,5,5,5,
+    6,6,6,6,6,6,6,6,
+    7,7,7,7,7,7,7,7,
+    8,8,8,8,8,8,8,8,
+    9,9,9,9,9,9,9,9,
+    10,10,10,10,10,10,10,10,
+    11,11,11,11,11,11,11,11,
+    12,12,12,12,12,12,12,12,
+    13,13,13,13,13,13,13,13)
+
 growth_curves_fourclass <- ggplot() +
   geom_line(data = dat_plot_curves_four,
         aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
   geom_point(data = dat_plot_curves_four,
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
-  scale_color_manual(values = pres.palette) +
+  scale_color_manual(values = pres.palette2) +
   labs(x = "Follow up time point", y ="MASQ-anhedonia Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40,4)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
+    scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40,4)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=c(0, 1.5, 2, 2.5, 3, 3.5, 4,5,6,7,8,9,10,11,12,13),
+#  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40,4)) + 
+#  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
                    labels = timepoint_list_anh) +
+  geom_vline(xintercept= 2.5, linetype="solid", color = "grey") +
+  geom_vline(xintercept= 7, linetype="solid", color = "grey") +
+  geom_vline(xintercept= 11, linetype="solid", color = "grey") +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
   geom_hline(yintercept=40, linetype="dashed", color = "grey") +
   geom_hline(yintercept=20, linetype="dashed", color = "grey") +
   theme(panel.grid.major.y = element_blank(),
-        axis.text = element_text(colour="black", size = 14),
-        axis.title = element_text(colour="black", size = 16),
+        axis.text = element_text(colour="black", size = 8),
+        axis.title = element_text(colour="black", size = 12),
         axis.text.x = element_text(angle = 45,
         hjust=1),
         legend.key = element_blank(),
-        legend.text = element_text(colour = "black", size = 11),
+        legend.text = element_text(colour = "black", size = 8),
         panel.background = element_blank()) 
 
 growth_curves_fourclass
+
+ggsave(
+  filename=file.path(save_file_path,"anhedonia_fourclass_trajectory.png"),
+  plot =growth_curves_fourclass, 
+  width = 20, height = 10, dpi = 150, units = "cm")
 
 ```
 
@@ -1099,38 +1143,77 @@ dat_plot_curves_five <- dat_plot_curves_five %>%
                           Model == "Observed4"~ "Observed",
                           Model == "Observed5"~ "Observed",
                           TRUE ~ "Estimated"),
-         Model = case_when(Model == "Observed1"~ "Class1",
-                          Model == "Observed2"~ "Class2",
-                          Model == "Observed3"~ "Class3",
-                          Model == "Observed4"~ "Class4",
-                          Model == "Observed5"~ "Class5",
-                          Model == "Class1"~ "Class1",
-                          Model == "Class2"~ "Class2",
-                          Model == "Class3"~ "Class3",
-                          Model == "Class4"~ "Class4",
-                          Model == "Class5"~ "Class5"
+         Model = case_when(Model == "Observed1"~ "Class 1 (2%)",
+                          Model == "Observed2"~ "Class 2 (27%)",
+                          Model == "Observed3"~ "Class 3 (67%)",
+                          Model == "Observed4"~ "Class 4 (2%)",
+                          Model == "Observed5"~ "Class 5 (2%)",
+                          Model == "Class1"~ "Class 1 (2%)",
+                          Model == "Class2"~ "Class 2 (27%)",
+                          Model == "Class3"~ "Class 3 (67%)",
+                          Model == "Class4"~ "Class 4 (2%)",
+                          Model == "Class5"~ "Class 5 (2%)"
                           ))
+
+extra_rows <- dat_plot_curves_five %>%
+  filter(timepoint == 0)
+
+extra_rows$score <- NA
+extra_rows$timepoint <- -1
+
+dat_plot_curves_five <- rbind(extra_rows,dat_plot_curves_five)
 ```
 
+"#3066BE" = blue
+"#D90368" = red
+"#4ED1B7" = green
+"#F6C66A" = yellow
+"#1B2D2A" = black
+
+"#4C2E05","#C98686"
 
 
 ```{r Growth Curve Forms five class}
+
+pres.palette2 <- c("#3066BE", "#F6C66A", "#4ED1B7", "#1B2D2A","#D90368")
+
+#change date to be accurate
+dat_plot_curves_five$timepoint <- 
+  c(0,0,0,0,0,0,0,0,0,0,
+    1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,
+    2,2,2,2,2,2,2,2,2,2,
+    2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,
+    3,3,3,3,3,3,3,3,3,3,
+    3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.5,
+    4,4,4,4,4,4,4,4,4,4,
+    5,5,5,5,5,5,5,5,5,5,
+    6,6,6,6,6,6,6,6,6,6,
+    7,7,7,7,7,7,7,7,7,7,
+    8,8,8,8,8,8,8,8,8,8,
+    9,9,9,9,9,9,9,9,9,9,
+    10,10,10,10,10,10,10,10,10,10,
+    11,11,11,11,11,11,11,11,11,11,
+    12,12,12,12,12,12,12,12,12,12,
+    13,13,13,13,13,13,13,13,13,13)
 
 growth_curves_fiveclass <- ggplot() +
   geom_line(data = dat_plot_curves_five,
         aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
   geom_point(data = dat_plot_curves_five,
-        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
-  scale_color_manual(values = pres.palette) +
+        aes(x = timepoint, y = score, colour = Model), show.legend = F, na.rm=TRUE) +
+  scale_color_manual(values = pres.palette2) +
   labs(x = "Follow up time point", y ="MASQ-anhedonia Score") +
   scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40,4)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=c(0, 1.5, 2, 2.5, 3, 3.5, 4,5,6,7,8,9,10,11,12,13),
                    labels = timepoint_list_anh) +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
   geom_hline(yintercept=40, linetype="dashed", color = "grey") +
   geom_hline(yintercept=20, linetype="dashed", color = "grey") +
+  geom_vline(xintercept= 2.5, linetype="solid", color = "grey") +
+  geom_vline(xintercept= 7, linetype="solid", color = "grey") +
+  geom_vline(xintercept= 11, linetype="solid", color = "grey") +
   theme(panel.grid.major.y = element_blank(),
-        axis.text = element_text(colour="black", size = 14),
+        axis.text = element_text(colour="black", size = 12),
         axis.title = element_text(colour="black", size = 16),
         axis.text.x = element_text(angle = 45,
         hjust=1),

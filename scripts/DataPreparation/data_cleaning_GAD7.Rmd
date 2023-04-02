@@ -94,9 +94,9 @@ sapply(files.sources, source)
 ```{r}
 # Read in the data
 
-COPING_EDGI <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_edgi/gad7_coping_edgi.rds"))
-COPING_GLAD <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_glad/gad7_coping_glad.rds"))
-COPING_NBR <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_nbr/gad7_coping_nbr.rds"))
+COPING_EDGI <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/gad/gad7_coping_edgi.rds")
+COPING_GLAD <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/gad/gad7_coping_glad.rds")
+COPING_NBR <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/gad/gad7_coping_nbr.rds")
 
 
 # merge GLAD, EDGI and NBR
@@ -2438,3 +2438,31 @@ layout(1)
 
 
 ```
+# Internal consistency
+
+```{r calculate internal consistency}
+
+RAMP_baseline <- read_rds("/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/gad/gad.clean_baseline_items.RAMP.rds")
+
+
+RAMP_baseline <- RAMP_baseline %>% 
+  dplyr::rename(
+    subjectid = ID,
+    gad7.feeling_nervous_anxious_or_on_edge= gad7.pandemic_nervous_anxious_on_edge_.Wave_0,
+    gad7.control_worrying_stop = gad7.pandemic_cant_control_worry_.Wave_0,
+    gad7.worrying_too_much_about_different_things = gad7.pandemic_worry_too_much_.Wave_0,
+    gad7.trouble_relaxing = gad7.pandemic_trouble_relaxing_.Wave_0, 
+    gad7.sit_restless_hard = gad7.pandemic_restless_.Wave_0,
+    gad7.becoming_easily_annoyed_or_irritable = gad7.pandemic_easily_annoyed_.Wave_0,
+    gad7.awful_feeling_afraid_happen = gad7.pandemic_afraid_something_terrible_will_happen_.Wave_0)
+
+COPING_baseline.id <- COPING_baseline[,c(4:11)]
+
+merged_baseline <- rbind(RAMP_baseline, COPING_baseline.id)
+
+psych::alpha(merged_baseline[,c(2:8)])
+psych::alpha(merged_baseline[,c(2:8)])$total$std.alpha
+
+```
+
+COPING_baseline.id

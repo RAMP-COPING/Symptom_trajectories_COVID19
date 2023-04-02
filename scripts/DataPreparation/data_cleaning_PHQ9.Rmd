@@ -35,10 +35,10 @@ knitr::opts_chunk$set(echo = TRUE,
 
 Note: load tidyverse last!
 ```{r Load packages}
-if(!require(summarytools)){
-  install.packages("summarytools")
-  library(summarytools)
-}
+#if(!require(summarytools)){
+#  install.packages("summarytools")
+#  library(summarytools)
+#}
 if(!require(ggplot2)){
   install.packages("ggplot2")
   library(ggplot2)
@@ -93,9 +93,9 @@ sapply(files.sources, source)
 ```{r}
 # Read in the data
 
-COPING_EDGI <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_edgi/phq_coping_edgi.rds"))
-COPING_GLAD <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_glad/phq_coping_glad.rds"))
-COPING_NBR <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_nbr/phq9_coping_nbr.rds"))
+COPING_EDGI <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/phq/phq_coping_edgi.rds")
+COPING_GLAD <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/phq/phq_coping_glad.rds")
+COPING_NBR <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/phq/phq9_coping_nbr.rds")
 
 names(COPING_EDGI)
 names(COPING_GLAD)
@@ -129,17 +129,17 @@ EDGI
 
 COPING_EDGI.id.wdate <- COPING_EDGI %>% #new dataset with ID
   drop_na(externalDataReference) %>% # Drop NAs
-  select(-phq.little_interest_or_pleasure_in_doing_things.1,
-         -phq.feeling_down_depressed_or_hopeless.1,
-         -phq.staying_asleep_sleeping_trouble.1,
-         -phq.feeling_tired_or_having_little_energy.1,
-         -phq.poor_appetite_or_overeating.1,
-         -phq.family_feeling_bad_failure.1,
-         -phq.trouble_concentrating_newspaper_reading.1,
-         -phq.moving_fidgety_opposite_slowly.1,
-         -phq.dead_hurting_thoughts.1,
-         -phq.care_difficult_home_things,
-         -phq.pandemic_feelings_felt,
+  select(-phq9.little_interest_or_pleasure_in_doing_things.1,
+         -phq9.feeling_down_depressed_or_hopeless.1,
+         -phq9.staying_asleep_sleeping_trouble.1,
+         -phq9.feeling_tired_or_having_little_energy.1,
+         -phq9.poor_appetite_or_overeating.1,
+         -phq9.family_feeling_bad_failure.1,
+         -phq9.trouble_concentrating_newspaper_reading.1,
+         -phq9.moving_fidgety_opposite_slowly.1,
+         -phq9.dead_hurting_thoughts.1,
+         -phq9.care_difficult_home_things,
+         -phq9.pandemic_feelings_felt,
          -externalDataReference,
          ID = externalDataReference, # ID
          startDate,
@@ -157,17 +157,17 @@ COPING_EDGI.id.wdate <- COPING_EDGI %>% #new dataset with ID
 
 COPING_EDGI.id <- COPING_EDGI %>% #new dataset with ID
   drop_na(externalDataReference) %>% # Drop NAs
-  select(-phq.little_interest_or_pleasure_in_doing_things.1,
-         -phq.feeling_down_depressed_or_hopeless.1,
-         -phq.staying_asleep_sleeping_trouble.1,
-         -phq.feeling_tired_or_having_little_energy.1,
-         -phq.poor_appetite_or_overeating.1,
-         -phq.family_feeling_bad_failure.1,
-         -phq.trouble_concentrating_newspaper_reading.1,
-         -phq.moving_fidgety_opposite_slowly.1,
-         -phq.dead_hurting_thoughts.1,
-         -phq.care_difficult_home_things,
-         -phq.pandemic_feelings_felt,
+  select(-phq9.little_interest_or_pleasure_in_doing_things.1,
+         -phq9.feeling_down_depressed_or_hopeless.1,
+         -phq9.staying_asleep_sleeping_trouble.1,
+         -phq9.feeling_tired_or_having_little_energy.1,
+         -phq9.poor_appetite_or_overeating.1,
+         -phq9.family_feeling_bad_failure.1,
+         -phq9.trouble_concentrating_newspaper_reading.1,
+         -phq9.moving_fidgety_opposite_slowly.1,
+         -phq9.dead_hurting_thoughts.1,
+         -phq9.care_difficult_home_things,
+         -phq9.pandemic_feelings_felt,
          -externalDataReference,
          ID = externalDataReference, # ID
          -startDate,
@@ -258,17 +258,17 @@ NBR
 
 COPING_NBR.id.wdate <- COPING_NBR %>% #new dataset with ID
   drop_na(subjectid) %>% # Drop NAs
-  select(-phq.little_interest_or_pleasure_in_doing_things.1,
-         -phq.feeling_down_depressed_or_hopeless.1,
-         -phq.staying_asleep_sleeping_trouble.1,
-         -phq.feeling_tired_or_having_little_energy.1,
-         -phq.poor_appetite_or_overeating.1,
-         -phq.family_feeling_bad_failure.1,
-         -phq.trouble_concentrating_newspaper_reading.1,
-         -phq.moving_fidgety_opposite_slowly.1,
-         -phq.dead_hurting_thoughts.1,
-         -phq.problems_made_care_difficult,
-         -phq.pandemic_feelings_felt,
+  select(-phq9.little_interest_or_pleasure_in_doing_things.1,
+         -phq9.feeling_down_depressed_or_hopeless.1,
+         -phq9.staying_asleep_sleeping_trouble.1,
+         -phq9.feeling_tired_or_having_little_energy.1,
+         -phq9.poor_appetite_or_overeating.1,
+         -phq9.family_feeling_bad_failure.1,
+         -phq9.trouble_concentrating_newspaper_reading.1,
+         -phq9.moving_fidgety_opposite_slowly.1,
+         -phq9.dead_hurting_thoughts.1,
+         -phq9.problems_made_care_difficult,
+         -phq9.pandemic_feelings_felt,
          -externalDataReference,
          ID = subjectid, # ID
          startDate,
@@ -286,17 +286,17 @@ COPING_NBR.id.wdate <- COPING_NBR %>% #new dataset with ID
 
 COPING_NBR.id <- COPING_NBR %>% #new dataset with ID
   drop_na(subjectid) %>% # Drop NAs
-  select(-phq.little_interest_or_pleasure_in_doing_things.1,
-         -phq.feeling_down_depressed_or_hopeless.1,
-         -phq.staying_asleep_sleeping_trouble.1,
-         -phq.feeling_tired_or_having_little_energy.1,
-         -phq.poor_appetite_or_overeating.1,
-         -phq.family_feeling_bad_failure.1,
-         -phq.trouble_concentrating_newspaper_reading.1,
-         -phq.moving_fidgety_opposite_slowly.1,
-         -phq.dead_hurting_thoughts.1,
-         -phq.problems_made_care_difficult,
-         -phq.pandemic_feelings_felt,
+  select(-phq9.little_interest_or_pleasure_in_doing_things.1,
+         -phq9.feeling_down_depressed_or_hopeless.1,
+         -phq9.staying_asleep_sleeping_trouble.1,
+         -phq9.feeling_tired_or_having_little_energy.1,
+         -phq9.poor_appetite_or_overeating.1,
+         -phq9.family_feeling_bad_failure.1,
+         -phq9.trouble_concentrating_newspaper_reading.1,
+         -phq9.moving_fidgety_opposite_slowly.1,
+         -phq9.dead_hurting_thoughts.1,
+         -phq9.problems_made_care_difficult,
+         -phq9.pandemic_feelings_felt,
          -externalDataReference,
          ID = subjectid, # ID
          -startDate,
@@ -368,21 +368,21 @@ COPING_followupA %>%
 COPING_followupA.id <- COPING_followupA %>% #new dataset with ID
   drop_na(externalDataReference) %>% # Drop NAs
   add_column(sample = "COPING_followupA", .after = "externalDataReference") %>% #create new column 
-  select(-phq.difficult_daily_life_issues,
+  select(-phq9.difficult_daily_life_issues,
          ID = externalDataReference, # ID
          sample,
          startDate,
          endDate,
-         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
-         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
-         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
-         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
-         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
-         phq9.pandemic_feeling_like_a_failure = phq.failure_feeling_bad_family,
-         phq9.pandemic_trouble_concentrating = phq.newspaper_reading_things_trouble,
-         phq9.pandemic_moving_slowy = phq.slowly_speaking_moving_noticed,
-         phq9.pandemic_fidgeting = phq.fidgety_opposite_moving_restless,
-         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
+         phq9.pandemic_little_interest_or_pleasure = phq9.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq9.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq9.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq9.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq9.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq9.failure_feeling_bad_family,
+         phq9.pandemic_trouble_concentrating = phq9.newspaper_reading_things_trouble,
+         phq9.pandemic_moving_slowy = phq9.slowly_speaking_moving_noticed,
+         phq9.pandemic_fidgeting = phq9.fidgety_opposite_moving_restless,
+         phq9.pandemic_thoughts_better_off_dead = phq9.dead_hurting_thoughts)
 
 # Inspect colnames
 colnames(COPING_followupA.id)
@@ -416,21 +416,21 @@ Select & rename relevant columns (will be a function at some point)
 COPING_followupB.id <- COPING_followupB %>% #new dataset with ID
   drop_na(externalDataReference) %>% # Drop NAs
   add_column(sample = "COPING_followupB", .after = "externalDataReference") %>% #create new column 
-  select(-phq.difficult_daily_life_issues,
+  select(-phq9.difficult_daily_life_issues,
          ID = externalDataReference, # ID
          sample,
          startDate,
          endDate,
-         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
-         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
-         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
-         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
-         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
-         phq9.pandemic_feeling_like_a_failure = phq.failure_family_feeling_bad,
-         phq9.pandemic_trouble_concentrating = phq.trouble_concentrating_newspaper_reading,
-         phq9.pandemic_moving_slowy = phq.slowly_noticed_speaking_moving,
-         phq9.pandemic_fidgeting = phq.fidgety_opposite_moving_restless,
-         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
+         phq9.pandemic_little_interest_or_pleasure = phq9.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq9.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq9.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq9.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq9.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq9.failure_family_feeling_bad,
+         phq9.pandemic_trouble_concentrating = phq9.trouble_concentrating_newspaper_reading,
+         phq9.pandemic_moving_slowy = phq9.slowly_noticed_speaking_moving,
+         phq9.pandemic_fidgeting = phq9.fidgety_opposite_moving_restless,
+         phq9.pandemic_thoughts_better_off_dead = phq9.dead_hurting_thoughts)
 
 
 # Inspect colnames
@@ -464,21 +464,21 @@ COPING_followupA_ong.id <- COPING_followupA_ong %>% #new dataset with ID
   drop_na(externalDataReference) %>% # Drop NAs
 
   add_column(sample = "COPING_followupA_ong", .after = "externalDataReference") %>% #create new column 
-  select(-phq.difficult_daily_life_issues,
+  select(-phq9.difficult_daily_life_issues,
          ID = externalDataReference, # ID
          sample,
          startDate,
          endDate,
-         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
-         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
-         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
-         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
-         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
-         phq9.pandemic_feeling_like_a_failure = phq.failure_feeling_bad_family,
-         phq9.pandemic_trouble_concentrating = phq.newspaper_reading_things_trouble,
-         phq9.pandemic_moving_slowy = phq.slowly_speaking_moving_noticed,
-         phq9.pandemic_fidgeting = phq.fidgety_opposite_moving_restless,
-         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
+         phq9.pandemic_little_interest_or_pleasure = phq9.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq9.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq9.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq9.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq9.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq9.failure_feeling_bad_family,
+         phq9.pandemic_trouble_concentrating = phq9.newspaper_reading_things_trouble,
+         phq9.pandemic_moving_slowy = phq9.slowly_speaking_moving_noticed,
+         phq9.pandemic_fidgeting = phq9.fidgety_opposite_moving_restless,
+         phq9.pandemic_thoughts_better_off_dead = phq9.dead_hurting_thoughts)
 
 
 # Inspect colnames
@@ -772,8 +772,8 @@ dim(COPING_followup.id.long)
 
 ## Set minimum and maximum values 
 ```{r Set minimum and maximum values}
-phq.min.scale <- 0
-phq.max.scale <- 3
+phq9.min.scale <- 0
+phq9.max.scale <- 3
 ```
 
 
@@ -802,11 +802,11 @@ COPING_baseline.id %>%
 
 ### Make list of variables for cleaning
 ```{r Make list of variables for cleaning}
-phq.items.baseline_unc <- COPING_baseline.id %>% 
+phq9.items.baseline_unc <- COPING_baseline.id %>% 
   select(contains("_unc")) %>% 
   colnames()
 
-phq.items.baseline_unc
+phq9.items.baseline_unc
 ```
 
 ### Recode implausuble values
@@ -814,10 +814,10 @@ phq.items.baseline_unc
 # Recode and clean
 COPING_baseline.id <- COPING_baseline.id %>%
    mutate(
-     across(all_of(phq.items.baseline_unc),
+     across(all_of(phq9.items.baseline_unc),
             .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
               . == -77 | . == -88 | . == -99 ~ ., # leave as is 
-              . < phq.min.scale | . > phq.max.scale ~ -66, # recode as implausible value
+              . < phq9.min.scale | . > phq9.max.scale ~ -66, # recode as implausible value
               TRUE ~ . # leave as is
             )
             )
@@ -833,18 +833,18 @@ colnames(COPING_baseline.id)
 ```
 ### Make new list of cleaned variables
 ```{r}
-phq.items.baseline_clean <- COPING_baseline.id %>% 
+phq9.items.baseline_clean <- COPING_baseline.id %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
   select(!"ID") %>% # deselect the ID variable
   colnames()
 
-phq.items.baseline_clean
+phq9.items.baseline_clean
 ```
 ### Check number of implausible values
 ```{r}
 # Check for implausible values
 phq_baseline_imp_n <- COPING_baseline.id %>% 
-  select(all_of(phq.items.baseline_clean)) %>% 
+  select(all_of(phq9.items.baseline_clean)) %>% 
   filter(. == -66) %>% 
   nrow()
 
@@ -883,11 +883,11 @@ COPING_followup.id.long %>%
 
 ### Make list of variables for cleaning
 ```{r Make list of variables for cleaning COPING}
-phq.items.followup_unc <- COPING_followup.id.long %>% 
+phq9.items.followup_unc <- COPING_followup.id.long %>% 
   select(contains("_unc")) %>% 
   colnames()
 
-phq.items.followup_unc
+phq9.items.followup_unc
 ```
 
 ### Recode implausuble values
@@ -895,10 +895,10 @@ phq.items.followup_unc
 # Recode and clean
 COPING_followup.id.long <- COPING_followup.id.long %>%
    mutate(
-     across(all_of(phq.items.followup_unc),
+     across(all_of(phq9.items.followup_unc),
             .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
               . == -77 | . == -88 | . == -99 ~ ., # leave as is 
-              . < phq.min.scale | . > phq.max.scale ~ -66, # recode as implausible value
+              . < phq9.min.scale | . > phq9.max.scale ~ -66, # recode as implausible value
               TRUE ~ . # leave as is
             )
             )
@@ -914,18 +914,18 @@ colnames(COPING_followup.id.long)
 ```
 ### Make new list of cleaned variables
 ```{r}
-phq.items.followup_clean <- COPING_followup.id.long %>% 
+phq9.items.followup_clean <- COPING_followup.id.long %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
   select(!"ID") %>% # deselect the ID variable
   colnames()
 
-phq.items.followup_clean
+phq9.items.followup_clean
 ```
 ### Check number of implausible values
 ```{r}
 # Check for implausible values
 phq_followup_imp_n <- COPING_followup.id.long %>% 
-  select(all_of(phq.items.followup_clean)) %>% 
+  select(all_of(phq9.items.followup_clean)) %>% 
   filter(. == -66) %>% 
   nrow()
 
@@ -951,27 +951,27 @@ Note: full join (i.e. to get all participants in all three data sets)
 ```{r Merge COPING follow up surveys}
 
 
-phq.merging <- list(COPING_baseline.id.clean,
+phq9.merging <- list(COPING_baseline.id.clean,
                     COPING_followup.id.long.clean)
 
 
-phq.COPING <- plyr::join_all(phq.merging,
+phq9.COPING <- plyr::join_all(phq9.merging,
                     by = "ID",
                     type = "full")
   
 # check
 dim(COPING_followup.id.long.clean)
 dim(COPING_baseline.id.clean)
-dim(phq.COPING)
+dim(phq9.COPING)
 
-colnames(phq.COPING)
+colnames(phq9.COPING)
 
 
 # reorder so that it is easy to see each wave in place.
-phq.COPING.reordered <- phq.COPING %>% 
-  select(order(names(phq.COPING)))
+phq9.COPING.reordered <- phq9.COPING %>% 
+  select(order(names(phq9.COPING)))
 
-colnames(phq.COPING.reordered)
+colnames(phq9.COPING.reordered)
 
 
 
@@ -982,7 +982,7 @@ colnames(phq.COPING.reordered)
 ## RAMP baseline 
 ```{r}
 # read in baseline data
-RAMP_baseline = readRDS(paste0(ilovedata,"/data_raw/2021-02-18/ramp/phq9_ramp.rds"))
+RAMP_baseline = readRDS("/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/phq/phq9_ramp.rds")
 
 # Check column names
 RAMP_baseline %>%
@@ -1000,64 +1000,64 @@ RAMP_baseline %>%
 ```{r}
 #Recode column names to harmonised variable names
 
-#phq.x.0 - pre pandemic
-#phq.x.1 - Baseline current
-#PHQ.pandemic.change - item asking if this is different from before pandemic
+#phq9.x.0 - pre pandemic
+#phq9.x.1 - Baseline current
+#phq9.pandemic.change - item asking if this is different from before pandemic
 
 RAMP_baseline.id <- RAMP_baseline %>% #new dataset with ID
   drop_na("Login ID") %>% # Drop NAs
- select(-phq.little_interest_or_pleasure_in_doing_things.1,
-         -phq.feeling_down_depressed_or_hopeless.1,
-         -phq.staying_asleep_sleeping_trouble.1,
-         -phq.feeling_tired_or_having_little_energy.1,
-         -phq.poor_appetite_or_overeating.1,
-         -phq.feeling_bad_failure_family.1,
-         -phq.trouble_concentrating_newspaper_reading.1,
-         -phq.moving_fidgety_opposite_slowly.1,
-         -phq.dead_hurting_thoughts.1,
-         -phq.pandemic_feelings_felt,
-        -phq.pandemic_feelings_felt.1,
+ select(-phq9.little_interest_or_pleasure_in_doing_things.1,
+        # -phq9.feeling_down_depressed_or_hopeless,
+         -phq9.staying_asleep_sleeping_trouble.1,
+         -phq9.feeling_tired_or_having_little_energy.1,
+         -phq9.poor_appetite_or_overeating.1,
+         -phq9.feeling_bad_failure_family.1,
+         -phq9.trouble_concentrating_newspaper_reading.1,
+         -phq9.moving_fidgety_opposite_slowly.1,
+         -phq9.dead_hurting_thoughts.1,
+         -phq9.pandemic_feelings_felt,
+        -phq9.pandemic_feelings_felt.1,
          -externalDataReference,
          ID = "Login ID", # ID
          -startDate,
          -endDate,
-         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
-         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
-         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
-         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
-         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
-         phq9.pandemic_feeling_like_a_failure = phq.feeling_bad_failure_family,
-         phq9.pandemic_trouble_concentrating = phq.trouble_concentrating_newspaper_reading,
-         phq9.pandemic_fidgeting_or_moving_slowly = phq.moving_fidgety_opposite_slowly,
-         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts) %>%
+         phq9.pandemic_little_interest_or_pleasure = phq9.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq9.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq9.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq9.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq9.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq9.feeling_bad_failure_family,
+         phq9.pandemic_trouble_concentrating = phq9.trouble_concentrating_newspaper_reading,
+         phq9.pandemic_fidgeting_or_moving_slowly = phq9.moving_fidgety_opposite_slowly,
+         phq9.pandemic_thoughts_better_off_dead = phq9.dead_hurting_thoughts) %>%
   relocate(ID, .before = phq9.pandemic_little_interest_or_pleasure)
 
 RAMP_baseline.id.wdate <- RAMP_baseline %>% #new dataset with ID
   drop_na("Login ID") %>% # Drop NAs
- select(-phq.little_interest_or_pleasure_in_doing_things.1,
-         -phq.feeling_down_depressed_or_hopeless.1,
-         -phq.staying_asleep_sleeping_trouble.1,
-         -phq.feeling_tired_or_having_little_energy.1,
-         -phq.poor_appetite_or_overeating.1,
-         -phq.feeling_bad_failure_family.1,
-         -phq.trouble_concentrating_newspaper_reading.1,
-         -phq.moving_fidgety_opposite_slowly.1,
-         -phq.dead_hurting_thoughts.1,
-         -phq.pandemic_feelings_felt,
-        -phq.pandemic_feelings_felt.1,
+ select(-phq9.little_interest_or_pleasure_in_doing_things.1,
+         -phq9.feeling_down_depressed_or_hopeless.1,
+         -phq9.staying_asleep_sleeping_trouble.1,
+         -phq9.feeling_tired_or_having_little_energy.1,
+         -phq9.poor_appetite_or_overeating.1,
+         -phq9.feeling_bad_failure_family.1,
+         -phq9.trouble_concentrating_newspaper_reading.1,
+         -phq9.moving_fidgety_opposite_slowly.1,
+         -phq9.dead_hurting_thoughts.1,
+         -phq9.pandemic_feelings_felt,
+        -phq9.pandemic_feelings_felt.1,
          -externalDataReference,
          ID = "Login ID", # ID
          startDate,
          endDate,
-         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
-         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
-         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
-         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
-         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
-         phq9.pandemic_feeling_like_a_failure = phq.feeling_bad_failure_family,
-         phq9.pandemic_trouble_concentrating = phq.trouble_concentrating_newspaper_reading,
-         phq9.pandemic_fidgeting_or_moving_slowly = phq.moving_fidgety_opposite_slowly,
-         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts) %>%
+         phq9.pandemic_little_interest_or_pleasure = phq9.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq9.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq9.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq9.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq9.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq9.feeling_bad_failure_family,
+         phq9.pandemic_trouble_concentrating = phq9.trouble_concentrating_newspaper_reading,
+         phq9.pandemic_fidgeting_or_moving_slowly = phq9.moving_fidgety_opposite_slowly,
+         phq9.pandemic_thoughts_better_off_dead = phq9.dead_hurting_thoughts) %>%
   relocate(ID, .before = phq9.pandemic_little_interest_or_pleasure)
          
 
@@ -1110,15 +1110,15 @@ RAMP_followupA.id <- RAMP_followupA %>% #new dataset with ID
          sample,
          startDate,
          endDate,
-         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
-         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
-         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
-         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
-         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
-         phq9.pandemic_feeling_like_a_failure = phq.failure_feeling_bad_family,
-         phq9.pandemic_trouble_concentrating = phq.newspaper_reading_things_trouble,
-         phq9.pandemic_fidgeting_or_moving_slowly = phq.moving_fidgety_opposite_slowly,
-         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
+         phq9.pandemic_little_interest_or_pleasure = phq9.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq9.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq9.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq9.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq9.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq9.failure_feeling_bad_family,
+         phq9.pandemic_trouble_concentrating = phq9.newspaper_reading_things_trouble,
+         phq9.pandemic_fidgeting_or_moving_slowly = phq9.moving_fidgety_opposite_slowly,
+         phq9.pandemic_thoughts_better_off_dead = phq9.dead_hurting_thoughts)
 
 # Inspect colnames
 colnames(RAMP_followupA.id)
@@ -1157,15 +1157,15 @@ RAMP_followupB.id <- RAMP_followupB %>% #new dataset with ID
          sample,
          startDate,
          endDate,
-         phq9.pandemic_little_interest_or_pleasure = phq.little_interest_or_pleasure_in_doing_things,
-         phq9.pandemic_down_depressed_hopeless = phq.feeling_down_depressed_or_hopeless,
-         phq9.pandemic_trouble_falling_or_staying_asleep = phq.staying_asleep_sleeping_trouble,
-         phq9.pandemic_feel_tired_little_energy = phq.feeling_tired_or_having_little_energy,
-         phq9.pandemic_poor_appetite_or_overeating = phq.poor_appetite_or_overeating,
-         phq9.pandemic_feeling_like_a_failure = phq.failure_family_feeling_bad,
-         phq9.pandemic_trouble_concentrating = phq.trouble_concentrating_newspaper_reading,
-         phq9.pandemic_fidgeting_or_moving_slowly = phq.fidgety_opposite_slowly_speaking,
-         phq9.pandemic_thoughts_better_off_dead = phq.dead_hurting_thoughts)
+         phq9.pandemic_little_interest_or_pleasure = phq9.little_interest_or_pleasure_in_doing_things,
+         phq9.pandemic_down_depressed_hopeless = phq9.feeling_down_depressed_or_hopeless,
+         phq9.pandemic_trouble_falling_or_staying_asleep = phq9.staying_asleep_sleeping_trouble,
+         phq9.pandemic_feel_tired_little_energy = phq9.feeling_tired_or_having_little_energy,
+         phq9.pandemic_poor_appetite_or_overeating = phq9.poor_appetite_or_overeating,
+         phq9.pandemic_feeling_like_a_failure = phq9.failure_family_feeling_bad,
+         phq9.pandemic_trouble_concentrating = phq9.trouble_concentrating_newspaper_reading,
+         phq9.pandemic_fidgeting_or_moving_slowly = phq9.fidgety_opposite_slowly_speaking,
+         phq9.pandemic_thoughts_better_off_dead = phq9.dead_hurting_thoughts)
 
 
 # Inspect colnames
@@ -1471,11 +1471,11 @@ RAMP_baseline.id %>%
 
 ### Make list of variables for cleaning
 ```{r Make list of variables for cleaning RAMP baseline}
-phq.items.baseline_unc <- RAMP_baseline.id %>% 
+phq9.items.baseline_unc <- RAMP_baseline.id %>% 
   select(contains("_unc")) %>% 
   colnames()
 
-phq.items.baseline_unc
+phq9.items.baseline_unc
 ```
 
 ### Recode implausuble values
@@ -1483,10 +1483,10 @@ phq.items.baseline_unc
 # Recode and clean
 RAMP_baseline.id <- RAMP_baseline.id %>%
    mutate(
-     across(all_of(phq.items.baseline_unc),
+     across(all_of(phq9.items.baseline_unc),
             .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
               . == -77 | . == -88 | . == -99 ~ ., # leave as is 
-              . < phq.min.scale | . > phq.max.scale ~ -66, # recode as implausible value
+              . < phq9.min.scale | . > phq9.max.scale ~ -66, # recode as implausible value
               TRUE ~ . # leave as is
             )
             )
@@ -1502,18 +1502,18 @@ colnames(RAMP_baseline.id)
 ```
 ### Make new list of cleaned variables
 ```{r}
-phq.items.baseline_clean <- RAMP_baseline.id %>% 
+phq9.items.baseline_clean <- RAMP_baseline.id %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
   select(!"ID") %>% # deselect the ID variable
   colnames()
 
-phq.items.baseline_clean
+phq9.items.baseline_clean
 ```
 ### Check number of implausible values
 ```{r}
 # Check for implausible values
 phq_baseline_imp_n <- RAMP_baseline.id %>% 
-  select(all_of(phq.items.baseline_clean)) %>% 
+  select(all_of(phq9.items.baseline_clean)) %>% 
   filter(. == -66) %>% 
   nrow()
 
@@ -1552,11 +1552,11 @@ RAMP_followupA.id.long %>%
 
 ### Make list of variables for cleaning
 ```{r Make list of variables for cleaningRAMP A}
-phq.items.followupA_unc <- RAMP_followupA.id.long %>% 
+phq9.items.followupA_unc <- RAMP_followupA.id.long %>% 
   select(contains("_unc")) %>% 
   colnames()
 
-phq.items.followupA_unc
+phq9.items.followupA_unc
 ```
 
 ### Recode implausuble values
@@ -1564,10 +1564,10 @@ phq.items.followupA_unc
 # Recode and clean
 RAMP_followupA.id.long <- RAMP_followupA.id.long %>%
    mutate(
-     across(all_of(phq.items.followupA_unc),
+     across(all_of(phq9.items.followupA_unc),
             .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
               . == -77 | . == -88 | . == -99 ~ ., # leave as is 
-              . < phq.min.scale | . > phq.max.scale ~ -66, # recode as implausible value
+              . < phq9.min.scale | . > phq9.max.scale ~ -66, # recode as implausible value
               TRUE ~ . # leave as is
             )
             )
@@ -1585,18 +1585,18 @@ colnames(RAMP_followupA.id.long)
 
 ### Make new list of cleaned variables
 ```{r}
-phq.items.followupA_clean <- RAMP_followupA.id.long %>% 
+phq9.items.followupA_clean <- RAMP_followupA.id.long %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
   select(!"ID") %>% # deselect the ID variable
   colnames()
 
-phq.items.followupA_clean
+phq9.items.followupA_clean
 ```
 ### Check number of implausible values
 ```{r}
 # Check for implausible values
 phq_followupA_imp_n <- RAMP_followupA.id.long %>% 
-  select(all_of(phq.items.followupA_clean)) %>% 
+  select(all_of(phq9.items.followupA_clean)) %>% 
   filter(. == -66) %>% 
   nrow()
 
@@ -1634,11 +1634,11 @@ RAMP_followupB.id.long %>%
 
 ### Make list of variables for cleaning
 ```{r Make list of variables for cleaning RAMP B}
-phq.items.followupB_unc <- RAMP_followupB.id.long %>% 
+phq9.items.followupB_unc <- RAMP_followupB.id.long %>% 
   select(contains("_unc")) %>% 
   colnames()
 
-phq.items.followupB_unc
+phq9.items.followupB_unc
 ```
 
 ### Recode implausuble values
@@ -1646,10 +1646,10 @@ phq.items.followupB_unc
 # Recode and clean
 RAMP_followupB.id.long <- RAMP_followupB.id.long %>%
    mutate(
-     across(all_of(phq.items.followupB_unc),
+     across(all_of(phq9.items.followupB_unc),
             .fns = list(clean = ~case_when( # add "_clean" onto the variables you are cleaning
               . == -77 | . == -88 | . == -99 ~ ., # leave as is 
-              . < phq.min.scale | . > phq.max.scale ~ -66, # recode as implausible value
+              . < phq9.min.scale | . > phq9.max.scale ~ -66, # recode as implausible value
               TRUE ~ . # leave as is
             )
             )
@@ -1665,18 +1665,18 @@ colnames(RAMP_followupB.id.long)
 ```
 ### Make new list of cleaned variables
 ```{r}
-phq.items.followupB_clean <- RAMP_followupB.id.long %>% 
+phq9.items.followupB_clean <- RAMP_followupB.id.long %>% 
   select(!contains("_unc")) %>% # select the cleaned variables (i.e. they don't contain the phrase "_unc")
   select(!"ID") %>% # deselect the ID variable
   colnames()
 
-phq.items.followupB_clean
+phq9.items.followupB_clean
 ```
 ### Check number of implausible values
 ```{r}
 # Check for implausible values
 phq_followupB_imp_n <- RAMP_followupB.id.long %>% 
-  select(all_of(phq.items.followupB_clean)) %>% 
+  select(all_of(phq9.items.followupB_clean)) %>% 
   filter(. == -66) %>% 
   nrow()
 
@@ -1700,19 +1700,19 @@ colnames(RAMP_followupB.id.long.clean)
 # Save baseline RAMP cleaned data items only for CFA
 ```{r}
 
-saveRDS(object = RAMP_baseline.id.clean, file = paste0("../../../data_clean/phq/phq.clean_baseline_items.RAMP",  ".rds"))
+saveRDS(object = RAMP_baseline.id.clean, file = paste0("../../../data_clean/phq/phq9.clean_baseline_items.RAMP",  ".rds"))
 
 ```
 
 # Merge RAMP baseline, follow up A and B surveys
 Note: full join (i.e. to get all participants in all three data sets)
 ```{r Merge RAMP follow up A and B surveys}
-phq.merging <- list(RAMP_baseline.id.clean,
+phq9.merging <- list(RAMP_baseline.id.clean,
                        RAMP_followupA.id.long.clean,
                        RAMP_followupB.id.long.clean)
 
 
-phq.RAMP <- plyr::join_all(phq.merging,
+phq9.RAMP <- plyr::join_all(phq9.merging,
                     by = "ID", 
                     type = "full")
 
@@ -1721,16 +1721,16 @@ phq.RAMP <- plyr::join_all(phq.merging,
 dim(RAMP_followupA.id.long.clean)
 dim(RAMP_followupB.id.long.clean)
 dim(RAMP_baseline.id.clean)
-dim(phq.RAMP)
+dim(phq9.RAMP)
 
-colnames(phq.RAMP)
+colnames(phq9.RAMP)
 
 
 # reorder so that it is easy to see each wave in place.
-phq.RAMP.reordered <- phq.RAMP %>% 
-  select(order(names(phq.RAMP))) 
+phq9.RAMP.reordered <- phq9.RAMP %>% 
+  select(order(names(phq9.RAMP))) 
 
-colnames(phq.RAMP.reordered)
+colnames(phq9.RAMP.reordered)
 
 ```
 
@@ -1742,51 +1742,51 @@ Merge by all common columns so that we dont duplicate waves. This is effectively
 ```{r merge RAMP and COPING}
 
 # add a sample columns
-phq.RAMP.for.merging <- phq.RAMP.reordered %>%
+phq9.RAMP.for.merging <- phq9.RAMP.reordered %>%
   mutate(sample = "RAMP") %>%
   relocate(sample, .after = ID)
 
-phq.COPING.for.merging <- phq.COPING.reordered %>%
+phq9.COPING.for.merging <- phq9.COPING.reordered %>%
   mutate(sample = "COPING") %>%
   relocate(sample, .after = ID)
 
-phq.merged <- full_join(phq.RAMP.for.merging,phq.COPING.for.merging)
+phq9.merged <- full_join(phq9.RAMP.for.merging,phq9.COPING.for.merging)
 
-dim(phq.RAMP.for.merging)
-dim(phq.COPING.for.merging)
-dim(phq.merged)
-names(phq.merged)
+dim(phq9.RAMP.for.merging)
+dim(phq9.COPING.for.merging)
+dim(phq9.merged)
+names(phq9.merged)
 ```
 
 
 ## drop data from waves after 6 April 2021 (see pre registration for re-agreed data boundaries)
 
 ```{r drop later waves}
-phq.clean <- phq.merged %>%
+phq9.clean <- phq9.merged %>%
   select(!contains("Wave_18"))
 
-names(phq.clean)
+names(phq9.clean)
 ```
 # create sum scores
 scoring variables to use in function below
 ```{r}
 #Scoring variables
-PHQ.n.items = 9 # Enter here the total number of items of the questionnaire
-PHQ.maximum.missing.items = 2 # Enter here the number of required items a participant can miss before they are dropped
+phq9.n.items = 9 # Enter here the total number of items of the questionnaire
+phq9.maximum.missing.items = 2 # Enter here the number of required items a participant can miss before they are dropped
 
 #Limits for data cleaning
-PHQ.total.score_upper_limit = 27
-PHQ.total.score_lower_limit = 0
+phq9.total.score_upper_limit = 27
+phq9.total.score_lower_limit = 0
 
-PHQ.min.value = 0
-PHQ.max.value = 3
+phq9.min.value = 0
+phq9.max.value = 3
 ```
 
 ### make -77 NA
 This will mean we can no longer distinguish between missing variable and someone who is missing altogether(did not complete survey) but this should be evident from the number of peope whos NA == 7 per wave.
 
 ```{r recalculate - 77}
-phq.clean<- na_if(phq.clean, -77)
+phq9.clean<- na_if(phq9.clean, -77)
 ```
 
 
@@ -1805,13 +1805,13 @@ Use a second function to calculate the total scores. This can be applied to any 
 keys_phq <- c(1,1,1,1,1,1,1,1,1)
 items_phq <- generate_items_phq(0)
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_0 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_0 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 
@@ -1823,13 +1823,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("01")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_01 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_01 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 02
@@ -1838,13 +1838,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("02")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_02 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_02 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 03
@@ -1853,13 +1853,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("03")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_03 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_03 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 04
@@ -1868,13 +1868,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("04")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_04 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_04 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 05
@@ -1883,13 +1883,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("05")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_05 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_05 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 06
@@ -1898,13 +1898,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("06")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_06 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_06 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 07
@@ -1913,13 +1913,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("07")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_07 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_07 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 08
@@ -1928,13 +1928,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("08")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_08 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_08 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 09
@@ -1943,13 +1943,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("09")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_09 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_09 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 10
@@ -1958,13 +1958,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("10")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_10 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_10 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 11
@@ -1973,13 +1973,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("11")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_11 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_11 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 12
@@ -1988,13 +1988,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("12")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_12 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_12 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 13
@@ -2003,13 +2003,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("13")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_13 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_13 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 14
@@ -2018,13 +2018,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("14")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_14 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_14 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 15
@@ -2033,13 +2033,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("15")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_15 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_15 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 16
@@ -2048,13 +2048,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("16")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_16 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_16 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 ### Follow up 17
@@ -2063,13 +2063,13 @@ phq.clean <- phq.clean %>%
 
 items_phq <- generate_items_phq("17")
 
-phq.clean <- phq.clean %>%
-  mutate(phq.total_Wave_17 = calculate_totals(dataframe=.,
+phq9.clean <- phq9.clean %>%
+  mutate(phq9.total_Wave_17 = calculate_totals(dataframe=.,
                                                 itemlist = items_phq,
                                                 keylist = keys_phq,
-                                                minval = PHQ.min.value,
-                                                maxval = PHQ.max.value,
-                                                maxmissing = PHQ.maximum.missing.items))
+                                                minval = phq9.min.value,
+                                                maxval = phq9.max.value,
+                                                maxmissing = phq9.maximum.missing.items))
 ```
 
 
@@ -2077,18 +2077,18 @@ phq.clean <- phq.clean %>%
 
 ```{r drop item data}
 
-phq.totals.clean <-
-  phq.clean %>%
+phq9.totals.clean <-
+  phq9.clean %>%
   select(ID, sample,
-         starts_with("phq.total_Wave_"))
+         starts_with("phq9.total_Wave_"))
 ```
 
 
 ## save
 ```{r save final data}
 
-saveRDS(object = phq.totals.clean, file = paste0("../../../data_clean/phq/phq.clean_merged_total_scores",  ".rds"))
-saveRDS(object = phq.clean, file = paste0("../../../data_clean/phq/phq.clean_merged_items",  ".rds"))
+saveRDS(object = phq9.totals.clean, file = paste0("../../../data_clean/phq/phq9.clean_merged_total_scores",  ".rds"))
+saveRDS(object = phq9.clean, file = paste0("../../../data_clean/phq/phq9.clean_merged_items",  ".rds"))
 
 ```
 
@@ -2097,17 +2097,17 @@ saveRDS(object = phq.clean, file = paste0("../../../data_clean/phq/phq.clean_mer
 create a list of column names in order to save alongside the data file 
 ```{r mplus remove id make name codebook}
 
-phq.mplus <- phq.totals.clean %>%
+phq9.mplus <- phq9.totals.clean %>%
   select(-sample)
 
-phq.mplus.names <- names(phq.mplus)
-phq.mplus.names.columns <- seq(1,length(phq.mplus.names))
+phq9.mplus.names <- names(phq9.mplus)
+phq9.mplus.names.columns <- seq(1,length(phq9.mplus.names))
 
-phq.mplus.names <- data.frame(cbind(phq.mplus.names,phq.mplus.names.columns))
+phq9.mplus.names <- data.frame(cbind(phq9.mplus.names,phq9.mplus.names.columns))
 
-names(phq.mplus.names) <- c("Variable","Column")
+names(phq9.mplus.names) <- c("Variable","Column")
 
-phq.mplus[is.na(phq.mplus)] <- -99
+phq9.mplus[is.na(phq9.mplus)] <- -99
 
 ```
 
@@ -2118,7 +2118,7 @@ hashed ID is already totally anonymised and disconnected from original dataset, 
 
 ```{r numeric hashed id}
 # create a random integer ID for each row, without duplication
-phq.mplus$hash_id <- sample(1:100000,dim(phq.mplus)[1],replace=FALSE)
+phq9.mplus$hash_id <- sample(1:100000,dim(phq9.mplus)[1],replace=FALSE)
 
 ```
 
@@ -2126,7 +2126,7 @@ phq.mplus$hash_id <- sample(1:100000,dim(phq.mplus)[1],replace=FALSE)
 
 ```{r linked ids}
 
-phq.id.lnk <- phq.mplus %>%
+phq9.id.lnk <- phq9.mplus %>%
   select(ID, hash_id)
 
 ```
@@ -2134,7 +2134,7 @@ phq.id.lnk <- phq.mplus %>%
 ### remove original ID and move hash id to the front
 ```{r remove ID relocate hash id}
 
-phq.mplus <- phq.mplus %>%
+phq9.mplus <- phq9.mplus %>%
   relocate(hash_id, .before = ID) %>%
   select(!ID)
 ```
@@ -2148,21 +2148,21 @@ Also create a keyed name dictionary
 
 ```{r mplus revised data}
 
-phq.mplus.reduced <- phq.mplus %>%
-  select(-phq.total_Wave_01,
-         -phq.total_Wave_02)
+phq9.mplus.reduced <- phq9.mplus %>%
+  select(-phq9.total_Wave_01,
+         -phq9.total_Wave_02)
 
-phq.mplus.reduced.names <- names(phq.mplus.reduced)
-phq.mplus.reduced.names.columns <- seq(1,length(phq.mplus.reduced.names))
-phq.mplus.reduced.names <- data.frame(cbind(phq.mplus.reduced.names,phq.mplus.reduced.names.columns))
+phq9.mplus.reduced.names <- names(phq9.mplus.reduced)
+phq9.mplus.reduced.names.columns <- seq(1,length(phq9.mplus.reduced.names))
+phq9.mplus.reduced.names <- data.frame(cbind(phq9.mplus.reduced.names,phq9.mplus.reduced.names.columns))
 
 ```
 
 ## remove column names
 ```{r remove col names}
 
-names(phq.mplus) <- NULL
-names(phq.mplus.reduced) <- NULL
+names(phq9.mplus) <- NULL
+names(phq9.mplus.reduced) <- NULL
 
 ```
 
@@ -2170,11 +2170,11 @@ names(phq.mplus.reduced) <- NULL
 
 ```{r save plus dat files}
 
-write.table(phq.mplus, "../../../data_clean/phq/phq.clean_merged_total_scores.csv",row.names = FALSE)
-write.table(phq.mplus.reduced, "../../../data_clean/phq/phq.clean_merged_total_scores_reduced.csv",row.names = FALSE)
-write_csv(phq.id.lnk, "../../../data_clean/phq/phq.mplus_hash_id_link_file.csv")
-write_csv(phq.mplus.names, "../../../data_clean/phq/phq.clean_merged_total_scores_codebook.csv")
-write_csv(phq.mplus.reduced.names, "../../../data_clean/phq/phq.clean_merged_total_scores_reduced_codebook.csv")
+write.table(phq9.mplus, "../../../data_clean/phq/phq9.clean_merged_total_scores.csv",row.names = FALSE)
+write.table(phq9.mplus.reduced, "../../../data_clean/phq/phq9.clean_merged_total_scores_reduced.csv",row.names = FALSE)
+write_csv(phq9.id.lnk, "../../../data_clean/phq/phq9.mplus_hash_id_link_file.csv")
+write_csv(phq9.mplus.names, "../../../data_clean/phq/phq9.clean_merged_total_scores_codebook.csv")
+write_csv(phq9.mplus.reduced.names, "../../../data_clean/phq/phq9.clean_merged_total_scores_reduced_codebook.csv")
 
 ```
 
@@ -2339,21 +2339,21 @@ each component table by wave
 
 summary_table_0 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_0,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_0,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_0)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_0,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_0,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_0)))  %>%
     mutate(sample = "Combined",
       time.point = "Baseline") %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_0 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_0,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_0,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_0)))  %>%
+  summarise(mean = mean(phq9.total_Wave_0,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_0,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_0)))  %>%
     mutate(time.point = "Baseline" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2368,21 +2368,21 @@ table_time_0 <- rbind (summary_table_sample_0,summary_table_0)
 
 summary_table_01 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_01,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_01,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_01)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_01,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_01,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_01)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 01" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_01 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_01,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_01,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_01)))  %>%
+  summarise(mean = mean(phq9.total_Wave_01,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_01,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_01)))  %>%
     mutate(time.point = "Follow up 01" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2396,21 +2396,21 @@ table_time_01 <- rbind (summary_table_sample_01,summary_table_01)
 
 summary_table_02 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_02,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_02,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_02)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_02,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_02,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_02)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 02" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_02 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_02,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_02,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_02)))  %>%
+  summarise(mean = mean(phq9.total_Wave_02,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_02,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_02)))  %>%
     mutate(time.point = "Follow up 02" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2423,21 +2423,21 @@ table_time_02 <- rbind (summary_table_sample_02,summary_table_02)
 
 summary_table_03 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_03,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_03,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_03)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_03,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_03,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_03)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 03" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_03 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_03,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_03,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_03)))  %>%
+  summarise(mean = mean(phq9.total_Wave_03,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_03,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_03)))  %>%
     mutate(time.point = "Follow up 03" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2450,21 +2450,21 @@ table_time_03 <- rbind (summary_table_sample_03,summary_table_03)
 
 summary_table_04 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_04,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_04,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_04)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_04,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_04,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_04)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 04" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_04 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_04,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_04,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_04)))  %>%
+  summarise(mean = mean(phq9.total_Wave_04,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_04,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_04)))  %>%
     mutate(time.point = "Follow up 04" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2477,21 +2477,21 @@ table_time_04 <- rbind (summary_table_sample_04,summary_table_04)
 
 summary_table_05 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_05,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_05,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_05)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_05,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_05,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_05)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 05" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_05 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_05,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_05,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_05)))  %>%
+  summarise(mean = mean(phq9.total_Wave_05,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_05,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_05)))  %>%
     mutate(time.point = "Follow up 05" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2504,21 +2504,21 @@ table_time_05 <- rbind (summary_table_sample_05,summary_table_05)
 
 summary_table_06 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_06,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_06,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_06)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_06,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_06,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_06)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 06" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_06 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_06,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_06,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_06)))  %>%
+  summarise(mean = mean(phq9.total_Wave_06,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_06,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_06)))  %>%
     mutate(time.point = "Follow up 06" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2531,21 +2531,21 @@ table_time_06 <- rbind (summary_table_sample_06,summary_table_06)
 
 summary_table_07 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_07,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_07,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_07)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_07,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_07,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_07)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 07" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_07 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_07,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_07,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_07)))  %>%
+  summarise(mean = mean(phq9.total_Wave_07,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_07,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_07)))  %>%
     mutate(time.point = "Follow up 07" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2558,21 +2558,21 @@ table_time_07 <- rbind (summary_table_sample_07,summary_table_07)
 
 summary_table_08 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_08,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_08,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_08)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_08,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_08,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_08)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 08" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_08 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_08,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_08,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_08)))  %>%
+  summarise(mean = mean(phq9.total_Wave_08,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_08,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_08)))  %>%
     mutate(time.point = "Follow up 08" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2585,21 +2585,21 @@ table_time_08 <- rbind (summary_table_sample_08,summary_table_08)
 
 summary_table_09 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_09,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_09,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_09)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_09,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_09,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_09)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 09" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_09 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_09,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_09,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_09)))  %>%
+  summarise(mean = mean(phq9.total_Wave_09,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_09,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_09)))  %>%
     mutate(time.point = "Follow up 09" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2612,21 +2612,21 @@ table_time_09 <- rbind (summary_table_sample_09,summary_table_09)
 
 summary_table_10 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_10,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_10,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_10)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_10,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_10,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_10)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 10" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_10 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_10,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_10,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_10)))  %>%
+  summarise(mean = mean(phq9.total_Wave_10,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_10,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_10)))  %>%
     mutate(time.point = "Follow up 10" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2639,21 +2639,21 @@ table_time_10 <- rbind (summary_table_sample_10,summary_table_10)
 
 summary_table_11 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_11,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_11,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_11)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_11,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_11,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_11)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 11" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_11 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_11,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_11,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_11)))  %>%
+  summarise(mean = mean(phq9.total_Wave_11,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_11,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_11)))  %>%
     mutate(time.point = "Follow up 11" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2666,21 +2666,21 @@ table_time_11 <- rbind (summary_table_sample_11,summary_table_11)
 
 summary_table_12 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_12,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_12,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_12)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_12,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_12,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_12)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 12" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_12 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_12,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_12,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_12)))  %>%
+  summarise(mean = mean(phq9.total_Wave_12,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_12,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_12)))  %>%
     mutate(time.point = "Follow up 12" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2693,21 +2693,21 @@ table_time_12 <- rbind (summary_table_sample_12,summary_table_12)
 
 summary_table_13 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_13,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_13,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_13)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_13,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_13,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_13)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 13" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_13 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_13,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_13,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_13)))  %>%
+  summarise(mean = mean(phq9.total_Wave_13,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_13,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_13)))  %>%
     mutate(time.point = "Follow up 13" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2720,21 +2720,21 @@ table_time_13 <- rbind (summary_table_sample_13,summary_table_13)
 
 summary_table_14 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_14,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_14,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_14)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_14,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_14,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_14)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 14" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_14 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_14,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_14,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_14)))  %>%
+  summarise(mean = mean(phq9.total_Wave_14,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_14,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_14)))  %>%
     mutate(time.point = "Follow up 14" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2747,21 +2747,21 @@ table_time_14 <- rbind (summary_table_sample_14,summary_table_14)
 
 summary_table_15 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_15,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_15,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_15)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_15,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_15,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_15)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 15" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_15 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_15,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_15,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_15)))  %>%
+  summarise(mean = mean(phq9.total_Wave_15,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_15,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_15)))  %>%
     mutate(time.point = "Follow up 15" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2774,21 +2774,21 @@ table_time_15 <- rbind (summary_table_sample_15,summary_table_15)
 
 summary_table_16 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_16,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_16,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_16)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_16,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_16,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_16)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 16" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_16 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_16,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_16,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_16)))  %>%
+  summarise(mean = mean(phq9.total_Wave_16,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_16,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_16)))  %>%
     mutate(time.point = "Follow up 16" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2801,21 +2801,21 @@ table_time_16 <- rbind (summary_table_sample_16,summary_table_16)
 
 summary_table_17 <- 
   
-  phq.totals.clean %>%
-  summarise(mean = mean(phq.total_Wave_17,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_17,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_17)))  %>%
+  phq9.totals.clean %>%
+  summarise(mean = mean(phq9.total_Wave_17,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_17,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_17)))  %>%
     mutate(sample = "Combined",
       time.point = "Follow up 17" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
 
 summary_table_sample_17 <- 
   
-  phq.totals.clean %>%
+  phq9.totals.clean %>%
   group_by(sample) %>%
-  summarise(mean = mean(phq.total_Wave_17,na.rm = TRUE),
-            standard.deviation = sd(phq.total_Wave_17,na.rm = TRUE),
-            valid.data.points =  sum(!is.na(phq.total_Wave_17)))  %>%
+  summarise(mean = mean(phq9.total_Wave_17,na.rm = TRUE),
+            standard.deviation = sd(phq9.total_Wave_17,na.rm = TRUE),
+            valid.data.points =  sum(!is.na(phq9.total_Wave_17)))  %>%
     mutate(time.point = "Follow up 17" ) %>%
   relocate(time.point,sample,valid.data.points, "mean", standard.deviation)
   
@@ -2866,7 +2866,7 @@ pretty_table
 ```
 ```{r save kable}
 
-save_file <- file.path(dirname(dirname(getwd())),"output/outcome_variable_summary_tables/phq.all_waves_summary_table.html")
+save_file <- file.path(dirname(dirname(getwd())),"output/outcome_variable_summary_tables/phq9.all_waves_summary_table.html")
 
 save_kable(pretty_table,
            save_file)
@@ -2883,7 +2883,7 @@ save_kable(pretty_table,
 
 ### Check distributions of raw data, square root transformed data and log transformed data (bring above 1 first...) using histograms
 
-phq.totals.clean %>%
+phq9.totals.clean %>%
   describe(.)
 
 ```
@@ -2894,32 +2894,59 @@ phq.totals.clean %>%
 
 layout(matrix(c(1:18), nrow=6, byrow=T))
 
-hist(phq.totals.clean$phq.total_Wave_0, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_01, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_02, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_0, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_01, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_02, breaks="FD")
 
-hist(phq.totals.clean$phq.total_Wave_03, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_04, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_05, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_03, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_04, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_05, breaks="FD")
 
-hist(phq.totals.clean$phq.total_Wave_06, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_07, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_08, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_06, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_07, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_08, breaks="FD")
 
-hist(phq.totals.clean$phq.total_Wave_09, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_10, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_11, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_09, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_10, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_11, breaks="FD")
 
-hist(phq.totals.clean$phq.total_Wave_12, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_13, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_14, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_12, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_13, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_14, breaks="FD")
 
-hist(phq.totals.clean$phq.total_Wave_15, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_16, breaks="FD")
-hist(phq.totals.clean$phq.total_Wave_17, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_15, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_16, breaks="FD")
+hist(phq9.totals.clean$phq9.total_Wave_17, breaks="FD")
 
 layout(1)
 
+
+```
+
+# Internal consistency
+
+```{r calculate internal consistency}
+
+RAMP_baseline <- read_rds("/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/phq/phq.clean_baseline_items.RAMP.rds")
+
+
+RAMP_baseline <- RAMP_baseline %>% 
+  dplyr::rename(
+    phq9.pandemic_little_interest_or_pleasure = phq9.pandemic_little_interest_or_pleasure_.Wave_0,
+    phq9.pandemic_down_depressed_hopeless = phq9.pandemic_down_depressed_hopeless_.Wave_0,
+    phq9.pandemic_trouble_falling_or_staying_asleep = phq9.pandemic_trouble_falling_or_staying_asleep_.Wave_0, 
+    phq9.pandemic_feel_tired_little_energy = phq9.pandemic_feel_tired_little_energy_.Wave_0,
+    phq9.pandemic_poor_appetite_or_overeating = phq9.pandemic_poor_appetite_or_overeating_.Wave_0,
+    phq9.pandemic_feeling_like_a_failure = phq9.pandemic_feeling_like_a_failure_.Wave_0,
+    phq9.pandemic_trouble_concentrating = phq9.pandemic_trouble_concentrating_.Wave_0,
+    phq9.pandemic_fidgeting_or_moving_slowly = phq9.pandemic_fidgeting_or_moving_slowly_.Wave_0,
+    phq9.pandemic_thoughts_better_off_dead = phq9.pandemic_thoughts_better_off_dead_.Wave_0)
+
+
+merged_baseline <- rbind(RAMP_baseline, COPING_baseline.id)
+
+psych::alpha(merged_baseline[,c(2:10)])
+psych::alpha(merged_baseline[,c(2:10)])$total$std.alpha
 
 ```
 

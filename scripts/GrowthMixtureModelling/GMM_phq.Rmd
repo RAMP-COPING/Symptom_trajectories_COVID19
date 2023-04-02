@@ -86,10 +86,10 @@ if(!require(knitr)){
   library(knitr)
 }
 
-if(!require(summarytools)){
-  install.packages("summarytools")
-  library(summarytools)
-}
+#if(!require(summarytools)){
+#  install.packages("summarytools")
+#  library(summarytools)
+#}
 
 if(!require(data.table)){
   install.packages("data.table")
@@ -173,10 +173,10 @@ knitr::opts_chunk$set(results = 'asis',
                       fig.width = 10,
                       fig.align = "center")
 
-st_options(plain.ascii = FALSE,       
-            style = "rmarkdown",      
-            footnote = NA,            
-            subtitle.emphasis = FALSE)                         
+#st_options(plain.ascii = FALSE,       
+#            style = "rmarkdown",      
+#            subtitle.emphasis = FALSE)                         
+##            footnote = NA,            
 
 
 options(scipen = 999)
@@ -740,32 +740,35 @@ justSummaries$Title <-  reorder(justSummaries$Title, -justSummaries$BIC)
 BIC_scree_plot <- ggplot() +
   geom_line(data =justSummaries,
         aes(x = Title, y = BIC,group=1)) +
-  scale_y_continuous(limits =c(1745000,1772500), breaks = seq(1745000,1772500,by=2500)) +
-  scale_x_discrete(name="k+1 class model",labels=c("Latent growth curve (One class)","Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model","Six class growth mixture model","Seven class growth mixture model")) +
+  scale_y_continuous(limits =c(1745000,1772500), breaks = seq(1745000,1772500,by=5000)) +
+  scale_x_discrete(name="Growth mixture model type",labels=c("One class","Two class","Three class","Four class","Five class","Six class","Seven class")) +
   geom_point(data = justSummaries,
         aes(x = Title, y = BIC,group=1), show.legend = F) +
   labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
        subtitle="Depression symptoms (PHQ-9)",
          y ="BIC") +
   theme(panel.background = element_blank(),
-        axis.text.x = element_text(angle = 45)) 
+        axis.text.x = element_text(angle = 0), axis.text = element_text(size = 10), axis.title=element_text(size=12,face="bold")) 
 
 BIC_scree_plot 
+
+
 
 #create scree plot without 1-class model
 
 BIC_scree_plot2 <- ggplot() +
   geom_line(data =justSummaries[1:6,],
         aes(x = Title, y = BIC,group=1)) +
-  scale_y_continuous(limits =c(1745000,1772500), breaks = seq(1745000,1772500,by=2500)) +
-  scale_x_discrete(name="k+1 class model",labels=c("Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model","Six class growth mixture model","Seven class growth mixture model")) +
+  scale_y_continuous(limits =c(1745000,1772500), breaks = seq(1745000,1772500,by=5000)) +
+  scale_x_discrete(name="Growth mixture model type",labels=c("Two class","Three class","Four class","Five class","Six class","Seven class")) +
   geom_point(data = justSummaries[1:6,],
         aes(x = Title, y = BIC,group=1), show.legend = F) +
   labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
        subtitle="Depression symptoms (PHQ-9)",
          y ="BIC") +
+  xlab("Growth mixture model type") +
   theme(panel.background = element_blank(),
-        axis.text.x = element_text(angle = 45)) 
+        axis.text.x = element_text(angle = 0), axis.text = element_text(size = 10), axis.title=element_text(size=12,face="bold"), plot.title = element_text(size=10))
 
 BIC_scree_plot2
 
@@ -788,7 +791,7 @@ ggsave(
   plot =BIC_scree_plot)
     
 ggsave(
-  filename=file.path(save_file_path,"phq_BIC_scree_plot-start-at-two.png"),
+  filename=file.path(save_file_path,"phq_BIC_scree_plot-start-at-two.png"),width = 8, height = 4, dpi = 120, units = "in", device='png',
   plot =BIC_scree_plot2)
 
 # save class proportion data tables
@@ -1049,16 +1052,42 @@ dat_plot_curves_four <- dat_plot_curves_four %>%
 
 
 ```{r Growth Curve Forms four class}
+#change date to be accurate
+dat_plot_curves_four$timepoint <- 
+  c(0,0,0,0,0,0,0,0,
+    1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5, 
+    2,2,2,2,2,2,2,2, 
+    2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5, 
+    3,3,3,3,3,3,3,3, 
+    3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.5, 
+    4,4,4,4,4,4,4,4,
+    5,5,5,5,5,5,5,5,
+    6,6,6,6,6,6,6,6,
+    7,7,7,7,7,7,7,7,
+    8,8,8,8,8,8,8,8,
+    9,9,9,9,9,9,9,9,
+    10,10,10,10,10,10,10,10,
+    11,11,11,11,11,11,11,11,
+    12,12,12,12,12,12,12,12,
+    13,13,13,13,13,13,13,13)
+
+dat_plot_curves_four <- dat_plot_curves_four %>%
+  mutate(Model = case_when(
+    Model == "Class1" ~ "Class 1 (10%)",
+    Model == "Class2" ~ "Class 2 (60%)",
+    Model == "Class3" ~ "Class 3 (17%)",
+    Model == "Class4" ~ "Class 4 (13%)"
+  ))
 
 growth_curves_fourclass <- ggplot() +
   geom_line(data = dat_plot_curves_four,
         aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
   geom_point(data = dat_plot_curves_four,
-        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
+        aes(x = timepoint, y = score, colour = Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="PHQ-9 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(0,27), breaks=seq(0,27, 3)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,13.5), breaks=c(0, 1.5, 2, 2.5, 3, 3.5, 4,5,6,7,8,9,10,11,12,13),
                    labels = timepoint_list) +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
   geom_hline(yintercept=27, linetype="dashed", color = "grey") +
@@ -1066,13 +1095,16 @@ growth_curves_fourclass <- ggplot() +
   geom_hline(yintercept=10, linetype="dashed", color = "grey") +
   geom_hline(yintercept=15, linetype="dashed", color = "grey") +
   geom_hline(yintercept=20, linetype="dashed", color = "grey") +
+  geom_vline(xintercept= 2.5, linetype="solid", color = "grey") +
+  geom_vline(xintercept= 7, linetype="solid", color = "grey") +
+  geom_vline(xintercept= 11, linetype="solid", color = "grey") +
   theme(panel.grid.major.y = element_blank(),
-        axis.text = element_text(colour="black", size = 14),
-        axis.title = element_text(colour="black", size = 16),
+        axis.text = element_text(colour="black", size = 8),
+        axis.title = element_text(colour="black", size = 12),
         axis.text.x = element_text(angle = 45,
         hjust=1),
         legend.key = element_blank(),
-        legend.text = element_text(colour = "black", size = 11),
+        legend.text = element_text(colour = "black", size = 8),
         panel.background = element_blank()) 
 
 growth_curves_fourclass

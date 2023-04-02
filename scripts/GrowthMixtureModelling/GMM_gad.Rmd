@@ -86,10 +86,10 @@ if(!require(knitr)){
   library(knitr)
 }
 
-if(!require(summarytools)){
-  install.packages("summarytools")
-  library(summarytools)
-}
+#if(!require(summarytools)){
+#  install.packages("summarytools")
+#  library(summarytools)
+#}
 
 if(!require(data.table)){
   install.packages("data.table")
@@ -173,10 +173,10 @@ knitr::opts_chunk$set(results = 'asis',
                       fig.width = 10,
                       fig.align = "center")
 
-st_options(plain.ascii = FALSE,       
-            style = "rmarkdown",      
-            footnote = NA,            
-            subtitle.emphasis = FALSE)                         
+#st_options(plain.ascii = FALSE,       
+#            style = "rmarkdown",      
+#            footnote = NA,            
+#            subtitle.emphasis = FALSE)                         
 
 
 options(scipen = 999)
@@ -188,7 +188,6 @@ RAMP colours (first two) and then a complementary palette of distinguishable col
 ```{r colour palette, include=FALSE}
 
 pres.palette <- c("#4ED1B7", "#F6C66A", "#3066BE", "#D90368","#1B2D2A",  "#4C2E05","#C98686") 
-
 
 timepoint_list <- c("7 Apr '20","19 May '20","2 Jun '20","16 Jun '20","30 Jun '20",
                     "14 Jul '20", "28 Jul '20","25 Aug '20","22 Sep '20","20 Oct '20",
@@ -738,14 +737,15 @@ justSummaries$Title <-  reorder(justSummaries$Title, -justSummaries$BIC)
 BIC_scree_plot <- ggplot() +
   geom_line(data =justSummaries,
         aes(x = Title, y = BIC,group=1)) +
-  scale_x_discrete(name="k+1 class model",labels=c("Latent growth curve (One class)","Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model","Six class growth mixture model","Seven class growth mixture model")) +
+  scale_y_continuous(limits =c(1620000,1670000), breaks = seq(1620000,1670000,by=10000)) +
+  scale_x_discrete(name="Growth mixture model type",labels=c("One class","Two class","Three class","Four class","Five class","Six class","Seven class")) +
   geom_point(data = justSummaries,
         aes(x = Title, y = BIC,group=1), show.legend = F) +
   labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
        subtitle="Anxiety symptoms (GAD-7)",
          y ="BIC") +
   theme(panel.background = element_blank(),
-        axis.text.x = element_text(angle = 45)) 
+        axis.text.x = element_text(angle = 0), axis.text = element_text(size = 15), axis.title=element_text(size=16,face="bold")) 
 
 BIC_scree_plot 
 
@@ -754,14 +754,15 @@ BIC_scree_plot
 BIC_scree_plot2 <- ggplot() +
   geom_line(data =justSummaries[1:6,],
         aes(x = Title, y = BIC,group=1)) +
-  scale_x_discrete(name="k+1 class model",labels=c("Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model","Six class growth mixture model","Seven class growth mixture model")) +
+  scale_y_continuous(limits =c(1620000,1650000), breaks = seq(1620000,1650000,by=10000)) +
+  scale_x_discrete(name="Growth mixture model type",labels=c("Two class","Three class","Four class","Five class","Six class","Seven class")) +
   geom_point(data = justSummaries[1:6,],
         aes(x = Title, y = BIC,group=1), show.legend = F) +
   labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
        subtitle="Anxiety symptoms (GAD-7)",
          y ="BIC") +
   theme(panel.background = element_blank(),
-        axis.text.x = element_text(angle = 45)) 
+        axis.text.x = element_text(angle = 0), axis.text = element_text(size = 10), axis.title=element_text(size=12,face="bold"), plot.title = element_text(size=10)) 
 
 BIC_scree_plot2
 
@@ -783,8 +784,7 @@ ggsave(
   plot =BIC_scree_plot)
 
 ggsave(
-  filename=file.path(save_file_path,"gad_BIC_scree_plot-start-at-two.png"),
-  plot =BIC_scree_plot2)
+  filename=file.path(save_file_path,"gad_BIC_scree_plot-start-at-two.png"), width = 8, height = 4, dpi = 120, units = "in", device='png', plot =BIC_scree_plot2)
 
     
 # save class proportion data tables
@@ -1040,32 +1040,79 @@ dat_plot_curves_four <- dat_plot_curves_four %>%
 ```
 
 
+"#3066BE" = blue
+"#D90368" = red
+"#4ED1B7" = green
+"#F6C66A" = yellow
 
+scale_x_continuous(breaks = c(1, 6, 7, 12), labels = c("Start", "n-1", "n", "End")) + 
+
+scale_x_continuous(breaks = c(0, 1.5, 2, 2.5, 3, 3.5, 4.5,5.5,6.5, 7.5, 8.5, 9.5, 10.5, 11.5, 12.5, 13.5),
+breaks=seq(0, 15, by = 1),
 ```{r Growth Curve Forms four class}
+#change colours to match PHQ
+pres.palette2 <- c("#F6C66A", "#4ED1B7", "#D90368", "#3066BE")
+
+dat_plot_curves_four <- dat_plot_curves_four %>%
+  mutate(Model = case_when(
+    Model == "Class1" ~ "Class 1 (69%)",
+    Model == "Class2" ~ "Class 2 (15%)",
+    Model == "Class3" ~ "Class 3 (9%)",
+    Model == "Class4" ~ "Class 4 (7%)"
+  ))
+
+
+#change date to be accurate
+dat_plot_curves_four$timepoint <- 
+  c(0,0,0,0,0,0,0,0,
+    1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5, 
+    2,2,2,2,2,2,2,2, 
+    2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5, 
+    3,3,3,3,3,3,3,3, 
+    3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.5, 
+    4,4,4,4,4,4,4,4,
+    5,5,5,5,5,5,5,5,
+    6,6,6,6,6,6,6,6,
+    7,7,7,7,7,7,7,7,
+    8,8,8,8,8,8,8,8,
+    9,9,9,9,9,9,9,9,
+    10,10,10,10,10,10,10,10,
+    11,11,11,11,11,11,11,11,
+    12,12,12,12,12,12,12,12,
+    13,13,13,13,13,13,13,13)
 
 growth_curves_fourclass <- ggplot() +
   geom_line(data = dat_plot_curves_four,
         aes(x = timepoint, y = score, colour = Model,linetype=Type)) +
   geom_point(data = dat_plot_curves_four,
-        aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
-  scale_color_manual(values = pres.palette) +
+        aes(x = timepoint, y = score, colour = Model), show.legend = F) +
+  scale_color_manual(values = pres.palette2) +
   labs(x = "Follow up time point", y ="GAD-7 Score") +
   scale_y_continuous(expand = c(0,0), limits = c(0,21), breaks=seq(0,21, 3)) + 
-  scale_x_continuous(expand = c(0,0), limits = c(-0.5,15.5), breaks=seq(0, 15, by = 1),
+  scale_x_continuous(expand = c(0,0), limits = c(-0.5,13.5), breaks=c(0, 1.5, 2, 2.5, 3, 3.5, 4,5,6,7,8,9,10,11,12,13),
                    labels = timepoint_list) +
   geom_hline(yintercept=0, linetype="dashed", color = "grey") +
   geom_hline(yintercept=21, linetype="dashed", color = "grey") +
   geom_hline(yintercept=5, linetype="dashed", color = "grey") +
   geom_hline(yintercept=10, linetype="dashed", color = "grey") +
   geom_hline(yintercept=15, linetype="dashed", color = "grey") +
+  geom_vline(xintercept= 2.5, linetype="solid", color = "grey") +
+  
+  geom_vline(xintercept= 7, linetype="solid", color = "grey") +
+  geom_vline(xintercept= 11, linetype="solid", color = "grey") +
   theme(panel.grid.major.y = element_blank(),
-        axis.text = element_text(colour="black", size = 14),
-        axis.title = element_text(colour="black", size = 16),
+        axis.text = element_text(colour="black", size = 8),
+        axis.title = element_text(colour="black", size = 12),
         axis.text.x = element_text(angle = 45,
         hjust=1),
         legend.key = element_blank(),
-        legend.text = element_text(colour = "black", size = 11),
+        legend.text = element_text(colour = "black", size = 8),
         panel.background = element_blank()) 
+#+
+#   annotate("text", x=1, y=20, label= "Lockdown", size=3) +
+ # annotate("text", x=4, y=20, label= "Eased restrictions", size=3) +
+#  annotate("text", x=8, y=20, label= "Lockdown", size=3) +
+#  annotate("text", x=12.5, y=20, label= "Eased restrictions", size=3)
 
 growth_curves_fourclass
 
@@ -1137,6 +1184,9 @@ growth_curves_fiveclass <- ggplot() +
   geom_hline(yintercept=5, linetype="dashed", color = "grey") +
   geom_hline(yintercept=10, linetype="dashed", color = "grey") +
   geom_hline(yintercept=15, linetype="dashed", color = "grey") +
+  geom_vline(xintercept= 2.5, linetype="solid", color = "black") +
+  geom_vline(xintercept= 7, linetype="solid", color = "black") +
+  geom_vline(xintercept= 11, linetype="solid", color = "black") +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),

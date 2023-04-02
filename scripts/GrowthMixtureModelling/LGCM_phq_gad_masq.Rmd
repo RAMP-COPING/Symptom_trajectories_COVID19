@@ -1949,3 +1949,33 @@ growth_curves_run2b
 
 
 ```
+
+## CHECK MASQ PHQ
+
+```{r check masq phq}
+check_anhedonia <- left_join(masq_check,phq_check)
+
+cor(check_anhedonia$masq.total_Wave_0,check_anhedonia$phq.total_Wave_0, use="complete.obs")
+
+cor(check_anhedonia$masq.total_Wave_01,check_anhedonia$phq.total_Wave_01, use="complete.obs")
+
+cor(check_anhedonia$masq.total_Wave_02,check_anhedonia$phq.total_Wave_02, use="complete.obs")
+
+cor(check_anhedonia$masq.total_Wave_03,check_anhedonia$phq.total_Wave_03, use="complete.obs")
+
+cor(check_anhedonia$masq.total_Wave_04,check_anhedonia$phq.total_Wave_04, use="complete.obs")
+
+hist(check_anhedonia$masq.total_Wave_0)
+hist(check_anhedonia$phq.total_Wave_0)
+
+ggplot(check_anhedonia, aes(x=masq.total_Wave_0, y=phq.total_Wave_0)) + geom_point()
+
+
+mean(check_anhedonia$masq.total_Wave_04,na.rm=TRUE)
+sd(check_anhedonia$masq.total_Wave_04,na.rm=TRUE)
+
+mean(check_anhedonia$phq.total_Wave_04,na.rm=TRUE)
+sd(check_anhedonia$phq.total_Wave_04,na.rm=TRUE)
+
+
+```

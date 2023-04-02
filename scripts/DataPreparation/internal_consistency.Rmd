@@ -1,0 +1,113 @@
+
+---
+title: "internal_consistency_RAMP-COPING"
+author: "k. young"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: show
+
+html_notebook:
+  theme: cerulean
+toc: yes
+---
+
+# Summary
+
+Calculating internal consistency for first data point for PHQ, GAD and MASQ
+
+# Setup
+
+```{r}
+# clear global environment
+remove(list = ls())
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment=NA,
+                      prompt=FALSE,
+                      cache=FALSE)
+```
+
+Note: load tidyverse last!
+```{r Load packages}
+
+
+
+if(!require(psych)){
+  install.packages("psych")
+  library(psych)
+}
+
+if(!require(kableExtra)){
+  install.packages("kableExtra")
+  library(kableExtra)
+}
+
+if(!require(dplyr)){
+  install.packages("dplyr")
+  library(dplyr)
+}
+
+if(!require(tidyverse)){
+  install.packages("tidyverse")
+  library(tidyverse)
+}
+```
+
+```{r}
+# read in data files
+source("../../../Credentials/paths_baseline_cleaning.R")
+source("../../../Credentials/paths_anhedonia_analysis.R")
+```
+
+## read in all functions from function library
+
+```{r call in function library functions}
+# source all functions in the function library folder
+files.sources = paste0("../functions/",list.files("../functions"))
+sapply(files.sources, source)
+
+```
+
+## read in and rename data
+
+```{r read in files}
+
+phq_firstwave <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/phq/phq.clean_merged_items.rds")
+
+phq_firstwave2 <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/phq/phq9_coping_glad_clean.rds")
+
+phq_firstwave <- phq_firstwave[,c(1,2,3,20,37,54,71,88,105,122,139)]
+
+ramp_phq_firstwave <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/phq/phq.clean_baseline_items.RAMP.rds")
+
+ramp_gad_firstwave <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/gad/gad.clean_baseline_items.RAMP.rds")
+
+ramp_masq_firstwave <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/masq/masq.clean_baseline_items.RAMP.rds")
+
+```
+
+## calculate internal consistency
+```{r internal consistency}
+
+
+
+psych::alpha(ramp_phq_firstwave[,c(2:10)])
+psych::alpha(ramp_phq_firstwave[,c(2:10)])$total$std.alpha
+
+psych::alpha(ramp_gad_firstwave[,c(2:8)])
+psych::alpha(ramp_gad_firstwave[,c(2:8)])$total$std.alpha
+
+psych::alpha(ramp_masq_firstwave[,c(4:13)])
+psych::alpha(ramp_masq_firstwave[,c(4:13)])$total$std.alpha
+```

@@ -1,5 +1,5 @@
 ---
-title: "Multinomial logistic regression predicting class membership for trajextories of GAD-7, PHQ-9 and MASQ-anhedonia"
+title: "Multinomial logistic regression predicting class membership for trajectories of GAD-7, PHQ-9 and MASQ-anhedonia"
 author: "K L Purves"
 date: '`r format(Sys.time(), "%d %B, %Y")`'
 output:
@@ -79,6 +79,8 @@ A 5 class model was selected, based on the following rationale (criteria set in 
 3. Visual inspection of scree plots of BIC values: inflection point observed at 4-class model (i.e., the slope of change in BIC from class 3 to class 4 was steeper than the slope of change from class 4 to class 5). From this, the models at, or immediately after, the inflection point could be selected (4-class or 5-class).
 4. The 5-class model had a higher entropy, so this model was selected.
 
+**update after reviewer comments indicating 4-class is more common in the literature (& likelihood of substantial overlap with phq/gad models - the more parsimonious 4 class model was selected)
+
 ![best fit model for trajectories of anhedonia over one year of the pandemic](../../output/Trajectory_plots/MASQ/anhedonia_fiveclass_trajectory.png "Five class GMM for anhedonia")
 
 We interpret each class as follows:
@@ -96,7 +98,7 @@ We interpret each class as follows:
 
 ## Description of selected predictors
 
-The predictors we include which were significant predictors of change in symptoms of anxiety and/or depression in our sample from before the pandemic to the first measurement pint during the pandemic are:
+The predictors we include which were significant predictors of change in symptoms of anxiety and/or depression in our sample from before the pandemic to the first measurement point during the pandemic are:
 
 * Gender (being female predicted worsening of symtoms)    
 * Age (being younger; i.e. <35, predicted worsening of symptoms)    
@@ -107,7 +109,7 @@ We include a few additional measures which were not significant predictors in ou
 
 * ethnicity (described in the pre-registration; see note below for more detail) 
 * key worker status. 
-This was a predictor in our first paper.although we did not plan to include it in the pre-registration, given the piecewise nature of our best fitting latent growth curve based on national pandemic related events, we consider this to be a potential important explanatory variable for differing responses to lockdowns and restrictions easing.
+This was a predictor in our first paper, although we did not plan to include it in the pre-registration, given the piecewise nature of our best fitting latent growth curve based on national pandemic related events, we consider this to be a potentially important explanatory variable for differing responses to lockdowns and restrictions easing.
 * employment change during early pandemic (increased employment or became employed, decreased employment or became unemployed, furloughed, no change). 
 Whilst we did not use this variable in our earlier paper, given the role for employment n change from pre-pandemic to early pandemic, it is reasonable to infer that any change in employment status during the pandemic may be an important predictor of symptom trajectories during the pandemic. 
 
@@ -118,9 +120,6 @@ We will use the ethnicity variable in two different ways in order to ensure we a
 We will then perform a second analysis, where we group all minoritised ethnic communities together, comparing them to the visible majority white ethnicity group. Whist this grouping does not respect the different experiences that different communities may experience, it does consider the impact of being a "visible minority" and the potential risk for discrimination that this may bring. This analysis will be better powered to detect smaller effects.
 
 We hope that by performing this analysis in both ways, we will be able to fully consider the possible impact of experiences of all ethnic communities on anxiety, depression and anhedonia trajectories throughout the pandemic. 
-
-## SOME EDITS NEEDED WHEN FINAL CLASS DECIDED
-Anywhere that the code is dependent on the number of classes in dataset
 
 # Analyses
 
@@ -174,6 +173,14 @@ if(!require(tidyverse)){
   install.packages("tidyverse")
   library(tidyverse)
 }
+
+if(!require(writexl)){
+  install.packages("writexl")
+  library(writexl)
+}
+
+options(scipen = 999)
+
 ```
 
 read in all functions from function library
@@ -209,7 +216,7 @@ phq_mplus <-read.table("../GrowthMixtureModelling/MPlus_input_gmm/PHQ/gmm_phq_pi
 gad_mplus <- read.table("../GrowthMixtureModelling/MPlus_input_gmm/GAD/gmm_gad_piece_4class_probs.dat", 
                            header=FALSE)
 
-masq_mplus <- read.table("../GrowthMixtureModelling/MPlus_input_gmm/MASQ/gmm_masq_piece_5class_probs.dat", 
+masq_mplus <- read.table("../GrowthMixtureModelling/MPlus_input_gmm/MASQ/gmm_masq_piece_4class_probs.dat", 
                            header=FALSE)
 
 ```
@@ -259,15 +266,25 @@ This doesn't change the numbers (reassuring)
 
 ```{r merge data with predcictors, include=FALSE}
 
-# PHQ
- phq.AllData <- left_join(phq_class_data,
-                           phq_predictors)
+phq_predictors <- phq_predictors[!apply(is.na(phq_predictors[,3:16]), 1, all),]
+gad_predictors <- gad_predictors[!apply(is.na(gad_predictors[,3:16]), 1, all),]
+masq_predictors <- masq_predictors[!apply(is.na(masq_predictors[,3:16]), 1, all),]
+
+nrow(phq_predictors)
+nrow(gad_predictors)
+nrow(masq_predictors)
+
+
+# PHQ 
+ phq.AllData <- left_join(phq_predictors,
+                          phq_class_data)
 
 # GAD
  gad.AllData <- left_join(gad_class_data,
                            gad_predictors)
 
-masq.AllData <- left_join(masq_class_data,
+ # MASQ
+ masq.AllData <- left_join(masq_class_data,
                           masq_predictors)
 ```
 
@@ -275,14 +292,49 @@ masq.AllData <- left_join(masq_class_data,
 
 this represents people who were not missing on all variables as per MPLus output file, and our true analytic sample.
 
-```{r drop no predictor data}
+```{r drop no predictor or trajectory data}
 
-phq.AllData <- phq.AllData[!apply(is.na(phq.AllData[,4:17]), 1, all),]
-
+phq.AllData <- phq.AllData[!apply(is.na(phq.AllData[,20]), 1, all),]
+#REDUCING FROM 46089 to 41753 datapoints 
 gad.AllData <- gad.AllData[!apply(is.na(gad.AllData[,4:17]), 1, all),]
-
+#REDUCING FROM 46087 to 41192 datapoints 
 masq.AllData <- masq.AllData[!apply(is.na(masq.AllData[,4:17]), 1, all),]
+#REDUCING FROM 36964 to 32689 datapoints 
+```
 
+#combined summary table demographcis
+```{r combined summary table for paper}
+
+if(!require(expss)){
+  library(expss)
+  install.packages("expss",repos = "http://cran.us.r-project.org")
+}
+
+combined_table <- phq.AllData  %>% tab_cells("Age" = age, "Gender" = gender,"Ethnicity" = ethnicity, "Ethnicity - clustered" = ethnicity_clustered, "Change in employment" = employment_change, "Pre-pandemic employment" = employment_prior_covid, "Keyworker status" = key_worker, "Depressive disorder diagnosis" = depressive_disorders, "Anxiety disorder diagnosis" = anxiety_disorders, "OCD diagnosis" = obsessive_compulsive_disorders, "Psychotic disorder diagnosis" = psychotic_disorders, "Bipolar disorder diagnosis" = bipolar_disorders,"Eating disorder diagnosis" = eating_disorders, "Personality disorder diagnosis" = personality_disorders, "PTSD diagnosis" = ptsd_disorders, "ASD diagnosis" = autism_disorders) %>% 
+    tab_cols(total(label = "N")) %>% 
+    tab_stat_cases(total_row_position = "none") %>% 
+    tab_pivot() %>% 
+    kable()
+
+combined_table
+
+coping_table <- phq.AllData  %>% 
+  filter(sample == "COPING") %>% tab_cells("Age" = age, "Gender" = gender,"Ethnicity" = ethnicity, "Ethnicity - clustered" = ethnicity_clustered, "Change in employment" = employment_change, "Pre-pandemic employment" = employment_prior_covid, "Keyworker status" = key_worker, "Depressive disorder diagnosis" = depressive_disorders, "Anxiety disorder diagnosis" = anxiety_disorders, "OCD diagnosis" = obsessive_compulsive_disorders, "Psychotic disorder diagnosis" = psychotic_disorders, "Bipolar disorder diagnosis" = bipolar_disorders,"Eating disorder diagnosis" = eating_disorders, "Personality disorder diagnosis" = personality_disorders, "PTSD diagnosis" = ptsd_disorders, "ASD diagnosis" = autism_disorders) %>% 
+    tab_cols(total(label = "N")) %>% 
+    tab_stat_cases(total_row_position = "none") %>% 
+    tab_pivot() %>% 
+    kable()
+
+coping_table
+
+ramp_table <- phq.AllData  %>% 
+  filter(sample == "RAMP") %>% tab_cells("Age" = age, "Gender" = gender,"Ethnicity" = ethnicity, "Ethnicity - clustered" = ethnicity_clustered, "Change in employment" = employment_change, "Pre-pandemic employment" = employment_prior_covid, "Keyworker status" = key_worker, "Depressive disorder diagnosis" = depressive_disorders, "Anxiety disorder diagnosis" = anxiety_disorders, "OCD diagnosis" = obsessive_compulsive_disorders, "Psychotic disorder diagnosis" = psychotic_disorders, "Bipolar disorder diagnosis" = bipolar_disorders,"Eating disorder diagnosis" = eating_disorders, "Personality disorder diagnosis" = personality_disorders, "PTSD diagnosis" = ptsd_disorders, "ASD diagnosis" = autism_disorders) %>% 
+    tab_cols(total(label = "N")) %>% 
+    tab_stat_cases(total_row_position = "none") %>% 
+    tab_pivot() %>% 
+    kable()
+
+ramp_table
 ```
 
 ## Descriptives of the relationship between class and predictors {.tabset}
@@ -405,7 +457,21 @@ tbl_cross(phq.AllData,
 
 ```
 
+```{r cross tabs ptsd phq}
 
+tbl_cross(phq.AllData, 
+          row=MostLikelyClass, col=ptsd_disorders,
+          percent = "row")
+
+```
+
+```{r cross tabs asd phq}
+
+tbl_cross(phq.AllData, 
+          row=MostLikelyClass, col=autism_disorders,
+          percent = "row")
+
+```
 
 ### GAD
 
@@ -525,6 +591,21 @@ tbl_cross(gad.AllData,
 
 ```
 
+```{r cross tabs ptsd gad}
+
+tbl_cross(gad.AllData, 
+          row=MostLikelyClass, col=ptsd_disorders,
+          percent = "row")
+
+```
+
+```{r cross tabs asd gad}
+
+tbl_cross(gad.AllData, 
+          row=MostLikelyClass, col=autism_disorders,
+          percent = "row")
+
+```
 
 
 ### MASQ
@@ -645,6 +726,118 @@ tbl_cross(masq.AllData,
 
 ```
 
+```{r cross tabs ptsd masq}
+
+tbl_cross(masq.AllData, 
+          row=MostLikelyClass, col=ptsd_disorders,
+          percent = "row")
+
+```
+
+```{r cross tabs asd masq}
+
+tbl_cross(masq.AllData, 
+          row=MostLikelyClass, col=autism_disorders,
+          percent = "row")
+
+```
+
+## check multicolinearity
+
+very large CI's on student/retired status. potential multicolinearity with age?
+
+```{r multicolinearity checks, eval = FALSE}
+
+xtabs(~ employment_prior_covid+age+MostLikelyClass, data = masq.AllData)
+xtabs(~ employment_prior_covid+age+MostLikelyClass, data = phq.AllData)
+xtabs(~ employment_prior_covid+age+MostLikelyClass, data = gad.AllData)
+
+cor(str(masq.AllData$age), masq.AllData$employment_prior_covid, method = "spearman")
+
+chisq.test(masq.AllData$age,masq.AllData$employment_prior_covid)
+chisq.test(masq.AllData$age,masq.AllData$employment_change)
+chisq.test(masq.AllData$age,masq.AllData$gender)
+
+chisq.test(phq.AllData$age,phq.AllData$employment_prior_covid)
+chisq.test(gad.AllData$age,gad.AllData$employment_prior_covid)
+
+```
+## recode employment variable
+```{r recode employment variable, eval = FALSE}
+
+phq.AllData <- phq.AllData %>%
+  mutate(employment_prior_covid = case_when(
+    employment_prior_covid == "Employed" ~ "Employed/Student/Retired",
+    employment_prior_covid == "Student" ~ "Employed/Student/Retired",
+    employment_prior_covid == "Retired" ~ "Employed/Student/Retired",
+    employment_prior_covid == "Unemployed" ~ "Unemployed",
+  ))
+
+phq.AllData$employment_prior_covid <- as.factor(phq.AllData$employment_prior_covid)
+
+gad.AllData <- gad.AllData %>%
+  mutate(employment_prior_covid = case_when(
+    employment_prior_covid == "Employed" ~ "Employed/Student/Retired",
+    employment_prior_covid == "Student" ~ "Employed/Student/Retired",
+    employment_prior_covid == "Retired" ~ "Employed/Student/Retired",
+    employment_prior_covid == "Unemployed" ~ "Unemployed",
+  ))
+
+masq.AllData <- masq.AllData %>%
+  mutate(employment_prior_covid = case_when(
+    employment_prior_covid == "Employed" ~ "Employed/Student/Retired",
+    employment_prior_covid == "Student" ~ "Employed/Student/Retired",
+    employment_prior_covid == "Retired" ~ "Employed/Student/Retired",
+    employment_prior_covid == "Unemployed" ~ "Unemployed",
+  ))
+
+          
+
+```
+
+## recode age variable
+```{r recode age variable}
+
+phq.AllData <- phq.AllData %>%
+  mutate(age = case_when(
+    age == "16-18" ~ "16-18",    
+    age == "19-25" ~ "19-25",    
+    age == "26-35" ~ "26-35",    
+    age == "36-45" ~ "36-45",    
+    age == "46-55" ~ "46-55",    
+    age == "56-65" ~ "56-65",
+    age == "66-70" ~ "66-70",
+    age == "71-75" ~ "71+",
+    age == "76+" ~ "71+"))
+
+gad.AllData <- gad.AllData %>%
+  mutate(age = case_when(
+    age == "16-18" ~ "16-18",    
+    age == "19-25" ~ "19-25",    
+    age == "26-35" ~ "26-35",    
+    age == "36-45" ~ "36-45",    
+    age == "46-55" ~ "46-55",    
+    age == "56-65" ~ "56-65",
+    age == "66-70" ~ "66-70",
+    age == "71-75" ~ "71+",
+    age == "76+" ~ "71+"))
+
+# masq.AllData <- masq.AllData %>%
+#   mutate(age = case_when(
+#     age == "16-18" ~ "16-18",    
+#     age == "19-25" ~ "19-25",    
+#     age == "26-35" ~ "26-35",    
+#     age == "36-45" ~ "36-45",    
+#     age == "46-55" ~ "46-55",    
+#     age == "56-65" ~ "56-65",
+#     age == "66-70" ~ "66-70",
+#     age == "71-75" ~ "71+",
+#     age == "76+" ~ "71+"))
+
+
+          
+
+```
 
 
 ## specify reference category for predictors
@@ -654,9 +847,11 @@ make age midpoint the reference for age, no change in employment the reference f
 ```{r relevel reference preedictors masq}
 
 # PHQ
-phq.AllData$age <- factor(phq.AllData$age,
-                                       levels=c("16-18","19-25","26-35","36-45","46-55","56-65","66-70","71-75","76+")) %>%
+phq.AllData$age <- factor(phq.AllData$age,                                       levels=c("16-18","19-25","26-35","36-45","46-55","56-65","66-70","71+")) %>%
   relevel(phq.AllData$age, ref = "26-35")
+#phq.AllData$age <- factor(phq.AllData$age,
+#levels=c("16-18","19-25","26-35","36-45","46-55","56-65","66-70","71-75", "76+")) %>%
+#  relevel(phq.AllData$age, ref = "26-35")
 
 phq.AllData$employment_change <- factor(phq.AllData$employment_change,
                                        levels=c("Decreased employment","Employment not changed","Furloughed","Increased employment")) %>%
@@ -696,12 +891,17 @@ phq.AllData$bipolar_disorders <- factor(phq.AllData$bipolar_disorders,
                                        levels=c("Bipolar disorder","No bipolar disorder")) %>%
   relevel(phq.AllData$bipolar_disorders, ref = "No bipolar disorder")
 
+phq.AllData$ptsd_disorders <- factor(phq.AllData$ptsd_disorders,
+                                       levels=c("PTSD","No PTSD")) %>%
+  relevel(phq.AllData$ptsd_disorders, ref = "No PTSD")
 
-
+phq.AllData$autism_disorders <- factor(phq.AllData$autism_disorders,
+                                       levels=c("Autism spectrum disorder","No autism spectrum disorder")) %>%
+  relevel(phq.AllData$autism_disorders, ref = "No autism spectrum disorder")
 
 # GAD
 gad.AllData$age <- factor(gad.AllData$age,
-                                       levels=c("16-18","19-25","26-35","36-45","46-55","56-65","66-70","71-75","76+")) %>%
+                                       levels=c("16-18","19-25","26-35","36-45","46-55","56-65","66-70","71+")) %>%
   relevel(gad.AllData$age, ref = "26-35")
 
 gad.AllData$employment_change <- factor(gad.AllData$employment_change,
@@ -742,12 +942,53 @@ gad.AllData$bipolar_disorders <- factor(gad.AllData$bipolar_disorders,
                                        levels=c("Bipolar disorder","No bipolar disorder")) %>%
   relevel(gad.AllData$bipolar_disorders, ref = "No bipolar disorder")
 
+gad.AllData$ptsd_disorders <- factor(gad.AllData$ptsd_disorders,
+                                       levels=c("PTSD","No PTSD")) %>%
+  relevel(gad.AllData$ptsd_disorders, ref = "No PTSD")
+
+gad.AllData$autism_disorders <- factor(gad.AllData$autism_disorders,
+                                       levels=c("Autism spectrum disorder","No autism spectrum disorder")) %>%
+  relevel(phq.AllData$autism_disorders, ref = "No autism spectrum disorder")
+```
+
+##### Recode MASQ age, gender and employment
+```{r recode MASQ - age and employment - drop NBSD gender}
+
+#masq.AllData <- masq.AllData %>%
+#  mutate(employment_prior_covid = case_when(
+#    employment_prior_covid == "Student" ~ "Employed/Student/Retired",
+#    employment_prior_covid == "Employed" ~ "Employed/Student/Retired",
+#    employment_prior_covid == "Retired" ~ "Employed/Student/Retired",
+#    employment_prior_covid == "Unemployed" ~ "Unemployed",
+
+#  ))
+#masq.AllData <- masq.AllData %>%
+#  mutate(gender = case_when(
+ #   gender == "Male" ~ "Male",
+#    gender == "Female" ~ "Female"
+  #))
+
+#masq.AllData$gender <- factor(masq.AllData$gender,
+#levels=c("Male","Female")) %>%
+#  relevel(masq.AllData$gender, ref = "Male")
+          
+masq.AllData <- masq.AllData %>%
+  mutate(age = case_when(
+    age == "16-18" ~ "16-18",    
+    age == "19-25" ~ "19-25",    
+    age == "26-35" ~ "26-35",    
+    age == "36-45" ~ "36-45",    
+    age == "46-55" ~ "46-55",    
+    age == "56-65" ~ "56-65",
+    age == "66-70" ~ "66-70",
+    age == "71-75" ~ "71+",
+    age == "76+" ~ "71+"))
+
 
 
 # MASQ
-masq.AllData$age <- factor(masq.AllData$age,
-                                       levels=c("16-18","19-25","26-35","36-45","46-55","56-65","66-70","71-75","76+")) %>%
-  relevel(masq.AllData$age, ref = "26-35")
+masq.AllData$age <- factor(masq.AllData$age,                                     levels=c("16-18","19-25","26-35","36-45","46-55","56-65","66-70","71+")) %>%
+  relevel(gad.AllData$age, ref = "26-35")
 
 masq.AllData$employment_change <- factor(masq.AllData$employment_change,
                                        levels=c("Decreased employment","Employment not changed","Furloughed","Increased employment")) %>%
@@ -788,6 +1029,13 @@ masq.AllData$bipolar_disorders <- factor(masq.AllData$bipolar_disorders,
   relevel(masq.AllData$bipolar_disorders, ref = "No bipolar disorder")
 
 
+masq.AllData$ptsd_disorders <- factor(masq.AllData$ptsd_disorders,
+                                       levels=c("PTSD","No PTSD")) %>%
+  relevel(masq.AllData$ptsd_disorders, ref = "No PTSD")
+
+masq.AllData$autism_disorders <- factor(masq.AllData$autism_disorders,
+                                       levels=c("Autism spectrum disorder","No autism spectrum disorder")) %>%
+  relevel(phq.AllData$autism_disorders, ref = "No autism spectrum disorder")
 
 ```
 
@@ -799,9 +1047,9 @@ the formulas will be the same for all disorders so create these once here
 
 ```{r multinomial formulas}
 
-formula_clustered <- "MostLikelyClass ~ age + gender + ethnicity_clustered + employment_prior_covid + employment_change +key_worker + anxiety_disorders + depressive_disorders + eating_disorders +obsessive_compulsive_disorders +psychotic_disorders + personality_disorders + bipolar_disorders"
+formula_clustered <- "MostLikelyClass ~ age + gender + ethnicity_clustered + employment_prior_covid + employment_change +key_worker + anxiety_disorders + depressive_disorders + eating_disorders +obsessive_compulsive_disorders +psychotic_disorders + personality_disorders + bipolar_disorders + ptsd_disorders + autism_disorders"
 
-formula <- "MostLikelyClass ~ age + gender + ethnicity + employment_prior_covid + employment_change +key_worker + anxiety_disorders + depressive_disorders + eating_disorders +obsessive_compulsive_disorders +psychotic_disorders + personality_disorders + bipolar_disorders"
+formula <- "MostLikelyClass ~ age + gender + ethnicity + employment_prior_covid + employment_change +key_worker + anxiety_disorders + depressive_disorders + eating_disorders +obsessive_compulsive_disorders +psychotic_disorders + personality_disorders + bipolar_disorders + ptsd_disorders + autism_disorders"
 ```
 
 
@@ -815,7 +1063,7 @@ will use the largest class group as reference
 
 BiggestClass.phq <- phq.AllData %>%
   group_by(MostLikelyClass) %>%
-  summarise(n=n()) %>%
+  dplyr::summarise(n=n()) %>%
   arrange(-n) %>%
   slice(1)%>%
   select(MostLikelyClass) %>%
@@ -832,6 +1080,7 @@ phq.AllData$MostLikelyClass <- factor(phq.AllData$MostLikelyClass,
                                        levels=c("1","2","3","4")) %>%
   relevel(phq.AllData$MostLikelyClass, ref = BiggestClass.phq)
 
+phq.AllData <- as.data.frame(phq.AllData)
 ```
 
 
@@ -844,14 +1093,7 @@ phq.model_clustered <- multinom(formula_clustered,
 
 ```
 
-##### Perform regression (ethnicity as is)
 
-```{r multinomial ethnicity as is phq}
-
-phq.model<- multinom(formula,
-                            data = phq.AllData)
-
-```
 #### View and process results
 
 1: coefficients
@@ -859,12 +1101,10 @@ phq.model<- multinom(formula,
 3: residual deviances & AIC
 ##### view summary: Ethnicity clustered
 ```{r view summary clustered phq}
-summary(phq.model_clustered)
-```
+#summary(phq.model_clustered)
 
-##### view summary: Ethnicity as is
-```{r view summary phq}
-summary(phq.model)
+phq_summary_table <- summary(phq.model_clustered)
+kable(t(as.data.frame(phq_summary_table$coefficients)), caption="Coefficients PHQ model - ethnicity clustered", digits = 2)
 ```
 
 ##### create z and p values
@@ -874,26 +1114,22 @@ make Z
 
 z_clustered.phq <- summary(phq.model_clustered)$coefficients/summary(phq.model_clustered)$standard.errors
   
-z_as.is.phq <- summary(phq.model)$coefficients/summary(phq.model)$standard.errors
+#z_as.is.phq <- summary(phq.model)$coefficients/summary(phq.model)$standard.errors
 ```
 
-print z clusted ethnicity model
+print z clustered ethnicity model
 ```{r print clustered z phq}
 
 z_clustered.phq
 ```
 
-print z ethnicity as is
-```{r z as is phq}
-z_as.is.phq
-```
 
 two tailed z test p values
 
 ```{r two tailed z t phq}
 
 p_clustered.phq <- (1 - pnorm(abs(z_clustered.phq), 0, 1)) * 2
-p_as.is.phq <- (1 - pnorm(abs(z_as.is.phq), 0, 1)) * 2
+#ßp_as.is.phq <- (1 - pnorm(abs(z_as.is.phq), 0, 1)) * 2
 
 ```
 
@@ -901,19 +1137,16 @@ show p for two tailed z test for ethnicity clustered model
 
 ```{r show two tailed p clustered phq}
 
-p_clustered.phq 
+#p_clustered.phq 
+
+kable(t(as.data.frame(p_clustered.phq )), caption="p-values PHQ model - ethnicity clustered",digits = 3)
 
 
-```
-
-
-show p for two tailed z test for ethnicity as is model
-
-```{r show two tailed p as is phq}
-
-p_as.is.phq 
 
 ```
+
+
+
 
 #### Relative risk
 
@@ -932,35 +1165,20 @@ exponentiate the model coefficient to obtain relative risk for all predictors. C
 
 relative_risk_clustered.phq <- data.frame(exp(coef(phq.model_clustered))) %>%
   rownames_to_column() %>%
-  rename(class = "rowname",
+  dplyr::rename(class = "rowname",
     intercept = "X.Intercept.") %>%
   pivot_longer(!class) %>%
-  rename(predictor = name,
+  dplyr::rename(predictor = name,
          RelativeRisk = value) 
 
 
-relative_risk_clustered.phq$predictor <- gsub("76.","76+",relative_risk_clustered.phq$predictor)
+relative_risk_clustered.phq$predictor <- gsub("71.","71+",relative_risk_clustered.phq$predictor)
 
 
 relative_risk_clustered.phq 
 ```
 
-##### ethnicity
-```{r relative risk  phq}
 
-relative_risk_as.is.phq <-data.frame(exp(coef(phq.model))) %>%
-  rownames_to_column() %>%
-  rename(class = "rowname",
-    intercept = "X.Intercept.") %>%
-  pivot_longer(!class) %>%
-  rename(predictor = name,
-         RelativeRisk = value)
-
-
-relative_risk_as.is.phq$predictor <- gsub("76.","76+",relative_risk_as.is.phq$predictor)
-
-head(relative_risk_as.is.phq)
-```
 #### confidence intervals (rr scale)
 
 The confint package has a specific method that is run for multinom objects (see methods(confint)) Obtain the exponent of upper and lower to get relative risk version
@@ -994,34 +1212,40 @@ CI_clustered.phq$predictor <- gsub("\\(Intercept\\)","intercept",CI_clustered.ph
 
   
 
-head(CI_clustered.phq)
+CI_clustered.phq
 ```
 
-ethnicity as is
-```{r confidence intervals for the coefficients convert to relative risk phq }
 
-CI_as.is.phq<- data.frame(exp(confint(phq.model,level=0.95))) %>%
-  rownames_to_column()
+### output table
 
-names(CI_as.is.phq) <-  c("predictor",
-                              "1_lower","1_upper",
-                              "3_lower","3_upper",
-                              "4_lower","4_upper"
-                              )
+```{r phq stats table}
 
-CI_as.is.phq <- CI_as.is.phq %>%
-  pivot_longer(!predictor) %>%
-  separate(name, c("class","CI")) %>%
-  pivot_wider(names_from = CI,
-              values_from= value)
+phq.coeff <- format(round(t(as.data.frame(phq_summary_table$coefficients)), 2), nsmall = 2)
+phq.p <- format(round(t(as.data.frame(p_clustered.phq)), 3), nsmall = 3)
+phq.p <- sub('^(-)?0[.]', '\\1.', phq.p)
+    
+relative_risk_clustered.phq$RelativeRisk2 <- format(round(relative_risk_clustered.phq$RelativeRisk, 2), nsmall = 2)
+phq.rrr <- pivot_wider(relative_risk_clustered.phq[,c("class","predictor","RelativeRisk2")], names_from = class, values_from = RelativeRisk2)
+CI_clustered.phq$CI <- paste0(format(round(CI_clustered.phq$lower, 2),nsmall = 2),", ", format(round(as.numeric(CI_clustered.phq$upper), 2),nsmall = 2))
+phq.ci <- pivot_wider(CI_clustered.phq[,c("predictor","class","CI")], names_from = class, values_from = CI)
 
-CI_as.is.phq$predictor <- gsub("-",".",CI_as.is.phq$predictor)
-CI_as.is.phq$predictor <- gsub(" ",".",CI_as.is.phq$predictor)
-CI_as.is.phq$predictor <- gsub("/",".",CI_as.is.phq$predictor)
-CI_as.is.phq$predictor <- gsub("\\(Intercept\\)","intercept",CI_as.is.phq$predictor)
+phq_class1_table <- cbind(phq.coeff[,1],phq.p[,1],phq.rrr[,2],phq.ci[,2])
+colnames(phq_class1_table) <- c("B","p","RRR", "95% CI")
 
-head(CI_as.is.phq)
+phq_class3_table <- cbind(phq.coeff[,2],phq.p[,2],phq.rrr[,3],phq.ci[,3])
+colnames(phq_class3_table) <- c("B","p","RRR", "95% CI")
+
+phq_class4_table <- cbind(phq.coeff[,3],phq.p[,3],phq.rrr[,4],phq.ci[,4])
+colnames(phq_class4_table) <- c("B","p","RRR", "95% CI")
+
+phq_stats_table <- cbind(phq_class1_table,phq_class3_table,phq_class4_table)
+
+phq_stats_table <- phq_stats_table %>% rownames_to_column(var = "predictor")
+
+writexl::write_xlsx(phq_stats_table,"../../output/phq_table.xlsx")
+
 ```
+
 
 ## forest plots of relative risk {.tabset}
 
@@ -1035,9 +1259,18 @@ plot_phq_clustered_dat <- full_join(relative_risk_clustered.phq,
                                      CI_clustered.phq,
                                      by=c("class","predictor")) 
 
-plot_phq_as.is_dat <- full_join(relative_risk_as.is.phq,
-                                     CI_as.is.phq,
-                                     by=c("class","predictor"))
+#plot_phq_as.is_dat <- full_join(relative_risk_as.is.phq,
+#                                     CI_as.is.phq,
+#                                     by=c("class","predictor"))
+
+phq_pvals <- rownames_to_column(as.data.frame(t(p_clustered.phq)),"predictor")
+
+phq_pvals2 <- pivot_longer(phq_pvals,c("1":"4"),names_to = "class") 
+
+
+table_phq_clustered_dat <- full_join(plot_phq_clustered_dat,
+                                     phq_pvals2,
+                                     by=c("class","predictor")) 
 
 ```
 
@@ -1060,7 +1293,8 @@ plot_phq_clustered_dat <-
                               grepl("psychotic_disorders",predictor) ~ "Pre-existing mental health diagnosis",
                               grepl("personality_disorders",predictor) ~ "Pre-existing mental health diagnosis",
                               grepl("bipolar_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              
+                              grepl("ptsd_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+                              grepl("autism_disorders",predictor) ~ "Pre-existing mental health diagnosis",                              
                               grepl("intercept",predictor) ~ "Intercept"
                               ),
          
@@ -1077,64 +1311,129 @@ plot_phq_clustered_dat <-
                                grepl("psychotic_disorders",predictor) ~ gsub("psychotic_disorders","",predictor),
                                grepl("personality_disorders",predictor) ~ gsub("personality_disorders","",predictor),
                                grepl("bipolar_disorders",predictor) ~ gsub("bipolar_disorders","",predictor),
+                               grepl("ptsd_disorders",predictor) ~ gsub("ptsd_disorders","",predictor),
+                               grepl("autism_disorders",predictor) ~ gsub("autism_disorders","",predictor),
                                grepl("intercept",predictor) ~ "intercept")
                                ) 
          
 
-plot_phq_as.is_dat$category <-plot_phq_as.is_dat$predictor
+#plot_phq_as.is_dat$category <-plot_phq_as.is_dat$predictor
 
-plot_phq_as.is_dat <-
-plot_phq_as.is_dat %>%
-  mutate(category = case_when(grepl("age",predictor) ~ "Age",
-                              grepl("gender",predictor) ~ "Gender",
-                              grepl("ethnicity",predictor) ~ "Ethnicity",
-                              grepl("employment_prior_covid",predictor) ~ "Employment before covid",
-                              grepl("employment_change",predictor) ~ "Change in employment due to covid",
-                              grepl("key_worker",predictor) ~ "Key worker status",
-                              grepl("anxiety_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("depressive_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("eating_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("obsessive_compulsive_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("psychotic_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("personality_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("bipolar_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("intercept",predictor) ~ "Intercept"
-                              ),
-         
-         predictor = case_when(grepl("age",predictor) ~ gsub("age","",predictor),
-                               grepl("gender",predictor) ~ gsub("gender","",predictor),
-                               grepl("ethnicity",predictor) ~ gsub("ethnicity_clustered","",predictor),
-                               grepl("employment_prior_covid",predictor) ~ gsub("employment_prior_covid","",predictor),
-                               grepl("employment_change",predictor) ~ gsub("employment_change","",predictor),
-                               grepl("key_worker",predictor) ~ gsub("key_worker","",predictor),
-                               grepl("anxiety_disorders",predictor) ~ gsub("anxiety_disorders","",predictor),
-                               grepl("depressive_disorders",predictor) ~ gsub("depressive_disorders","",predictor),
-                               grepl("eating_disorders",predictor) ~ gsub("eating_disorders","",predictor),
-                               grepl("obsessive_compulsive_disorders",predictor) ~ gsub("obsessive_compulsive_disorders","",predictor),
-                               grepl("psychotic_disorders",predictor) ~ gsub("psychotic_disorders","",predictor),
-                               grepl("personality_disorders",predictor) ~ gsub("personality_disorders","",predictor),
-                               grepl("bipolar_disorders",predictor) ~ gsub("bipolar_disorders","",predictor),
-                               grepl("intercept",predictor) ~ "intercept")
-                               )
-         
+#plot_phq_as.is_dat <-
+#plot_phq_as.is_dat %>%
+  # mutate(category = case_when(grepl("age",predictor) ~ "Age",
+  #                             grepl("gender",predictor) ~ "Gender",
+  #                             grepl("ethnicity",predictor) ~ "Ethnicity",
+  #                             grepl("employment_prior_covid",predictor) ~ "Employment before covid",
+  #                             grepl("employment_change",predictor) ~ "Change in employment due to covid",
+  #                             grepl("key_worker",predictor) ~ "Key worker status",
+  #                             grepl("anxiety_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+  #                             grepl("depressive_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+  #                             grepl("eating_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+  #                             grepl("obsessive_compulsive_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+  #                             grepl("psychotic_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+  #                             grepl("personality_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+  #                             grepl("bipolar_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+  #                             grepl("ptsd_disorders",predictor) ~ gsub("ptsd_disorders","",predictor),
+  #                              grepl("autism_disorders",predictor) ~ gsub("autism_disorders","",predictor),
+  #                             grepl("intercept",predictor) ~ "Intercept"
+  #                             ),
+  #        
+  #        predictor = case_when(grepl("age",predictor) ~ gsub("age","",predictor),
+  #                              grepl("gender",predictor) ~ gsub("gender","",predictor),
+  #                              grepl("ethnicity",predictor) ~ gsub("ethnicity_clustered","",predictor),
+  #                              grepl("employment_prior_covid",predictor) ~ gsub("employment_prior_covid","",predictor),
+  #                              grepl("employment_change",predictor) ~ gsub("employment_change","",predictor),
+  #                              grepl("key_worker",predictor) ~ gsub("key_worker","",predictor),
+  #                              grepl("anxiety_disorders",predictor) ~ gsub("anxiety_disorders","",predictor),
+  #                              grepl("depressive_disorders",predictor) ~ gsub("depressive_disorders","",predictor),
+  #                              grepl("eating_disorders",predictor) ~ gsub("eating_disorders","",predictor),
+  #                              grepl("obsessive_compulsive_disorders",predictor) ~ gsub("obsessive_compulsive_disorders","",predictor),
+  #                              grepl("psychotic_disorders",predictor) ~ gsub("psychotic_disorders","",predictor),
+  #                              grepl("personality_disorders",predictor) ~ gsub("personality_disorders","",predictor),
+  #                              grepl("bipolar_disorders",predictor) ~ gsub("bipolar_disorders","",predictor),
+  #                              grepl("ptsd_disorders",predictor) ~ gsub("ptsd_disorders","",predictor),
+  #                              grepl("autism_disorders",predictor) ~ gsub("autism_disorders","",predictor),
+  #                              grepl("intercept",predictor) ~ "intercept")
+  #                              )
+  #        
 
 ```
 
 sort variables so categories are together
 ```{r phq sort by categroy}
 
+temp <- plot_phq_clustered_dat
+plot_phq_clustered_dat <- temp
+
+#temp2 <- temp %>%
+#  filter(predictor == "Autism.spectrum.disorder")
+
 plot_phq_clustered_dat$category <- factor(plot_phq_clustered_dat$category,
                                        levels=c("Intercept","Gender","Ethnicity","Age","Employment before covid","Change in employment due to covid","Key worker status","Pre-existing mental health diagnosis"))
 
 plot_phq_clustered_dat$predictor <- fct_reorder2(plot_phq_clustered_dat$predictor, plot_phq_clustered_dat$class,  plot_phq_clustered_dat$category)
 
+plot_phq_clustered_dat$RelativeRisk <- round(plot_phq_clustered_dat$RelativeRisk, digits=1)
+plot_phq_clustered_dat$lower <- round(plot_phq_clustered_dat$lower, digits=1)
+plot_phq_clustered_dat$upper <- round(plot_phq_clustered_dat$upper, digits=1)
 
 
+plot_phq_clustered_dat <- plot_phq_clustered_dat %>%
+  mutate(class = case_when(
+  class == "1" ~ "Class 1 (vs. Class 2)",
+  class == "3" ~ "Class 3 (vs. Class 2)",
+  class == "4" ~ "Class 4 (vs. Class 2)"))
 
-plot_phq_as.is_dat$category <- factor(plot_phq_as.is_dat$category,
-                                       levels=c("Intercept","Gender","Ethnicity","Age","Employment before covid","Change in employment due to covid","Key worker status","Pre-existing mental health diagnosis"))
+plot_phq_clustered_dat <- plot_phq_clustered_dat %>%
+  mutate(category = case_when(
+  category == "Intercept" ~ "Intercept",
+  category == "Gender" ~ "Gender (vs. male)",
+  category == "Ethnicity" ~ "Ethnicity (vs. white)",
+  category == "Age" ~ "Age (vs. 26-35y)",
+  category == "Employment before covid" ~ "Employment status (vs. employed*)",
+  category == "Change in employment due to covid" ~ "Employment change (vs. no change)",
+  category == "Key worker status" ~ "Key worker status (vs. not a key worker)",
+  category == "Pre-existing mental health diagnosis" ~ "Pre-existing mental health diagnosis"))
 
-plot_phq_as.is_dat$predictor <- fct_reorder2(plot_phq_as.is_dat$predictor, plot_phq_as.is_dat$class,  plot_phq_as.is_dat$category)
+
+plot_phq_clustered_dat$category <- factor(plot_phq_clustered_dat$category, levels=c("Intercept", "Age (vs. 26-35y)", "Gender (vs. male)", "Ethnicity (vs. white)", "Employment status (vs. employed*)", "Employment change (vs. no change)", "Key worker status (vs. not a key worker)", "Pre-existing mental health diagnosis")) 
+
+plot_phq_clustered_dat <- plot_phq_clustered_dat %>%
+  mutate(predictor = case_when(
+  predictor == "intercept" ~ "Intercept",
+  predictor == "16.18" ~ "16-18y",
+  predictor == "19.25" ~ "19-25y",
+  predictor == "36.45" ~ "36-45y",
+  predictor == "46.55" ~ "46-55y",
+  predictor == "56.65" ~ "56-65y",
+  predictor == "66.70" ~ "66-70y",
+  predictor == "71+" ~ "71+y",
+  predictor == "Female" ~ "Female",
+  predictor == "Non.binary.Prefer.to.self.define" ~ "Non-binary/Prefer to self define",
+  predictor == "Minoritised.ethnic.community" ~ "Minoritised ethnic community",
+  predictor == "Unemployed" ~ "Unemployed",
+  predictor == "Retired" ~ "Retired",
+  predictor == "Student" ~ "Student",
+  predictor == "Decreased.employment" ~ "Decreased employment",
+  predictor == "Furloughed" ~ "Furloughed",
+  predictor == "Increased.employment" ~ "Increased employment",
+  predictor == "Government.defined.key.worker" ~ "Key worker",
+  predictor == "Anxiety.disorder" ~ "Anxiety disorder",
+  predictor == "Depressive.disorder" ~ "Depressive disorder",
+  predictor == "Eating.disorder" ~ "Eating disorder",
+  predictor == "Obsessive.compulsive.disorder" ~ "OCRD",
+  predictor == "Psychotic.disorder" ~ "Psychotic disorder",
+  predictor == "Personality.disorder" ~ "Personality disorder",
+  predictor == "Bipolar.disorder" ~ "Bipolar disorder",
+  predictor == "PTSD" ~ "PTSD",
+  predictor == "Autism.spectrum.disorder" ~ "ASD"
+))
+
+
+plot_phq_clustered_dat$predictor <-
+  factor(plot_phq_clustered_dat$predictor, levels = rev(c("Intercept", "16-18y", "19-25y", "36-45y", "46-55y", "56-65y", "66-70y", "71+y", "Female", "Non-binary/Prefer to self define", "Minoritised ethnic community", "Unemployed","Retired","Student", "Decreased employment", "Furloughed", "Increased employment", "Key worker", "Anxiety disorder", "Depressive disorder", "Eating disorder", "OCRD", "Psychotic disorder",  "Personality disorder", "Bipolar disorder", "PTSD", "ASD")))
+
 
 
 
@@ -1144,47 +1443,39 @@ plot_phq_as.is_dat$predictor <- fct_reorder2(plot_phq_as.is_dat$predictor, plot_
 
 Note: smaller category error bars extend beyond a reasonable axis. Wil need fixing for publication.
 ```{r forest rr phq}
+files.sources = paste0("../functions/",list.files("../functions"))
+sapply(files.sources, source)
 
 phq_eth_clustered_forest <-relrisk.forest(plot_phq_clustered_dat,
-plot_title="Relative risk (95% CI) of class membership: depression",
-sub_title="ethnicity clustered",
-lowlim = 0.001,
-uplim = 10)
+plot_title="PHQ-9",
+sub_title="",
+lowlim = -1,
+uplim = 35)
 
+phq_eth_clustered_forest <- phq_eth_clustered_forest +
+  ylab("RRR (95% CI)") +
+  labs(colour = "Category")
 
 phq_eth_clustered_forest
-
 ```
 
-#### forest plot ethnicity as is
 
-Note: smaller category error bars extend beyond a reasonable axis. Wil need fixing for publication.
-```{r forest rr phq eth as is}
-
-phq_eth_as.is_forest <- relrisk.forest(plot_phq_as.is_dat,
-plot_title="Relative risk (95% CI) of class membership: depression",
-sub_title="ethnicity as is",
-lowlim = 0.001,
-uplim = 10)
-
-phq_eth_as.is_forest
-
-```
 #### save plots
 
 ```{r save forest plots phq}
 
 ggsave(
-  filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/PHQ/depression_RelativeRisk_forestPlot_ethnicityClustered.png"),
+  filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/PHQ/depression_RelativeRisk_forestPlot_ethnicityClustered2.png"),
   plot=phq_eth_clustered_forest, 
-  width = 18, height = 10, dpi = 150, units = "in")
+  width = 12, height = 5, dpi = 600, units = "in")
 
-ggsave(
-  filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/PHQ/depression_RelativeRisk_forestPlot.png"),
-  plot=phq_eth_as.is_forest, 
-  width = 18, height = 10, dpi = 150, units = "in")
+#ggsave(
+#  filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/PHQ/depression_RelativeRisk_forestPlot.png"),
+#  plot=phq_eth_as.is_forest, 
+#  width = 18, height = 10, dpi = 150, units = "in")
 
 ```
+
 
 ### GAD {.tabset}
 #### prepare and run models
@@ -1196,7 +1487,7 @@ will use the largest class group as reference
 
 BiggestClass.gad <- gad.AllData %>%
   group_by(MostLikelyClass) %>%
-  summarise(n=n()) %>%
+  dplyr::summarise(n=n()) %>%
   arrange(-n) %>%
   slice(1)%>%
   select(MostLikelyClass) %>%
@@ -1225,14 +1516,6 @@ gad.model_clustered <- multinom(formula_clustered,
 
 ```
 
-##### Perform regression (ethnicity as is)
-
-```{r multinomial ethnicity as is gad}
-
-gad.model<- multinom(formula,
-                            data = gad.AllData)
-
-```
 #### View and process results
 
 1: coefficients
@@ -1240,12 +1523,10 @@ gad.model<- multinom(formula,
 3: residual deviances & AIC
 ##### view summary: Ethnicity clustered
 ```{r view summary clustered gad}
-summary(gad.model_clustered)
-```
+#summary(gad.model_clustered)
 
-##### view summary: Ethnicity as is
-```{r view summary gad}
-summary(gad.model)
+gad_summary_table <- summary(gad.model_clustered)
+kable(t(as.data.frame(gad_summary_table$coefficients)), caption="Coefficients GAD model - ethnicity clustered", digits = 2)
 ```
 
 ##### create z and p values
@@ -1255,7 +1536,7 @@ make Z
 
 z_clustered.gad <- summary(gad.model_clustered)$coefficients/summary(gad.model_clustered)$standard.errors
   
-z_as.is.gad <- summary(gad.model)$coefficients/summary(gad.model)$standard.errors
+#z_as.is.gad <- summary(gad.model)$coefficients/summary(gad.model)$standard.errors
 ```
 
 print z clusted ethnicity model
@@ -1264,17 +1545,13 @@ print z clusted ethnicity model
 z_clustered.gad
 ```
 
-print z ethnicity as is
-```{r z as is gad}
-z_as.is.gad
-```
 
 two tailed z test p values
 
 ```{r two tailed z t gad}
 
 p_clustered.gad <- (1 - pnorm(abs(z_clustered.gad), 0, 1)) * 2
-p_as.is.gad <- (1 - pnorm(abs(z_as.is.gad), 0, 1)) * 2
+#p_as.is.gad <- (1 - pnorm(abs(z_as.is.gad), 0, 1)) * 2
 
 ```
 
@@ -1282,19 +1559,15 @@ show p for two tailed z test for ethnicity clustered model
 
 ```{r show two tailed p clustered gad}
 
-p_clustered.gad 
+#p_clustered.gad 
+
+kable(t(as.data.frame(p_clustered.gad )), caption="p-values GAD model - ethnicity clustered", digits = 3)
 
 
 ```
 
 
-show p for two tailed z test for ethnicity as is model
 
-```{r show two tailed p as is gad}
-
-p_as.is.gad 
-
-```
 
 #### Relative risk
 
@@ -1313,35 +1586,20 @@ exponentiate the model coefficient to obtain relative risk for all predictors. C
 
 relative_risk_clustered.gad <- data.frame(exp(coef(gad.model_clustered))) %>%
   rownames_to_column() %>%
-  rename(class = "rowname",
+  dplyr::rename(class = "rowname",
     intercept = "X.Intercept.") %>%
   pivot_longer(!class) %>%
-  rename(predictor = name,
+  dplyr::rename(predictor = name,
          RelativeRisk = value) 
 
 
-relative_risk_clustered.gad$predictor <- gsub("76.","76+",relative_risk_clustered.gad$predictor)
+relative_risk_clustered.gad$predictor <- gsub("71.","71+",relative_risk_clustered.gad$predictor)
 
 
 relative_risk_clustered.gad 
 ```
 
-##### ethnicity
-```{r relative risk  gad}
 
-relative_risk_as.is.gad <-data.frame(exp(coef(gad.model))) %>%
-  rownames_to_column() %>%
-  rename(class = "rowname",
-    intercept = "X.Intercept.") %>%
-  pivot_longer(!class) %>%
-  rename(predictor = name,
-         RelativeRisk = value)
-
-
-relative_risk_as.is.gad$predictor <- gsub("76.","76+",relative_risk_as.is.gad$predictor)
-
-head(relative_risk_as.is.gad)
-```
 #### confidence intervals (rr scale)
 
 The confint package has a specific method that is run for multinom objects (see methods(confint)) Obtain the exponent of upper and lower to get relative risk version
@@ -1375,33 +1633,40 @@ CI_clustered.gad$predictor <- gsub("\\(Intercept\\)","intercept",CI_clustered.ga
 
   
 
-head(CI_clustered.gad)
+CI_clustered.gad
 ```
 
-ethnicity as is
-```{r confidence intervals for the coefficients convert to relative risk gad }
 
-CI_as.is.gad<- data.frame(exp(confint(gad.model,level=0.95))) %>%
-  rownames_to_column()
 
-names(CI_as.is.gad) <-  c("predictor",
-                              "2_lower","2_upper",
-                              "3_lower","3_upper",
-                              "4_lower","4_upper"
-                              )
+### output table
 
-CI_as.is.gad <- CI_as.is.gad %>%
-  pivot_longer(!predictor) %>%
-  separate(name, c("class","CI")) %>%
-  pivot_wider(names_from = CI,
-              values_from= value)
+```{r gad stats table}
 
-CI_as.is.gad$predictor <- gsub("-",".",CI_as.is.gad$predictor)
-CI_as.is.gad$predictor <- gsub(" ",".",CI_as.is.gad$predictor)
-CI_as.is.gad$predictor <- gsub("/",".",CI_as.is.gad$predictor)
-CI_as.is.gad$predictor <- gsub("\\(Intercept\\)","intercept",CI_as.is.gad$predictor)
+gad.coeff <- format(round(t(as.data.frame(gad_summary_table$coefficients)), 2), nsmall = 2)
+gad.p <- format(round(t(as.data.frame(p_clustered.gad)), 3), nsmall = 3)
+gad.p <- sub('^(-)?0[.]', '\\1.', gad.p)
+    
+relative_risk_clustered.gad$RelativeRisk2 <- format(round(relative_risk_clustered.gad$RelativeRisk, 2), nsmall = 2)
+gad.rrr <- pivot_wider(relative_risk_clustered.gad[,c("class","predictor","RelativeRisk2")], names_from = class, values_from = RelativeRisk2)
 
-head(CI_as.is.gad)
+CI_clustered.gad$CI <- paste0(format(round(CI_clustered.gad$lower, 2),nsmall = 2),", ", format(round(CI_clustered.gad$upper, 2),nsmall = 2))
+gad.ci <- pivot_wider(CI_clustered.gad[,c("predictor","class","CI")], names_from = class, values_from = CI)
+
+gad_class1_table <- cbind(gad.coeff[,1],gad.p[,1],gad.rrr[,2],gad.ci[,2])
+colnames(gad_class1_table) <- c("B","p","RRR", "95% CI")
+
+gad_class3_table <- cbind(gad.coeff[,2],gad.p[,2],gad.rrr[,3],gad.ci[,3])
+colnames(gad_class3_table) <- c("B","p","RRR", "95% CI")
+
+gad_class4_table <- cbind(gad.coeff[,3],gad.p[,3],gad.rrr[,4],gad.ci[,4])
+colnames(gad_class4_table) <- c("B","p","RRR", "95% CI")
+
+gad_stats_table <- cbind(gad_class1_table,gad_class3_table,gad_class4_table)
+
+gad_stats_table <- gad_stats_table %>% rownames_to_column(var = "predictor")
+
+writexl::write_xlsx(gad_stats_table,"../../output/gad_table.xlsx")
+
 ```
 
 ## forest plots of relative risk {.tabset}
@@ -1416,9 +1681,9 @@ plot_gad_clustered_dat <- full_join(relative_risk_clustered.gad,
                                      CI_clustered.gad,
                                      by=c("class","predictor")) 
 
-plot_gad_as.is_dat <- full_join(relative_risk_as.is.gad,
-                                     CI_as.is.gad,
-                                     by=c("class","predictor"))
+#plot_gad_as.is_dat <- full_join(relative_risk_as.is.gad,
+ #                                    CI_as.is.gad,
+  #                                   by=c("class","predictor"))
 
 ```
 
@@ -1441,6 +1706,9 @@ plot_gad_clustered_dat <-
                               grepl("psychotic_disorders",predictor) ~ "Pre-existing mental health diagnosis",
                               grepl("personality_disorders",predictor) ~ "Pre-existing mental health diagnosis",
                               grepl("bipolar_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+                               grepl("ptsd_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+                              grepl("autism_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+                               
                           
                               grepl("intercept",predictor) ~ "Intercept"
                               ),
@@ -1458,51 +1726,59 @@ plot_gad_clustered_dat <-
                                grepl("psychotic_disorders",predictor) ~ gsub("psychotic_disorders","",predictor),
                                grepl("personality_disorders",predictor) ~ gsub("personality_disorders","",predictor),
                                grepl("bipolar_disorders",predictor) ~ gsub("bipolar_disorders","",predictor),
+                               grepl("ptsd_disorders",predictor) ~ gsub("ptsd_disorders","",predictor),
+                               grepl("autism_disorders",predictor) ~ gsub("autism_disorders","",predictor),
                                grepl("intercept",predictor) ~ "intercept")
                                ) 
          
 
-plot_gad_as.is_dat$category <-plot_gad_as.is_dat$predictor
 
-plot_gad_as.is_dat <-
-plot_gad_as.is_dat %>%
-  mutate(category = case_when(grepl("age",predictor) ~ "Age",
-                              grepl("gender",predictor) ~ "Gender",
-                              grepl("ethnicity",predictor) ~ "Ethnicity",
-                              grepl("employment_prior_covid",predictor) ~ "Employment before covid",
-                              grepl("employment_change",predictor) ~ "Change in employment due to covid",
-                              grepl("key_worker",predictor) ~ "Key worker status",
-                              grepl("anxiety_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("depressive_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("eating_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("obsessive_compulsive_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("psychotic_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("personality_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("bipolar_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                               grepl("intercept",predictor) ~ "Intercept"
-                              ),
+#plot_gad_as.is_dat$category <-plot_gad_as.is_dat$predictor
+#plot_gad_as.is_dat <-
+#plot_gad_as.is_dat %>%
+ # mutate(category = case_when(grepl("age",predictor) ~ "Age",
+  #                            grepl("gender",predictor) ~ "Gender",
+  #                            grepl("ethnicity",predictor) ~ "Ethnicity",
+  #                            grepl("employment_prior_covid",predictor) ~ "Employment before covid",
+  #                            grepl("employment_change",predictor) ~ "Change in employment due to covid",
+   #                           grepl("key_worker",predictor) ~ "Key worker status",
+    #                          grepl("anxiety_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+     #                         grepl("depressive_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+      #                        grepl("eating_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+       #                       grepl("obsessive_compulsive_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+        #                      grepl("psychotic_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+         #                     grepl("personality_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+          #                    grepl("bipolar_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+           #                   grepl("ptsd_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+            #                  grepl("autism_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+             #                  grepl("intercept",predictor) ~ "Intercept"
+              #                ),
          
-         predictor = case_when(grepl("age",predictor) ~ gsub("age","",predictor),
-                               grepl("gender",predictor) ~ gsub("gender","",predictor),
-                               grepl("ethnicity",predictor) ~ gsub("ethnicity_clustered","",predictor),
-                               grepl("employment_prior_covid",predictor) ~ gsub("employment_prior_covid","",predictor),
-                               grepl("employment_change",predictor) ~ gsub("employment_change","",predictor),
-                               grepl("key_worker",predictor) ~ gsub("key_worker","",predictor),
-                               grepl("anxiety_disorders",predictor) ~ gsub("anxiety_disorders","",predictor),
-                               grepl("depressive_disorders",predictor) ~ gsub("depressive_disorders","",predictor),
-                               grepl("eating_disorders",predictor) ~ gsub("eating_disorders","",predictor),
-                               grepl("obsessive_compulsive_disorders",predictor) ~ gsub("obsessive_compulsive_disorders","",predictor),
-                               grepl("psychotic_disorders",predictor) ~ gsub("psychotic_disorders","",predictor),
-                               grepl("personality_disorders",predictor) ~ gsub("personality_disorders","",predictor),
-                               grepl("bipolar_disorders",predictor) ~  gsub("mental_health_controls","",predictor),
-                               grepl("intercept",predictor) ~ "intercept")
-                               )
+         #predictor = case_when(grepl("age",predictor) ~ gsub("age","",predictor),
+          #                     grepl("gender",predictor) ~ gsub("gender","",predictor),
+           #                    grepl("ethnicity",predictor) ~ gsub("ethnicity_clustered","",predictor),
+            #                   grepl("employment_prior_covid",predictor) ~ gsub("employment_prior_covid","",predictor),
+             #                  grepl("employment_change",predictor) ~ gsub("employment_change","",predictor),
+              #                 grepl("key_worker",predictor) ~ gsub("key_worker","",predictor),
+               #                grepl("anxiety_disorders",predictor) ~ gsub("anxiety_disorders","",predictor),
+                #               grepl("depressive_disorders",predictor) ~ gsub("depressive_disorders","",predictor),
+                 #              grepl("eating_disorders",predictor) ~ gsub("eating_disorders","",predictor),
+                  #             grepl("obsessive_compulsive_disorders",predictor) ~ gsub("obsessive_compulsive_disorders","",predictor),
+                   #            grepl("psychotic_disorders",predictor) ~ gsub("psychotic_disorders","",predictor),
+                    #           grepl("personality_disorders",predictor) ~ gsub("personality_disorders","",predictor),
+                     #          grepl("bipolar_disorders",predictor) ~  gsub("mental_health_controls","",predictor),
+                      #          grepl("ptsd_disorders",predictor) ~  gsub("mental_health_controls","",predictor),
+                       #         grepl("autism_disorders",predictor) ~  gsub("mental_health_controls","",predictor),
+                        #       grepl("intercept",predictor) ~ "intercept")
+                         #      )
          
 
 ```
 
 sort variables so categories are together
 ```{r gad sort by categroy}
+temp2 <- plot_gad_clustered_dat
+plot_gad_clustered_dat <- temp2
 
 plot_gad_clustered_dat$category <- factor(plot_gad_clustered_dat$category,
                                        levels=c("Intercept","Gender","Ethnicity","Age","Employment before covid","Change in employment due to covid","Key worker status","Pre-existing mental health diagnosis"))
@@ -1510,16 +1786,68 @@ plot_gad_clustered_dat$category <- factor(plot_gad_clustered_dat$category,
 plot_gad_clustered_dat$predictor <- fct_reorder2(plot_gad_clustered_dat$predictor, plot_gad_clustered_dat$class,  plot_gad_clustered_dat$category)
 
 
+plot_gad_clustered_dat$RelativeRisk <- round(plot_gad_clustered_dat$RelativeRisk, digits=1)
+plot_gad_clustered_dat$lower <- round(plot_gad_clustered_dat$lower, digits=1)
+plot_gad_clustered_dat$upper <- round(plot_gad_clustered_dat$upper, digits=1)
+
+plot_gad_clustered_dat <- plot_gad_clustered_dat %>%
+  mutate(class = case_when(
+  class == "2" ~ "Class 2 (vs. Class 1)",
+  class == "3" ~ "Class 3 (vs. Class 1)",
+  class == "4" ~ "Class 4 (vs. Class 1)"))
+
+plot_gad_clustered_dat <- plot_gad_clustered_dat %>%
+  mutate(category = case_when(
+  category == "Intercept" ~ "Intercept",
+  category == "Gender" ~ "Gender (vs. male)",
+  category == "Ethnicity" ~ "Ethnicity (vs. white)",
+  category == "Age" ~ "Age (vs. 26-35y)",
+  category == "Employment before covid" ~ "Employment status (vs. employed)",
+  category == "Change in employment due to covid" ~ "Employment change (vs. no change)",
+  category == "Key worker status" ~ "Key worker status (vs. not a key worker)",
+  category == "Pre-existing mental health diagnosis" ~ "Pre-existing mental health diagnosis"))
 
 
-plot_gad_as.is_dat$category <- factor(plot_gad_as.is_dat$category,
-                                       levels=c("Intercept","Gender","Ethnicity","Age","Employment before covid","Change in employment due to covid","Key worker status","Pre-existing mental health diagnosis"))
+plot_gad_clustered_dat$category <- factor(plot_gad_clustered_dat$category, levels=c("Intercept", "Age (vs. 26-35y)", "Gender (vs. male)", "Ethnicity (vs. white)", "Employment status (vs. employed)", "Employment change (vs. no change)", "Key worker status (vs. not a key worker)", "Pre-existing mental health diagnosis")) 
 
-plot_gad_as.is_dat$predictor <- fct_reorder2(plot_gad_as.is_dat$predictor, plot_gad_as.is_dat$class,  plot_gad_as.is_dat$category)
+plot_gad_clustered_dat <- plot_gad_clustered_dat %>%
+  mutate(predictor = case_when(
+  predictor == "intercept" ~ "Intercept",
+  predictor == "16.18" ~ "16-18y",
+  predictor == "19.25" ~ "19-25y",
+  predictor == "36.45" ~ "36-45y",
+  predictor == "46.55" ~ "46-55y",
+  predictor == "56.65" ~ "56-65y",
+  predictor == "66.70" ~ "66-70y",
+  predictor == "71+" ~ "71+y",
+  predictor == "Female" ~ "Female",
+  predictor == "Non.binary.Prefer.to.self.define" ~ "Non-binary/Prefer to self define",
+  predictor == "Minoritised.ethnic.community" ~ "Minoritised ethnic community",
+  predictor == "Retired" ~ "Retired",
+  predictor == "Student" ~ "Student",
+  predictor == "Unemployed" ~ "Unemployed",
+  predictor == "Decreased.employment" ~ "Decreased employment",
+  predictor == "Furloughed" ~ "Furloughed",
+  predictor == "Increased.employment" ~ "Increased employment",
+  predictor == "Government.defined.key.worker" ~ "Key worker",
+  predictor == "Anxiety.disorder" ~ "Anxiety disorder",
+  predictor == "Depressive.disorder" ~ "Depressive disorder",
+  predictor == "Eating.disorder" ~ "Eating disorder",
+  predictor == "Obsessive.compulsive.disorder" ~ "OCRD",
+  predictor == "Psychotic.disorder" ~ "Psychotic disorder",
+  predictor == "Personality.disorder" ~ "Personality disorder",
+  predictor == "Bipolar.disorder" ~ "Bipolar disorder",
+  predictor == "PTSD" ~ "PTSD",
+  predictor == "Autism.spectrum.disorder" ~ "ASD"
+))
 
+
+plot_gad_clustered_dat$predictor <-
+  factor(plot_gad_clustered_dat$predictor, levels = rev(c("Intercept", "16-18y", "19-25y", "36-45y", "46-55y", "56-65y", "66-70y", "71+y", "Female", "Non-binary/Prefer to self define", "Minoritised ethnic community", "Retired", "Student", "Unemployed", "Decreased employment", "Furloughed", "Increased employment", "Key worker", "Anxiety disorder", "Depressive disorder", "Eating disorder", "OCRD", "Psychotic disorder",  "Personality disorder", "Bipolar disorder", "PTSD", "ASD")))
 
 
 ```
+
 
 #### forest plot clustered ethnicity
 
@@ -1527,43 +1855,33 @@ Note: smaller category error bars extend beyond a reasonable axis. Wil need fixi
 ```{r forest rr gad}
 
 gad_eth_clustered_forest <-relrisk.forest(plot_gad_clustered_dat,
-plot_title="Relative risk (95% CI) of class membership: anxiety",
-sub_title="ethnicity clustered",
-lowlim = 0.001,
-uplim = 10)
+plot_title="GAD-7",
+sub_title="",
+lowlim = -1,
+uplim = 35)
 
+gad_eth_clustered_forest <- gad_eth_clustered_forest +
+  ylab("RRR (95% CI)") +
+  labs(colour = "Category")
 
 gad_eth_clustered_forest
 
 ```
 
-#### forest plot ethnicity as is
 
-Note: smaller category error bars extend beyond a reasonable axis. Wil need fixing for publication.
-```{r forest rr gad ethnicity as is}
-
-gad_eth_as.is_forest <- relrisk.forest(plot_gad_as.is_dat,
-plot_title="Relative risk (95% CI) of class membership: anxiety",
-sub_title="ethnicity as is",
-lowlim = 0.001,
-uplim = 10)
-
-gad_eth_as.is_forest
-
-```
 #### save plots
 
 ```{r save forest plots gad}
 
 ggsave(
-  filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/GAD/anxiety_RelativeRisk_forestPlot_ethnicityClustered.png"),
+  filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/GAD/anxiety_RelativeRisk_forestPlot_ethnicityClustered2.png"),
   plot=gad_eth_clustered_forest, 
-  width = 18, height = 10, dpi = 150, units = "in")
+  width = 12, height = 5, dpi = 600, units = "in")
 
-ggsave(
-  filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/GAD/anxiety_RelativeRisk_forestPlot.png"),
-  plot=gad_eth_as.is_forest, 
-  width = 18, height = 10, dpi = 150, units = "in")
+#ggsave(
+#  filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/GAD/anxiety_RelativeRisk_forestPlot.png"),
+#  plot=gad_eth_as.is_forest, 
+#  width = 18, height = 10, dpi = 150, units = "in")
 
 ```
 
@@ -1578,7 +1896,7 @@ will use the largest class group as reference
 
 BiggestClass.masq <- masq.AllData %>%
   group_by(MostLikelyClass) %>%
-  summarise(n=n()) %>%
+  dplyr::summarise(n=n()) %>%
   arrange(-n) %>%
   slice(1)%>%
   select(MostLikelyClass) %>%
@@ -1592,29 +1910,25 @@ Will need to adapt this to the correct number of classes depending on final mode
 ```{r relevel reference masq}
 
 masq.AllData$MostLikelyClass <- factor(masq.AllData$MostLikelyClass,
-                                       levels=c("1","2","3","4","5")) %>%
-  relevel(masq.AllData$MostLikelyClass, ref = BiggestClass.masq)
+                                       levels=c("1","2","3","4")) %>%
+  relevel(masq.AllData$MostLikelyClass, ref = "3")
 
 ```
+
+
 
 
 
 ##### Perform regression (ethnicity clustered)
 ```{r multinomial ethnicity clustered masq}
 
+
 masq.model_clustered <- multinom(formula_clustered,
                             data = masq.AllData)
 
 ```
 
-##### Perform regression (ethnicity as is)
 
-```{r multinomial ethnicity as is masq}
-
-masq.model<- multinom(formula,
-                            data = masq.AllData)
-
-```
 #### View and process results
 
 1: coefficients
@@ -1622,13 +1936,11 @@ masq.model<- multinom(formula,
 3: residual deviances & AIC
 ##### view summary: Ethnicity clustered
 ```{r view summary clustered masq}
-summary(masq.model_clustered)
+#summary(masq.model_clustered)
+masq_summary_table <- summary(masq.model_clustered)
+kable(t(as.data.frame(masq_summary_table$coefficients)), caption="Coefficients MASQ model - ethnicity clustered", digits = 2)
 ```
 
-##### view summary: Ethnicity as is
-```{r view summary masq}
-summary(masq.model)
-```
 
 ##### create z and p values
 
@@ -1636,19 +1948,17 @@ make Z
 ```{r z values masq}
 
 z_clustered.masq <- summary(masq.model_clustered)$coefficients/summary(masq.model_clustered)$standard.errors
+
+#z_clustered.masq.dropNBSD <- summary(masq.model_clustered.dropNBSD)$coefficients/summary(masq.model_clustered.dropNBSD)$standard.errors
   
-z_as.is.masq <- summary(masq.model)$coefficients/summary(masq.model)$standard.errors
+#z_as.is.masq <- summary(masq.model)$coefficients/summary(masq.model)$standard.errors
 ```
 
-print z clusted ethnicity model
-```{r print clustered z masq}
+print z clustered ethnicity model
+```{r print clustered z masq, eval = FALSE}
 
 z_clustered.masq
-```
-
-print z ethnicity as is
-```{r z as is masq}
-z_as.is.masq
+#z_clustered.masq.dropNBSD
 ```
 
 two tailed z test p values
@@ -1656,7 +1966,8 @@ two tailed z test p values
 ```{r two tailed z t masq}
 
 p_clustered.masq <- (1 - pnorm(abs(z_clustered.masq), 0, 1)) * 2
-p_as.is.masq <- (1 - pnorm(abs(z_as.is.masq), 0, 1)) * 2
+#p_clustered.masq.dropNBSD <- (1 - pnorm(abs(z_clustered.masq.dropNBSD), 0, 1)) * 2
+#p_as.is.masq <- (1 - pnorm(abs(z_as.is.masq), 0, 1)) * 2
 
 ```
 
@@ -1664,19 +1975,15 @@ show p for two tailed z test for ethnicity clustered model
 
 ```{r show two tailed p clustered masq}
 
-p_clustered.masq 
+#p_clustered.masq 
 
+kable(t(as.data.frame(p_clustered.masq )), caption="p-values MASQ model - ethnicity clustered", digits = 3)
 
-```
-
-
-show p for two tailed z test for ethnicity as is model
-
-```{r show two tailed p as is masq}
-
-p_as.is.masq 
+#kable(t(as.data.frame(p_clustered.masq.dropNBSD )), caption="p-values MASQ model - ethnicity clustered - drop NBSD", digits = 3)
 
 ```
+
+
 
 #### Relative risk
 
@@ -1695,42 +2002,27 @@ exponentiate the model coefficient to obtain relative risk for all predictors. C
 
 relative_risk_clustered.masq <- data.frame(exp(coef(masq.model_clustered))) %>%
   rownames_to_column() %>%
-  rename(class = "rowname",
+  dplyr::rename(class = "rowname",
     intercept = "X.Intercept.") %>%
   pivot_longer(!class) %>%
-  rename(predictor = name,
+  dplyr::rename(predictor = name,
          RelativeRisk = value) 
 
 
-relative_risk_clustered.masq$predictor <- gsub("76.","76+",relative_risk_clustered.masq$predictor)
+relative_risk_clustered.masq$predictor <- gsub("71.","71+",relative_risk_clustered.masq$predictor)
 
 
 relative_risk_clustered.masq 
 ```
 
-##### ethnicity
-```{r relative risk  masq}
 
-relative_risk_as.is.masq <-data.frame(exp(coef(masq.model))) %>%
-  rownames_to_column() %>%
-  rename(class = "rowname",
-    intercept = "X.Intercept.") %>%
-  pivot_longer(!class) %>%
-  rename(predictor = name,
-         RelativeRisk = value)
-
-
-relative_risk_as.is.masq$predictor <- gsub("76.","76+",relative_risk_as.is.masq$predictor)
-
-head(relative_risk_as.is.masq)
-```
 #### confidence intervals (rr scale)
 
 The confint package has a specific method that is run for multinom objects (see methods(confint)) Obtain the exponent of upper and lower to get relative risk version
 
 First create the CI (converted to relative risk) and reformat it so it is ready to merge with relative risk data for plotting
 
-clustered ethnicity
+##### clustered ethnicity
 ```{r confidence intervals for the coefficients convert to relative risk clustered masq }
 
 CI_clustered.masq <- data.frame(exp(confint(masq.model_clustered,level=0.95))) %>%
@@ -1739,8 +2031,7 @@ CI_clustered.masq <- data.frame(exp(confint(masq.model_clustered,level=0.95))) %
 names(CI_clustered.masq) <- c("predictor",
                               "1_lower","1_upper",
                               "2_lower","2_upper",
-                              "4_lower","4_upper",
-                              "5_lower","5_upper"
+                              "4_lower","4_upper"
                               )
 
 CI_clustered.masq <- CI_clustered.masq %>%
@@ -1758,35 +2049,42 @@ CI_clustered.masq$predictor <- gsub("\\(Intercept\\)","intercept",CI_clustered.m
 
   
 
-head(CI_clustered.masq)
+CI_clustered.masq
 ```
 
-ethnicity as is
-```{r confidence intervals for the coefficients convert to relative risk masq }
 
-CI_as.is.masq<- data.frame(exp(confint(masq.model,level=0.95))) %>%
-  rownames_to_column()
 
-names(CI_as.is.masq) <-  c("predictor",
-                              "1_lower","1_upper",
-                              "2_lower","2_upper",
-                              "4_lower","4_upper",
-                              "5_lower","5_upper"
-                              )
+### output table
 
-CI_as.is.masq <- CI_as.is.masq %>%
-  pivot_longer(!predictor) %>%
-  separate(name, c("class","CI")) %>%
-  pivot_wider(names_from = CI,
-              values_from= value)
+```{r masq stats table}
 
-CI_as.is.masq$predictor <- gsub("-",".",CI_as.is.masq$predictor)
-CI_as.is.masq$predictor <- gsub(" ",".",CI_as.is.masq$predictor)
-CI_as.is.masq$predictor <- gsub("/",".",CI_as.is.masq$predictor)
-CI_as.is.masq$predictor <- gsub("\\(Intercept\\)","intercept",CI_as.is.masq$predictor)
+masq.coeff <- format(round(t(as.data.frame(masq_summary_table$coefficients)), 2), nsmall = 2)
+masq.p <- format(round(t(as.data.frame(p_clustered.masq)), 3), nsmall = 3)
+masq.p <- sub('^(-)?0[.]', '\\1.', masq.p)
+    
+relative_risk_clustered.masq$RelativeRisk2 <- format(round(relative_risk_clustered.masq$RelativeRisk, 2), nsmall = 2)
+masq.rrr <- pivot_wider(relative_risk_clustered.masq[,c("class","predictor","RelativeRisk2")], names_from = class, values_from = RelativeRisk2)
 
-head(CI_as.is.masq)
+CI_clustered.masq$CI <- paste0(format(round(CI_clustered.masq$lower, 2),nsmall = 2),", ", format(round(CI_clustered.masq$upper,2),nsmall = 2))
+masq.ci <- pivot_wider(CI_clustered.masq[,c("predictor","class","CI")], names_from = class, values_from = CI)
+
+masq_class1_table <- cbind(masq.coeff[,1],masq.p[,1],masq.rrr[,2],masq.ci[,2])
+colnames(masq_class1_table) <- c("B","p","RRR", "95% CI")
+
+masq_class3_table <- cbind(masq.coeff[,2],masq.p[,2],masq.rrr[,3],masq.ci[,3])
+colnames(masq_class3_table) <- c("B","p","RRR", "95% CI")
+
+masq_class4_table <- cbind(masq.coeff[,3],masq.p[,3],masq.rrr[,4],masq.ci[,4])
+colnames(masq_class4_table) <- c("B","p","RRR", "95% CI")
+
+masq_stats_table <- cbind(masq_class1_table,masq_class3_table,masq_class4_table)
+
+masq_stats_table <- masq_stats_table %>% rownames_to_column(var = "predictor")
+
+writexl::write_xlsx(masq_stats_table,"../../output/masq_table.xlsx")
+
 ```
+
 
 ## forest plots of relative risk {.tabset}
 
@@ -1800,13 +2098,14 @@ plot_masq_clustered_dat <- full_join(relative_risk_clustered.masq,
                                      CI_clustered.masq,
                                      by=c("class","predictor")) 
 
-plot_masq_as.is_dat <- full_join(relative_risk_as.is.masq,
-                                     CI_as.is.masq,
-                                     by=c("class","predictor"))
+#plot_masq_dropNBSD_dat <- full_join(relative_risk_clustered.masq.dropNBSD,
+ #                                   CI_clustered.masq.dropNBSD,
+ #                                    by=c("class","predictor"))
 
 ```
 
 ```{r add category masq}
+temp4 <- plot_masq_clustered_dat
 
 plot_masq_clustered_dat$category <-plot_masq_clustered_dat$predictor
 
@@ -1825,6 +2124,8 @@ plot_masq_clustered_dat <-
                               grepl("psychotic_disorders",predictor) ~ "Pre-existing mental health diagnosis",
                               grepl("personality_disorders",predictor) ~ "Pre-existing mental health diagnosis",
                               grepl("bipolar_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+                              grepl("ptsd_disorders",predictor) ~ "Pre-existing mental health diagnosis",
+                              grepl("autism_disorders",predictor) ~ "Pre-existing mental health diagnosis",
                               grepl("mental_health_controls",predictor) ~ "Pre-existing mental health diagnosis",
                               grepl("intercept",predictor) ~ "Intercept"
                               ),
@@ -1842,49 +2143,11 @@ plot_masq_clustered_dat <-
                                grepl("psychotic_disorders",predictor) ~ gsub("psychotic_disorders","",predictor),
                                grepl("personality_disorders",predictor) ~ gsub("personality_disorders","",predictor),
                                grepl("bipolar_disorders",predictor) ~ gsub("bipolar_disorders","",predictor),
+                               grepl("ptsd_disorders",predictor) ~ gsub("ptsd_disorders","",predictor),
+                               grepl("autism_disorders",predictor) ~ gsub("autism_disorders","",predictor),
                                grepl("mental_health_controls",predictor) ~ gsub("mental_health_controls","",predictor),
                                grepl("intercept",predictor) ~ "intercept")
                                ) 
-         
-
-plot_masq_as.is_dat$category <-plot_masq_as.is_dat$predictor
-
-plot_masq_as.is_dat <-
-plot_masq_as.is_dat %>%
-  mutate(category = case_when(grepl("age",predictor) ~ "Age",
-                              grepl("gender",predictor) ~ "Gender",
-                              grepl("ethnicity",predictor) ~ "Ethnicity",
-                              grepl("employment_prior_covid",predictor) ~ "Employment before covid",
-                              grepl("employment_change",predictor) ~ "Change in employment due to covid",
-                              grepl("key_worker",predictor) ~ "Key worker status",
-                              grepl("anxiety_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("depressive_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("eating_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("obsessive_compulsive_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("psychotic_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("personality_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("bipolar_disorders",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("mental_health_controls",predictor) ~ "Pre-existing mental health diagnosis",
-                              grepl("intercept",predictor) ~ "Intercept"
-                              ),
-         
-         predictor = case_when(grepl("age",predictor) ~ gsub("age","",predictor),
-                               grepl("gender",predictor) ~ gsub("gender","",predictor),
-                               grepl("ethnicity",predictor) ~ gsub("ethnicity_clustered","",predictor),
-                               grepl("employment_prior_covid",predictor) ~ gsub("employment_prior_covid","",predictor),
-                               grepl("employment_change",predictor) ~ gsub("employment_change","",predictor),
-                               grepl("key_worker",predictor) ~ gsub("key_worker","",predictor),
-                               grepl("anxiety_disorders",predictor) ~ gsub("anxiety_disorders","",predictor),
-                               grepl("depressive_disorders",predictor) ~ gsub("depressive_disorders","",predictor),
-                               grepl("eating_disorders",predictor) ~ gsub("eating_disorders","",predictor),
-                               grepl("obsessive_compulsive_disorders",predictor) ~ gsub("obsessive_compulsive_disorders","",predictor),
-                               grepl("psychotic_disorders",predictor) ~ gsub("psychotic_disorders","",predictor),
-                               grepl("personality_disorders",predictor) ~ gsub("personality_disorders","",predictor),
-                               grepl("bipolar_disorders",predictor) ~ gsub("bipolar_disorders","",predictor),
-                               grepl("mental_health_controls",predictor) ~ gsub("mental_health_controls","",predictor),
-                               grepl("intercept",predictor) ~ "intercept")
-                               )
-         
 
 ```
 
@@ -1894,50 +2157,102 @@ sort variables so categories are together
 plot_masq_clustered_dat$category <- factor(plot_masq_clustered_dat$category,
                                        levels=c("Intercept","Gender","Ethnicity","Age","Employment before covid","Change in employment due to covid","Key worker status","Pre-existing mental health diagnosis"))
 
+temp3 <- plot_masq_clustered_dat
+plot_masq_clustered_dat <- temp3
+
 plot_masq_clustered_dat$predictor <- fct_reorder2(plot_masq_clustered_dat$predictor, plot_masq_clustered_dat$class,  plot_masq_clustered_dat$category)
 
+plot_masq_clustered_dat$RelativeRisk <- round(plot_masq_clustered_dat$RelativeRisk, digits=1)
+plot_masq_clustered_dat$lower <- round(plot_masq_clustered_dat$lower, digits=1)
+plot_masq_clustered_dat$upper <- round(plot_masq_clustered_dat$upper, digits=1)
+
+plot_masq_clustered_dat <- plot_masq_clustered_dat %>%
+  mutate(class = case_when(
+  class == "1" ~ "Class 1 (vs. Class 3)",
+  class == "2" ~ "Class 2 (vs. Class 3)",
+  class == "4" ~ "Class 4 (vs. Class 3)"))
+
+plot_masq_clustered_dat <- plot_masq_clustered_dat %>%
+  mutate(category = case_when(
+  category == "Intercept" ~ "Intercept",
+  category == "Gender" ~ "Gender (vs. male)",
+  category == "Ethnicity" ~ "Ethnicity (vs. white)",
+  category == "Age" ~ "Age (vs. 26-35y)",
+  category == "Employment before covid" ~ "Employment status (vs. employed)",
+  category == "Change in employment due to covid" ~ "Employment change (vs. no change)",
+  category == "Key worker status" ~ "Key worker status (vs. not a key worker)",
+  category == "Pre-existing mental health diagnosis" ~ "Pre-existing mental health diagnosis"))
 
 
+plot_masq_clustered_dat$category <- factor(plot_masq_clustered_dat$category, levels=c("Intercept", "Age (vs. 26-35y)", "Gender (vs. male)", "Ethnicity (vs. white)", "Employment status (vs. employed)", "Employment change (vs. no change)", "Key worker status (vs. not a key worker)", "Pre-existing mental health diagnosis")) 
 
-plot_masq_as.is_dat$category <- factor(plot_masq_as.is_dat$category,
-                                       levels=c("Intercept","Gender","Ethnicity","Age","Employment before covid","Change in employment due to covid","Key worker status","Pre-existing mental health diagnosis"))
+plot_masq_clustered_dat <- plot_masq_clustered_dat %>%
+  mutate(predictor = case_when(
+  predictor == "intercept" ~ "Intercept",
+  predictor == "16.18" ~ "16-18y",
+  predictor == "19.25" ~ "19-25y",
+  predictor == "36.45" ~ "36-45y",
+  predictor == "46.55" ~ "46-55y",
+  predictor == "56.65" ~ "56-65y",
+  predictor == "66.70" ~ "66-70y",
+  predictor == "71+" ~ "71+y",
+  predictor == "Female" ~ "Female",
+  predictor == "Non.binary.Prefer.to.self.define" ~ "Non-binary/Prefer to self define",
+  predictor == "Minoritised.ethnic.community" ~ "Minoritised ethnic community",
+  predictor == "Retired" ~ "Retired",
+  predictor == "Student" ~ "Student",
+  predictor == "Unemployed" ~ "Unemployed",
+  predictor == "Decreased.employment" ~ "Decreased employment",
+  predictor == "Furloughed" ~ "Furloughed",
+  predictor == "Increased.employment" ~ "Increased employment",
+  predictor == "Government.defined.key.worker" ~ "Key worker",
+  predictor == "Anxiety.disorder" ~ "Anxiety disorder",
+  predictor == "Depressive.disorder" ~ "Depressive disorder",
+  predictor == "Eating.disorder" ~ "Eating disorder",
+  predictor == "Obsessive.compulsive.disorder" ~ "OCRD",
+  predictor == "Psychotic.disorder" ~ "Psychotic disorder",
+  predictor == "Personality.disorder" ~ "Personality disorder",
+  predictor == "Bipolar.disorder" ~ "Bipolar disorder",
+  predictor == "PTSD" ~ "PTSD",
+  predictor == "Autism.spectrum.disorder" ~ "ASD"
+))
 
-plot_masq_as.is_dat$predictor <- fct_reorder2(plot_masq_as.is_dat$predictor, plot_masq_as.is_dat$class,  plot_masq_as.is_dat$category)
+
+plot_masq_clustered_dat$predictor <-
+  factor(plot_masq_clustered_dat$predictor, levels = rev(c("Intercept", "16-18y", "19-25y", "36-45y", "46-55y", "56-65y", "66-70y","71+y", "Female", "Non-binary/Prefer to self define", "Minoritised ethnic community", "Retired", "Student", "Unemployed", "Decreased employment", "Furloughed", "Increased employment", "Key worker", "Anxiety disorder", "Depressive disorder", "Eating disorder", "OCRD", "Psychotic disorder",  "Personality disorder", "Bipolar disorder", "PTSD", "ASD")))
+
 
 
 
 ```
 
+
 #### forest plot clustered ethnicity
 
-Note: smaller category error bars extend beyond a reasonable axis. Wil need fixing for publication.
+Note: smaller category error bars extend beyond a reasonable axis. Will need fixing for publication.
 ```{r forest rr masq}
 
 masq_eth_clustered_forest <-relrisk.forest(plot_masq_clustered_dat,
-plot_title="Relative risk (95% CI) of class membership: anhedonia",
-sub_title="ethnicity clustered",
-lowlim = 0.001,
-uplim = 10)
+plot_title="MASQ-AD",
+sub_title="",
+lowlim = -1,
+uplim = 35)
+
+
+masq_eth_clustered_forest <- masq_eth_clustered_forest +
+  ylab("RRR (95% CI)") +
+  labs(colour = "Category")
+
 
 
 masq_eth_clustered_forest
 
 ```
 
-#### forest plot ethnicity as is
+#### forest plot clustered ethnicity - drop NBSD
 
 Note: smaller category error bars extend beyond a reasonable axis. Wil need fixing for publication.
-```{r forest rr masq ethnicity as is}
 
-masq_eth_as.is_forest <- relrisk.forest(plot_masq_as.is_dat,
-plot_title="Relative risk (95% CI) of class membership: anhedonia",
-sub_title="ethnicity as is",
-lowlim = 0.001,
-uplim = 10)
-
-masq_eth_as.is_forest
-
-```
 #### save plots
 
 ```{r save forest plots masq}
@@ -1945,12 +2260,81 @@ masq_eth_as.is_forest
 ggsave(
   filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/MASQ/anhedonia_RelativeRisk_forestPlot_ethnicityClustered.png"),
   plot=masq_eth_clustered_forest, 
-  width = 18, height = 10, dpi = 150, units = "in")
+  width = 12, height = 5, dpi = 600, units = "in")
 
-ggsave(
-  filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/MASQ/anhedonia_RelativeRisk_forestPlot.png"),
-  plot=masq_eth_as.is_forest, 
-  width = 18, height = 10, dpi = 150, units = "in")
+#ggsave(
+#  filename=file.path(dirname(dirname(getwd())),"output/ForestPlots/MASQ/anhedonia_RelativeRisk_forestPlot_ethnicityClustered-dropNBSD.png"),
+#  plot=masq_eth_clustered_forest.dropNBSD, 
+#  width = 12, height = 5, dpi = 600, units = "in")
 
 ```
+# COMPARISON: examine overlap between groups
 
+```{r compare groups}
+#merge data 
+class_data <- select(phq.AllData,c("ID","hash_id","MostLikelyClass"))
+  class_data <- class_data %>% 
+  rename(PHQ_MostLikelyClass = MostLikelyClass)
+
+gad_class_data <- select(gad.AllData,c("ID","hash_id","MostLikelyClass"))
+  class_data <- merge(class_data,gad_class_data,by="ID")
+class_data <- class_data %>% 
+  rename(GAD_MostLikelyClass = MostLikelyClass)
+
+masq_class_data <- select(masq.AllData,c("ID","hash_id","MostLikelyClass"))
+class_data <- merge(class_data,masq_class_data,by="ID")
+class_data <- class_data %>% 
+  rename(MASQ_MostLikelyClass = MostLikelyClass)
+
+#summary of class data 
+class_data <- class_data %>%
+  mutate(PHQ_MostLikelyClass_named = case_when(
+    PHQ_MostLikelyClass == 1 ~ "High stable",
+    PHQ_MostLikelyClass == 2 ~ "Low stable",
+    PHQ_MostLikelyClass == 3 ~ "Rise_fall",
+    PHQ_MostLikelyClass == 4 ~ "Fall_rise"))
+  
+class_data <- class_data %>%
+  mutate(GAD_MostLikelyClass_named = case_when(
+    GAD_MostLikelyClass == 1 ~ "Low stable",
+    GAD_MostLikelyClass == 2 ~ "High stable",
+    GAD_MostLikelyClass == 3 ~ "Fall_rise",
+    GAD_MostLikelyClass == 4 ~ "Rise_fall"))
+
+class_data <- class_data %>%
+  mutate(MASQ_MostLikelyClass_named = case_when(
+    MASQ_MostLikelyClass == 1 ~ "Rise_fall",
+    MASQ_MostLikelyClass == 2 ~ "Low stable",
+    MASQ_MostLikelyClass == 3 ~ "High stable",
+    MASQ_MostLikelyClass == 4 ~ "Other",
+    MASQ_MostLikelyClass == 5 ~ "Fall_rise"))
+      
+
+table(class_data$PHQ_MostLikelyClass_named,class_data$GAD_MostLikelyClass_named)
+
+tbl_cross(class_data, 
+          row=PHQ_MostLikelyClass_named, col=GAD_MostLikelyClass_named,
+          percent = "row")
+
+tbl_cross(class_data, 
+          row=GAD_MostLikelyClass_named, col=PHQ_MostLikelyClass_named,
+          percent = "row")
+
+tbl_cross(class_data, 
+          row=MASQ_MostLikelyClass_named, col=PHQ_MostLikelyClass_named,
+          percent = "row")
+
+tbl_cross(class_data, 
+          row=PHQ_MostLikelyClass_named, col=MASQ_MostLikelyClass_named,
+          percent = "row")
+
+tbl_cross(class_data, 
+          row=MASQ_MostLikelyClass_named, col=GAD_MostLikelyClass_named,
+          percent = "row")
+
+tbl_cross(class_data, 
+          row=GAD_MostLikelyClass_named, col=MASQ_MostLikelyClass_named,
+          percent = "row")
+
+
+```

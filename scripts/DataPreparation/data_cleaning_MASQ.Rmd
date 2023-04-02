@@ -98,7 +98,7 @@ Important note: COPING did not include the masq at baseline.
 
 ```{r Read in COPING follow up A data}
 # Read in the data
-COPING_followupA <- readRDS(file = paste0(ilovedata, "/data_raw/2021-05-20/coping_followupa/masq_coping_followupa.rds"))
+COPING_followupA <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/masq/masq_coping_followupa.rds")
 
   # Check column names
 COPING_followupA %>%
@@ -2364,6 +2364,36 @@ hist(masq.totals.clean$masq.total_Wave_17, breaks="FD")
 
 layout(1)
 
+
+```
+# Internal consistency
+
+```{r calculate internal consistency}
+
+RAMP_baseline <- read_rds("/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/masq/masq.clean_baseline_items.RAMP.rds")
+
+
+RAMP_baseline <- RAMP_baseline %>% 
+  dplyr::rename(
+    ID = ID,
+    masq.pandemic_felt_successful= masq.pandemic_felt_successful_.Wave_0,
+    masq.pandemic_felt_really_happy = masq.pandemic_felt_really_happy_.Wave_0,
+    masq.pandemic_felt_optimistic = masq.pandemic_felt_optimistic_.Wave_0,
+    masq.pandemic_lot_felt_fun = masq.pandemic_lot_felt_fun_.Wave_0, 
+    masq.pandemic_felt_like_i_accomplished_a_lot = masq.pandemic_felt_like_i_accomplished_a_lot_.Wave_0,
+    masq.pandemic_forward_lot_felt = masq.pandemic_forward_lot_felt_.Wave_0,
+    masq.pandemic_felt_really_talkative = masq.pandemic_felt_really_talkative_.Wave_0, 
+    masq.pandemic_felt_really_up_or_lively = masq.pandemic_felt_really_up_or_lively_.Wave_0,
+    masq.pandemic_lot_felt_energy = masq.pandemic_lot_felt_energy_.Wave_0,
+    masq.pandemic_felt_really_good_about_myself = masq.pandemic_felt_really_good_about_myself_.Wave_0)
+
+RAMP_baseline <- RAMP_baseline[,c(1,4:13)]
+COPING_followupA.id <- COPING_followupA.id[,c(1,5:14)]
+
+merged_baseline <- rbind(RAMP_baseline, COPING_followupA.id)
+
+psych::alpha(merged_baseline[,c(2:11)])
+psych::alpha(merged_baseline[,c(2:11)])$total$std.alpha
 
 ```
 

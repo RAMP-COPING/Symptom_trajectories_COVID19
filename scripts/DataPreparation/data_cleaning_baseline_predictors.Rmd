@@ -57,10 +57,7 @@ knitr::opts_chunk$set(echo = TRUE,
 Note: load tidyverse last!
 ```{r Load packages}
 
-if(!require(summarytools)){
-  install.packages("summarytools")
-  library(summarytools)
-}
+
 
 if(!require(psych)){
   install.packages("psych")
@@ -102,22 +99,103 @@ sapply(files.sources, source)
 
 ## read in and rename data
 
-```{r}
+```{r read in files}
+#COPING
+fourcohort <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/full_cohort.rds")
 
-fourcohort <- readRDS(file = paste0(cleandata_path, "full_cohort.rds"))
+#RAMP - to combine
+ramp_age <-readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/ramp/demographics/age_ramp_clean.rds")
 
-gad_mplus <- read_csv(file = paste0(clean_data, "/gad/gad.mplus_hash_id_link_file.csv"))
-phq_mplus <- read_csv(file = paste0(clean_data, "/phq/phq.mplus_hash_id_link_file.csv"))
-masq_mplus <- read_csv(file = paste0(clean_data, "/masq/masq.mplus_hash_id_link_file.csv"))
+ramp_age <- ramp_age[c(1,2,5)]
+
+ramp_gender <-readRDS(file =
+"/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/ramp/demographics/sex_gender_sexuality_ramp_clean.rds")
+ramp_gender <- ramp_gender[c(1,6)]
+
+ramp_ethnicity <-readRDS(file =
+"/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/ramp/demographics/ethnicity_ramp_clean.rds")
+ramp_ethnicity <- ramp_ethnicity[c(1,5)]
+
+ramp_dem <- left_join(ramp_age, ramp_gender, by = "ID")
+ramp_dem <- left_join(ramp_dem, ramp_ethnicity, by = "ID")
+
+####
+
+ramp_employment <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/ramp/employ_ramp.rds")
+ramp_employment <- ramp_employment[c(4,6:31,50,51)]
+
+names(ramp_employment)[1] <- "ID"
+
+ramp_employment <- ramp_employment %>% mutate(employment_prior_covid = case_when(
+  employ.fulltime_employed == 1 | employ.parttime_employed == 1 | employ.zerohours_contract == 1 | employ.selfemployed == 1 | employ.contract_or_freelance_work == 1 | employ.small_business_owner ==1 ~ "Employed",
+  employ.unemployed == 1 | employ.stayathome_parent_or_carer == 1 ~ "Unemployed",
+  employ.student_ == 1 | employ.student_.1 == 1 ~ "Student",
+  employ.retired == 1 ~ "Retired" ))
+
+table(ramp_employment$employment_prior_covid)
+
+ramp_employment <- ramp_employment %>% mutate(employment_change = case_when(
+  employ.became_unemployed == 1 | employ.reduction_in_hours == 1 ~ "Decreased employment",
+  employ.became_employed == 1 | employ.increased_hours == 1 ~ "Increased employment",
+  employ.furloughed_or_paid_leave_ == 1 | employ.furloughed_or_paid_leave_.1 == 1 | employ.paid_leave_furloughed == 1 ~ "Furloughed",
+  employ.my_employment_status_has_not_changed == 1 ~"Employment not changed"))
+
+table(ramp_employment$employment_change)
+
+ramp_employment <- ramp_employment %>% mutate(key_worker = case_when(
+  employ.government_work_key_workers == 1 | employ.government_work_key_workers.1 == 1 ~ "Government defined key worker",
+  employ.government_work_key_workers == 0 | employ.government_work_key_workers.1 == 0 ~ "Not a key worker"))
+table(ramp_employment$key_worker)
+
+ramp_employment <- ramp_employment[c(1,30,31,32)]
+
+ramp_dem <- left_join(ramp_dem, ramp_employment, by = "ID")
+
+ramp_mhd <- readRDS(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/ramp/clinical/mhd_ramp_clean.rds")
+
+ramp_mhd <- ramp_mhd %>% 
+  mutate(anxiety_disorders = mhd.anxiety_disorders_cop) %>%
+  mutate(depressive_disorders = mhd.depressive_disorders_cop) %>%
+  mutate(eating_disorders = mhd.eating_disorders_cop) %>%
+  mutate(obsessive_compulsive_disorders = mhd.obsessive_compulsive_disorders_cop) %>%
+  mutate(psychotic_disorders = mhd.psychotic_disorders_cop) %>%
+  mutate(personality_disorders = case_when(
+    mhd.personality_cluster_a_cop_numeric == 1 | mhd.personality_cluster_b_cop_numeric == 1 | mhd.personality_cluster_c_cop_numeric == 1 ~ "Personality disorder",
+    TRUE ~ "No personality disorder"
+  )) %>%
+  mutate(bipolar_disorders = case_when(
+    mhd.bipolar_disorder_cop_numeric == 1 | mhd.bipolar_disorder_current_past_cop_numeric == 1 ~ "Bipolar disorder",
+    TRUE ~ "No bipolar disorder"
+  )) %>%
+  mutate(ptsd_disorders = case_when(
+    mhd.ptsd_cop_numeric == 1 | mhd.ptsd_current_past_cop_numeric == 1 ~ "PTSD",
+    TRUE ~ "No PTSD"
+  )) %>%
+  mutate(autism_disorders = mhd.autism_spectrum_disorder_cop)
+
+ramp_mhd <- ramp_mhd[c(1,117:125)]
+
+ramp_dem <- left_join(ramp_dem, ramp_mhd, by = "ID")
+
+```
+
+
+
+
+```{r }
+
+phq_mplus <- read_csv(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/phq/phq.mplus_hash_id_link_file.csv",show_col_types = FALSE)
+
+gad_mplus <- read_csv(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/gad/gad.mplus_hash_id_link_file.csv",show_col_types = FALSE)
+
+masq_mplus <- read_csv(file = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean/masq/masq.mplus_hash_id_link_file.csv",show_col_types = FALSE)
 
 ```
 
 ### Select relevant columns and identify factor levels
 
-
-```{r}
-
-
+#### COPING
+```{r COPING select columns and recode}
 all_predictors <- fourcohort %>%
   select(ID,
          age_category_numeric,
@@ -130,6 +208,8 @@ all_predictors <- fourcohort %>%
          psychotic_disorders_numeric,
          mhd.personality_disorder_numeric,
          mhd.bipolar_disorder_numeric,
+         mhd.ptsd_numeric,
+         mhd.asd_numeric,
          key_worker_numeric,
          employment_prior_covid_numeric,
          employment_change_numeric) %>%
@@ -189,6 +269,12 @@ all_predictors <- fourcohort %>%
          bipolar_disorders =  recode(mhd.bipolar_disorder_numeric,
                                      "0" = "No bipolar disorder",
                                      "1" = "Bipolar disorder"),
+        ptsd_disorders = recode(mhd.ptsd_numeric,
+                                "0" = "No PTSD",
+                                "1" = "PTSD"),
+       autism_disorders = recode(mhd.asd_numeric,
+                                 "0" = "No autism spectrum disorder",
+                                 "1" = "Autism spectrum disorder"),
          key_worker =  recode(key_worker_numeric,
                                      "0" = "Not a key worker",
                                      "1" = "Government defined key worker"),
@@ -216,9 +302,67 @@ all_predictors <- fourcohort %>%
          obsessive_compulsive_disorders,
          psychotic_disorders,
          personality_disorders,
-         bipolar_disorders)
-         
+         bipolar_disorders,
+         ptsd_disorders,
+         autism_disorders)
+
+all_predictors$sample <- "COPING"
+
+all_predictors <- all_predictors[, c("ID", "sample","age","gender","ethnicity","ethnicity_clustered", "employment_prior_covid","employment_change","key_worker", "anxiety_disorders", "depressive_disorders", "eating_disorders",   "obsessive_compulsive_disorders", "psychotic_disorders", "personality_disorders", "bipolar_disorders", "ptsd_disorders",  "autism_disorders" )]
+
+      
 ```
+
+#### RAMP
+```{r ramp rename columns}
+table(ramp_dem$dem.age_category)
+
+names(ramp_dem)[3] <- "age"
+ramp_dem <- ramp_dem %>%
+  mutate(age = case_when(
+    age == "16-18" ~ "16-18",
+    age == "19-25" ~ "19-25",
+    age == "26-35" ~ "26-35",
+    age == "36-45" ~ "36-45",
+    age == "46-55" ~ "46-55",
+    age == "56-65" ~ "56-65",
+    age == "66-70" ~ "66-70",
+    age == "71-75" ~ "71-75",
+    age == "76-80" | age == "81-85" | age == "86-90" | age == "91-100"| age == "100+" ~ "76+"
+  )) 
+table(ramp_dem$age)
+
+table(ramp_dem$dem.which_gender_do_you_identify_with_cop)
+names(ramp_dem)[4] <- "gender"
+ramp_dem <- ramp_dem %>%
+  mutate(gender = case_when(
+    gender == "Female" ~ "Female",
+    gender == "Male" ~ "Male",
+    gender == "Non-binary" | gender == "Self-define" ~ "Non-binary/Prefer to self define"))
+table(ramp_dem$gender)
+
+table(ramp_dem$dem.what_is_your_ethnic_origin_cop)
+names(ramp_dem)[5] <- "ethnicity"
+
+ramp_dem <- ramp_dem %>%
+  mutate(ethnicity = case_when(
+    ethnicity == "White, white European or Caucasian" ~ "White",
+    ethnicity == "Asian or Asian British (including Chinese)" ~ "Asian",
+    ethnicity == "Mixed or multiple ethnic origins" ~ "Mixed or multiple ethnicity",
+    ethnicity == "Other ethnic group (please specify)" ~ "Other",
+    ethnicity == "Arab" ~ "Arab",
+    ethnicity == "Black or Black British" ~ "Black")) %>%
+  mutate(ethnicity_clustered = case_when(
+    ethnicity == "White" ~ "White",
+    ethnicity == "Mixed or multiple ethnicity" | ethnicity == "Asian" | ethnicity == "Black" | ethnicity == "Arab" | ethnicity == "Other" ~ "Minoritised ethnic community"  ))
+table(ramp_dem$ethnicity)
+
+ramp_dem <- ramp_dem[, c("ID", "sample","age","gender","ethnicity","ethnicity_clustered", "employment_prior_covid","employment_change","key_worker", "anxiety_disorders", "depressive_disorders", "eating_disorders",   "obsessive_compulsive_disorders", "psychotic_disorders", "personality_disorders", "bipolar_disorders", "ptsd_disorders",  "autism_disorders" )]
+     
+
+combine_predictors <- rbind(all_predictors, ramp_dem)
+```
+
 
 # left join predictors onto Mplus ID list 
 
@@ -226,9 +370,9 @@ This will retain only individuals in the trajectory analysis, in the correct ord
 
 ```{r read in mplus id data and merge}
 
-phq_merged <- left_join(phq_mplus, all_predictors)
-gad_merged <- left_join(gad_mplus, all_predictors)
-masq_merged <- left_join(masq_mplus, all_predictors)
+phq_merged <- left_join(phq_mplus, combine_predictors)
+gad_merged <- left_join(gad_mplus, combine_predictors)
+masq_merged <- left_join(masq_mplus, combine_predictors)
 
 
 ```
@@ -236,6 +380,7 @@ masq_merged <- left_join(masq_mplus, all_predictors)
 ## save mplus linked predictor files
 
 ```{r save mplus files}
+clean_data = "/Users/katherineyoung/Documents/RAMP-COPING-longitudinal_common/data_clean"
 
 saveRDS(phq_merged, file.path(clean_data, "/phq/phq.mplus_matched_predictors.rds"))
 saveRDS(gad_merged, file.path(clean_data, "/gad/gad.mplus_matched_predictors.rds"))
@@ -256,7 +401,7 @@ phq_merged <- phq_merged[!apply(is.na(phq_merged[,3:16]), 1, all),]
 
 ```{r make kable table age phq}
 
-age_table <-  freq(phq_merged$age) %>%
+age_table <-  table(phq_merged$age, useNA = "ifany") %>%
   kable(caption = "Frequency table for age in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -268,7 +413,7 @@ age_table
 
 ```{r make kable table gender}
 
-gender_table <-  freq(phq_merged$gender) %>%
+gender_table <-  table(phq_merged$gender, useNA = "ifany") %>%
   kable(caption = "Frequency table for gender in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -281,7 +426,7 @@ gender_table
 
 ```{r make kable table ethnicity}
 
-ethnicity_table <-  freq(phq_merged$ethnicity) %>%
+ethnicity_table <-  table(phq_merged$ethnicity) %>%
   kable(caption = "Frequency table for ethnicity in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -293,7 +438,7 @@ ethnicity_table
 
 ```{r make kable table ethnicity clustered}
 
-ethnicity_cluster_table <-  freq(phq_merged$ethnicity_clustered) %>%
+ethnicity_cluster_table <-  table(phq_merged$ethnicity_clustered, useNA = "ifany") %>%
   kable(caption = "Frequency table for ethnicity clustered by minoritsed ethnic groups in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -306,19 +451,21 @@ ethnicity_cluster_table
 
 ```{r make kable table employment prior covid}
 
-employment_prior_table <-  freq(phq_merged$employment_prior_covid) %>%
+employment_prior_table <-  table(phq_merged$employment_prior_covid, useNA = "ifany") %>%
   kable(caption = "Frequency table for employment prior to covid in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
   kable_styling() %>%
   row_spec(0,bold=T,background = "grey",font_size = 16)
 
+
+
 employment_prior_table 
 ```
 
 
 ```{r make kable table employment change covid}
-employment_change_table <-  freq(phq_merged$employment_change) %>%
+employment_change_table <-  table(phq_merged$employment_change, useNA = "ifany") %>%
   kable(caption = "Frequency table for employment change due to covid in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -330,7 +477,7 @@ employment_change_table
 
 ```{r make kable table employment keyworker}
 
-key_worker_table <-  freq(phq_merged$key_worker) %>%
+key_worker_table <-  table(phq_merged$key_worker, useNA = "ifany") %>%
   kable(caption = "Frequency table for keyworker status to covid in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -343,7 +490,7 @@ key_worker_table
 
 ```{r make kable table anxiety disorders}
 
-anxiety_disorder_table <-  freq(phq_merged$anxiety_disorders) %>%
+anxiety_disorder_table <-  table(phq_merged$anxiety_disorders, useNA = "ifany") %>%
   kable(caption = "Frequency table for anxiety disorders in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -355,7 +502,7 @@ anxiety_disorder_table
 
 
 ```{r}
-depressive_disorder_table <-  freq(phq_merged$depressive_disorders) %>%
+depressive_disorder_table <-  table(phq_merged$depressive_disorders, useNA = "ifany") %>%
   kable(caption = "Frequency table for depressive disorders in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -367,7 +514,7 @@ depressive_disorder_table
 
 
 ```{r}
-eating_disorder_table <-  freq(phq_merged$eating_disorders) %>%
+eating_disorder_table <-  table(phq_merged$eating_disorders) %>%
   kable(caption = "Frequency table for eating disorders in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -379,7 +526,7 @@ eating_disorder_table
 
 
 ```{r}
-OCD_table <-  freq(phq_merged$obsessive_compulsive_disorders) %>%
+OCD_table <-  table(phq_merged$obsessive_compulsive_disorders) %>%
   kable(caption = "Frequency table for obsessive compulsive disorders in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -392,7 +539,7 @@ OCD_table
 
 
 ```{r}
- psychotic_disorders_table <-  freq(phq_merged$psychotic_disorders) %>%
+ psychotic_disorders_table <-  table(phq_merged$psychotic_disorders) %>%
   kable(caption = "Frequency table for psychotic disorders in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -403,7 +550,7 @@ psychotic_disorders_table
 ```
 
 ```{r}
-bipolar_disorders_table <-  freq(phq_merged$bipolar_disorders) %>%
+bipolar_disorders_table <-  table(phq_merged$bipolar_disorders) %>%
   kable(caption = "Frequency table for bipolar disorders in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -414,7 +561,7 @@ bipolar_disorders_table
 ```
 
 ```{r}
- personality_disorders_table <-  freq(phq_merged$personality_disorders) %>%
+ personality_disorders_table <-  table(phq_merged$personality_disorders) %>%
   kable(caption = "Frequency table for personality disorders in combined cohort (maximum n)",
         booktabs = T,
         digits = 2) %>%
@@ -422,6 +569,28 @@ bipolar_disorders_table
   row_spec(0,bold=T,background = "grey",font_size = 16)
 
 personality_disorders_table 
+```
+
+```{r}
+ ptsd_table <-  table(phq_merged$ptsd_disorders) %>%
+  kable(caption = "Frequency table for PTSD in combined cohort (maximum n)",
+        booktabs = T,
+        digits = 2) %>%
+  kable_styling() %>%
+  row_spec(0,bold=T,background = "grey",font_size = 16)
+
+ptsd_table 
+```
+
+```{r}
+ asd_table <-  table(phq_merged$autism_disorders) %>%
+  kable(caption = "Frequency table for ASD in combined cohort (maximum n)",
+        booktabs = T,
+        digits = 2) %>%
+  kable_styling() %>%
+  row_spec(0,bold=T,background = "grey",font_size = 16)
+
+asd_table 
 ```
 
 ### Save summary tables
@@ -442,6 +611,8 @@ save_file_psychosis <- file.path(dirname(dirname(getwd())),"output/baseline_pred
 save_file_bipolar <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/bipolar_disorder_summary_table.html")
 save_file_personality <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/personality_disorder_summary_table.html")
 save_file_ed <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/eating_disorder_summary_table.html")
+save_file_ptsd <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/ptsd_summary_table.html")
+save_file_asd <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/asd_summary_table.html")
 
 
 
@@ -487,7 +658,11 @@ save_kable(personality_disorders_table ,
 save_kable(eating_disorder_table ,
            save_file_ed)
 
+save_kable(ptsd_table ,
+           save_file_ptsd)
 
+save_kable(asd_table ,
+           save_file_asd)
 
 ```
 
@@ -509,7 +684,7 @@ if(!require(expss)){
 #    split_columns() %>% 
 #    kable()
 
-combined_table <- phq_merged %>% tab_cells("Age" = age, "Gender" = gender,"Ethnicity" = ethnicity, "Ethnicity - clustered" = ethnicity_clustered, "Change in employment" = employment_change, "Pre-pandemic employment" = employment_prior_covid, "Keyworker status" = key_worker, "Depressive disorder diagnosis" = depressive_disorders, "Anxiety disorder diagnosis" = anxiety_disorders, "OCD diagnosis" = obsessive_compulsive_disorders, "Psychotic disorder diagnosis" = psychotic_disorders, "Bipolar disorder diagnosis" = bipolar_disorders,"Eating disorder diagnosis" = eating_disorders, "Personality disorder diagnosis" = eating_disorders) %>% 
+combined_table <- phq_merged %>% tab_cells("Age" = age, "Gender" = gender,"Ethnicity" = ethnicity, "Ethnicity - clustered" = ethnicity_clustered, "Change in employment" = employment_change, "Pre-pandemic employment" = employment_prior_covid, "Keyworker status" = key_worker, "Depressive disorder diagnosis" = depressive_disorders, "Anxiety disorder diagnosis" = anxiety_disorders, "OCD diagnosis" = obsessive_compulsive_disorders, "Psychotic disorder diagnosis" = psychotic_disorders, "Bipolar disorder diagnosis" = bipolar_disorders,"Eating disorder diagnosis" = eating_disorders, "Personality disorder diagnosis" = personality_disorders, "PTSD diagnosis" = ptsd_disorders, "ASD diagnosis" = autism_disorders) %>% 
     tab_cols(total(label = "N")) %>% 
     tab_stat_cases(total_row_position = "none") %>% 
     tab_pivot() %>% 
@@ -521,4 +696,25 @@ save_file_combi <- file.path(dirname(dirname(getwd())),"output/baseline_predicto
 save_kable(combined_table ,
            save_file_combi)
 
+combined_table
+
+```
+##by cohort - combined summary table for paper
+```{r by cohort combined summary table for paper}
+
+coping_table <- phq_merged %>% filter(sample == "COPING") %>% tab_cells("Age" = age, "Gender" = gender,"Ethnicity" = ethnicity, "Ethnicity - clustered" = ethnicity_clustered, "Change in employment" = employment_change, "Pre-pandemic employment" = employment_prior_covid, "Keyworker status" = key_worker, "Depressive disorder diagnosis" = depressive_disorders, "Anxiety disorder diagnosis" = anxiety_disorders, "OCD diagnosis" = obsessive_compulsive_disorders, "Psychotic disorder diagnosis" = psychotic_disorders, "Bipolar disorder diagnosis" = bipolar_disorders,"Eating disorder diagnosis" = eating_disorders, "Personality disorder diagnosis" = personality_disorders, "PTSD diagnosis" = ptsd_disorders, "ASD diagnosis" = autism_disorders) %>% 
+    tab_cols(total(label = "N")) %>% 
+    tab_stat_cases(total_row_position = "none") %>% 
+    tab_pivot() %>% 
+    kable()
+
+coping_table
+
+ramp_table <- phq_merged %>% filter(sample == "RAMP") %>% tab_cells("Age" = age, "Gender" = gender,"Ethnicity" = ethnicity, "Ethnicity - clustered" = ethnicity_clustered, "Change in employment" = employment_change, "Pre-pandemic employment" = employment_prior_covid, "Keyworker status" = key_worker, "Depressive disorder diagnosis" = depressive_disorders, "Anxiety disorder diagnosis" = anxiety_disorders, "OCD diagnosis" = obsessive_compulsive_disorders, "Psychotic disorder diagnosis" = psychotic_disorders, "Bipolar disorder diagnosis" = bipolar_disorders,"Eating disorder diagnosis" = eating_disorders, "Personality disorder diagnosis" = personality_disorders, "PTSD diagnosis" = ptsd_disorders, "ASD diagnosis" = autism_disorders) %>% 
+    tab_cols(total(label = "N")) %>% 
+    tab_stat_cases(total_row_position = "none") %>% 
+    tab_pivot() %>% 
+    kable()
+
+ramp_table
 ```
