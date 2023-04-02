@@ -190,15 +190,15 @@ RAMP colours (first two) and then a complementary palette of distinguishable col
 pres.palette <- c("#4ED1B7", "#F6C66A", "#3066BE", "#D90368","#1B2D2A",  "#4C2E05","#C98686") 
 
 
-timepoint_list <- c("7th April 2020","19th May 2020","2nd June 2020","16th June 2020","30th June 2020",
-                    "14th July 2020", "28th July 2020","25th August 2020","22nd September 2020","20th October 2020",
-                    "17th November 2020","15th December 2020","12th January 2021","9th February 2021",
-                    "9th March 2021", "6th April 2021")
+timepoint_list <- c("7 Apr '20","19 May '20","2 Jun '20","16 Jun '20","30 Jun '20",
+                    "14 Jul '20", "28 Jul '20","25 Aug '20","22 Sep '20","20 Oct '20",
+                    "17 Nov '20","15 Dec '20","12 Jan '21","9 Feb '21",
+                    "9 Mar '21", "6 Apr '21")
 
-timepoint_list_anh <- c("19th May 2020","2nd June 2020","16th June 2020","30th June 2020",
-                    "14th July 2020", "28th July 2020","25th August 2020","22nd September 2020","20th October 2020",
-                    "17th November 2020","15th December 2020","12th January 2021","9th February 2021",
-                    "9th March 2021", "6th April 2021")
+timepoint_list_anh <- c("19 May '20","2 Jun '20","16 Jun '20","30 Jun '20",
+                    "14 Jul '20", "28 Jul '20","25 Aug '20","22 Sep '20","20 Oct '20",
+                    "17 Nov '20","15 Dec '20","12 Jan '21","9 Feb '21",
+                    "9 Mar '21", "6 Apr '21")
 
 ```
 
@@ -743,12 +743,28 @@ BIC_scree_plot <- ggplot() +
   geom_point(data = justSummaries,
         aes(x = Title, y = BIC,group=1), show.legend = F) +
   labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
-       subtitle="Anhedonia (MASQ CD-anhedonia)",
+       subtitle="Anhedonia (MASQ-AD)",
          y ="BIC") +
   theme(panel.background = element_blank(),
-        axis.text.x = element_text(angle = 90)) 
+        axis.text.x = element_text(angle = 45)) 
 
 BIC_scree_plot 
+
+#create scree plot without 1-class model
+
+BIC_scree_plot2 <- ggplot() +
+  geom_line(data =justSummaries[1:6,],
+        aes(x = Title, y = BIC,group=1)) +
+  scale_x_discrete(name="k+1 class model",labels=c("Two class growth mixture model","Three class growth mixture model","four class growth mixture model","Five class growth mixture model","Six class growth mixture model","Seven class growth mixture model")) +
+  geom_point(data = justSummaries[1:6,],
+        aes(x = Title, y = BIC,group=1), show.legend = F) +
+  labs(title="Scree plot showing decreasing Bayesian Information Criterion (BIC) values for each K+1 growth mixture model",
+       subtitle="Anhedonia (MASQ-AD)",
+         y ="BIC") +
+  theme(panel.background = element_blank(),
+        axis.text.x = element_text(angle = 45)) 
+
+BIC_scree_plot2
 
 ```
 
@@ -766,6 +782,11 @@ save_kable(summary_table,
 ggsave(
   filename=file.path(save_file_path,"masq_BIC_scree_plot.png"),
   plot =BIC_scree_plot)
+
+ggsave(
+  filename=file.path(save_file_path,"masq_BIC_scree_plot-start-at-two.png"),
+  plot =BIC_scree_plot2)
+
     
 # save class proportion data tables
 save_kable(class_allocation_2,
@@ -825,7 +846,7 @@ growth_curves_oneclass <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="MASQ-anhedonia Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0, 40, 1)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0, 40, 4)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
                    labels = timepoint_list_anh) +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
@@ -834,7 +855,7 @@ growth_curves_oneclass <- ggplot() +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
-        axis.text.x = element_text(angle = 90,
+        axis.text.x = element_text(angle = 45,
         hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
@@ -886,7 +907,7 @@ growth_curves_twoclass <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="MASQ-anhedonia Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40, 1)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40,4)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
                    labels = timepoint_list_anh) +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
@@ -895,7 +916,7 @@ growth_curves_twoclass <- ggplot() +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
-        axis.text.x = element_text(angle = 90,
+        axis.text.x = element_text(angle = 45,
         hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
@@ -954,7 +975,7 @@ growth_curves_threeclass <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="MASQ-anhedonia Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40, 1)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40,4)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
                    labels = timepoint_list_anh) +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
@@ -964,7 +985,7 @@ growth_curves_threeclass <- ggplot() +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
-        axis.text.x = element_text(angle = 90,
+        axis.text.x = element_text(angle = 45,
         hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
@@ -1025,7 +1046,7 @@ growth_curves_fourclass <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="MASQ-anhedonia Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40, 1)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40,4)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
                    labels = timepoint_list_anh) +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
@@ -1034,7 +1055,7 @@ growth_curves_fourclass <- ggplot() +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
-        axis.text.x = element_text(angle = 90,
+        axis.text.x = element_text(angle = 45,
         hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
@@ -1102,7 +1123,7 @@ growth_curves_fiveclass <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="MASQ-anhedonia Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40, 1)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40,4)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
                    labels = timepoint_list_anh) +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
@@ -1111,7 +1132,7 @@ growth_curves_fiveclass <- ggplot() +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
-        axis.text.x = element_text(angle = 90,
+        axis.text.x = element_text(angle = 45,
         hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
@@ -1186,7 +1207,7 @@ growth_curves_sixclass <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="MASQ-anhedonia Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40, 1)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40,4)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
                    labels = timepoint_list_anh) +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
@@ -1195,7 +1216,7 @@ growth_curves_sixclass <- ggplot() +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
-        axis.text.x = element_text(angle = 90,
+        axis.text.x = element_text(angle = 45,
         hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
@@ -1276,7 +1297,7 @@ growth_curves_sevenclass <- ggplot() +
         aes(x = timepoint, y = score, colour = Model, shape=Model), show.legend = F) +
   scale_color_manual(values = pres.palette) +
   labs(x = "Follow up time point", y ="MASQ-anhedonia Score") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40, 1)) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,40), breaks=seq(0,40,4)) + 
   scale_x_continuous(expand = c(0,0), limits = c(-0.5,14.5), breaks=seq(0, 14, by = 1),
                    labels = timepoint_list_anh) +
  geom_hline(yintercept=0, linetype="dashed", color = "grey") +
@@ -1285,7 +1306,7 @@ growth_curves_sevenclass <- ggplot() +
   theme(panel.grid.major.y = element_blank(),
         axis.text = element_text(colour="black", size = 14),
         axis.title = element_text(colour="black", size = 16),
-        axis.text.x = element_text(angle = 90,
+        axis.text.x = element_text(angle = 45,
         hjust=1),
         legend.key = element_blank(),
         legend.text = element_text(colour = "black", size = 11),
@@ -1305,37 +1326,37 @@ save_file_path <- file.path(dirname(dirname(getwd())),"output/Trajectory_plots/M
 ggsave(
   filename=file.path(save_file_path,"anhedonia_oneclass_trajectory.png"),
   plot =growth_curves_oneclass, 
-  width = 14, height = 10, dpi = 150, units = "in")
+  width = 20, height = 10, dpi = 150, units = "cm")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_twoclass_trajectory.png"),
   plot =growth_curves_twoclass, 
-  width = 14, height = 10, dpi = 150, units = "in")
+  width = 20, height = 10, dpi = 150, units = "cm")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_threeclass_trajectory.png"),
   plot =growth_curves_threeclass, 
-  width = 14, height = 10, dpi = 150, units = "in")
+  width = 20, height = 10, dpi = 150, units = "cm")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_fourclass_trajectory.png"),
   plot =growth_curves_fourclass, 
-  width = 14, height = 10, dpi = 150, units = "in")
+  width = 20, height = 10, dpi = 150, units = "cm")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_fiveclass_trajectory.png"),
   plot =growth_curves_fiveclass, 
-  width = 14, height = 10, dpi = 150, units = "in")
+  width = 20, height = 10, dpi = 150, units = "cm")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_sixclass_trajectory.png"),
   plot =growth_curves_sixclass, 
-  width = 14, height = 10, dpi = 150, units = "in")
+  width = 20, height = 10, dpi = 150, units = "cm")
 
 ggsave(
   filename=file.path(save_file_path,"anhedonia_sevenclass_trajectory.png"),
   plot =growth_curves_sevenclass, 
-  width = 14, height = 10, dpi = 150, units = "in")
+  width = 20, height = 10, dpi = 150, units = "cm")
 
 ```
 

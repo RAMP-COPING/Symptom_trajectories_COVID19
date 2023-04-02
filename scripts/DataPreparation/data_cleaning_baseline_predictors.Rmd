@@ -56,6 +56,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 Note: load tidyverse last!
 ```{r Load packages}
+
 if(!require(summarytools)){
   install.packages("summarytools")
   library(summarytools)
@@ -66,11 +67,6 @@ if(!require(psych)){
   library(psych)
 }
 
-if(!require(tidyverse)){
-  install.packages("tidyverse")
-  library(tidyverse)
-}
-
 if(!require(kableExtra)){
   install.packages("kableExtra")
   library(kableExtra)
@@ -79,6 +75,11 @@ if(!require(kableExtra)){
 if(!require(dplyr)){
   install.packages("dplyr")
   library(dplyr)
+}
+
+if(!require(tidyverse)){
+  install.packages("tidyverse")
+  library(tidyverse)
 }
 ```
 
@@ -490,6 +491,34 @@ save_kable(eating_disorder_table ,
 
 ```
 
+#combined summary table for paper
+```{r combined summary table for paper}
+
+if(!require(expss)){
+  library(expss)
+  install.packages("expss",repos = "http://cran.us.r-project.org")
+}
 
 
+#remove_column(age_table,4:6)
 
+#dd %>% tab_cells("Sex" = sex, "Marital status" = marital, "Age" = age_group) %>% 
+#    tab_cols(total(label = "N")) %>% 
+#    tab_pivot() %>% 
+#    tab_stat_cases(total_row_position = "none") %>% 
+#    split_columns() %>% 
+#    kable()
+
+combined_table <- phq_merged %>% tab_cells("Age" = age, "Gender" = gender,"Ethnicity" = ethnicity, "Ethnicity - clustered" = ethnicity_clustered, "Change in employment" = employment_change, "Pre-pandemic employment" = employment_prior_covid, "Keyworker status" = key_worker, "Depressive disorder diagnosis" = depressive_disorders, "Anxiety disorder diagnosis" = anxiety_disorders, "OCD diagnosis" = obsessive_compulsive_disorders, "Psychotic disorder diagnosis" = psychotic_disorders, "Bipolar disorder diagnosis" = bipolar_disorders,"Eating disorder diagnosis" = eating_disorders, "Personality disorder diagnosis" = eating_disorders) %>% 
+    tab_cols(total(label = "N")) %>% 
+    tab_stat_cases(total_row_position = "none") %>% 
+    tab_pivot() %>% 
+    kable()
+
+
+save_file_combi <- file.path(dirname(dirname(getwd())),"output/baseline_predictor_summary_tables/combi_table.html")
+
+save_kable(combined_table ,
+           save_file_combi)
+
+```

@@ -1301,10 +1301,7 @@ masq.clean <- masq.merged %>%
 names(masq.clean)
 
 
-masq.recode %>%
-  na_if(-77) %>%
-  group_by(sample) %>%
-    summarise(mean= mean(masq.pandemic_felt_optimistic_.Wave_03, na.rm = T) )
+
 ```
 
 # create sum scores
@@ -1327,7 +1324,10 @@ masq.recode <- masq.clean %>%
              . == -77 ~ NA_real_,
              TRUE ~  NA_real_)))
   
-  
+masq.recode %>%
+  na_if(-77) %>%
+  group_by(sample) %>%
+    summarise(mean= mean(masq.pandemic_felt_optimistic_.Wave_03, na.rm = T) )  
 ```
 
 check items before and then after recoding numbers for randomly selected items to make sure the direction is correct
